@@ -1,0 +1,43 @@
+[
+
+    {
+        "title": "Freelance App Dev",
+        "image": "/images/container_images/sensor_story.png",
+        "desc": "Open to work",
+        "chips": [
+            "Javascript", "Cypress", "QA", "React"
+        ]
+    },
+    {
+        "title": "Trip To Italy with Emma",
+        "image": "/images/container_images/italy_2023.png",
+        "desc": "My december trip to Italy with plenty of photos",
+        "chips": [
+            "Photography", "Emma"
+        ]
+    },
+    {
+        "title": "Globalstep",
+        "image": "/images/container_images/globalstep.png",
+        "desc": "I am currently employed here",
+        "chips": [
+            "Javascript", "Cypress", "QA", "React"
+        ]
+    },
+    {
+        "title": "Gentrack",
+        "image": "/images/container_images/gentrack.png",
+        "desc": "I worked here between 2019 and 2020",
+        "chips": [
+            "BASIC", "Full Stack"
+        ]
+    },
+    {
+        "title": "Brunel University",
+        "image": "/images/container_images/brunel_uni.png",
+        "desc": "Obtained a degree in Computer Science",
+        "chips": [
+            "Brunel Univeisty", "significant work"
+        ]
+    }
+]
