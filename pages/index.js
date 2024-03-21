@@ -3,6 +3,7 @@ import Layout from '../components/layout';
 import { getSortedPostsData } from '../lib/posts'
 import Container from '../components/container/container';
 import home_posts from '../home_posts.json'
+import ChatBubble from '../components/chat_Bubble';
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();

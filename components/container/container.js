@@ -17,8 +17,8 @@ export default function Container({ title="", image_src="", body_text="", btnAct
     };
 
     return (
-        <div class={`${colour} flex flex-col btn-primary h-auto flex shadow-MB w-fit`}>
-            <span class="my-auto leading-none font-medium mb-3 mt-1">{title}</span>
+        <div className={`${colour} flex flex-col btn-primary h-auto flex shadow-MB w-fit`}>
+            <span className="my-auto leading-none font-medium mb-3 mt-1">{title}</span>
             <Image src={image_src} alt="" width={600} height={128} />
             <div className="flex mt-3">
                 <p className="flex grow mr-10">{body_text}</p>

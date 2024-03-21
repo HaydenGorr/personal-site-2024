@@ -28,6 +28,10 @@ body {
   background-color: #fafafa;
 }
 
+.default_text_colour_white {
+  background-color: #fafafa;
+}
+
 .MB_Button_Clicked_Colour {
   background-color: #e2e2e2;
 }
@@ -68,4 +72,29 @@ h1 {
 
 .hideonmobile {
   @apply hidden md:block
+}
+
+@keyframes wiggleAndColor {
+  0% {
+    transform: rotate(-5deg);
+    background-color: initial;
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+    background-color: red;
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+    background-color: initial; 
+  }
+}
+
+.wiggle {
+  animation: wiggleAndColor 0.5s ease-in-out;
 }

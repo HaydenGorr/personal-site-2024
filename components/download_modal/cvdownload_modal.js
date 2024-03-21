@@ -11,7 +11,7 @@ export default function CVDownloadModal({  }) {
                         <MB_Button image_src="/images/svgs/link_icon.svg" text="google drive" colour="bg-emerald-200" given_href="https://docs.google.com/document/d/1qjuSGcBqMS6au8LINZyMAJ78tyAIuswAtCYRpwhZrYE/edit?usp=sharing"></MB_Button>
                     </div>
 
-                    <div class="h-1 bg-black mt-6 mb-6 mx-6"></div>
+                    <div className="h-1 bg-black mt-6 mb-6 mx-6"></div>
 
                     <div className="modal-action flex justify-center">
                         <form method="dialog">

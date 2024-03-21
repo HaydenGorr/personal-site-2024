@@ -25,7 +25,7 @@ export default function Layout({ children, home }) {
               <MB_Button text={"CV"} image_src={'/images/svgs/cv_light.svg'} btnAction={()=>document.getElementById('cv_download_modal').showModal()}/>
             </div>
             <div className='mr-4'>
-              <MB_Button text={"LINKDIN"} given_href={"https://www.linkedin.com/in/hayden-gorringe-980753191/"} image_src={'/images/svgs/linkdin.svg'}/>
+              <MB_Button text={"LINKEDIN"} given_href={"https://www.linkedin.com/in/hayden-gorringe-980753191/"} image_src={'/images/svgs/linkdin.svg'}/>
             </div>
             <div className={`${isChatPage ? 'hidden md:block' : ''} mr-4`}>
               <MB_Button text={"CHAT"} given_href={"/chat"} image_src={'/images/svgs/chat.svg'}/>
@@ -38,8 +38,8 @@ export default function Layout({ children, home }) {
       </header>
 
       {/** The black bar at the top of the page. This is used to show a message*/}
-      <div class="bg-black w-auto h-9 flex items-center justify-center">
-        <p class="text-white text relative bottom-0.5">Hi Emma :)</p>
+      <div className="bg-black w-auto h-9 flex items-center justify-center">
+        <p className="text-white text relative bottom-0.5">Hi Emma :)</p>
       </div>
 
       <main>{children}</main>

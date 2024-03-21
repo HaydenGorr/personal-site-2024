@@ -1,31 +1,15 @@
 
-export default function ChatBubble({name, time, message, status}) {
+export default function ChatBubble({incoming = true, inText="Example text"}) {
+
+    const baseClasses = "p-4 max-w-xs my-2 border-black border-2";
+    const incomingClasses = "bg-black self-start default_text_colour_white";
+    const outgoingClasses = "default_colour self-end text-black";
+  
+    const classes = `${baseClasses} ${incoming === false ? outgoingClasses : incomingClasses}`;
+
     return (
-        <div class="flex items-start gap-2.5">
-            <div className="chat chat-start">
-            <div className="chat-image avatar">
-                <div className="w-10 rounded-full">
-                <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                </div>
-            </div>
-            <div className="chat-bubble">It was said that you would, destroy the Sith, not join them.</div>
-            </div>
-            <div className="chat chat-start">
-            <div className="chat-image avatar">
-                <div className="w-10 rounded-full">
-                <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                </div>
-            </div>
-            <div className="chat-bubble">It was you who would bring balance to the Force</div>
-            </div>
-            <div className="chat chat-start">
-            <div className="chat-image avatar">
-                <div className="w-10 rounded-full">
-                <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                </div>
-            </div>
-            <div className="chat-bubble">Not leave it in Darkness</div>
-            </div>
+        <div className={`p-3 max-w-xs my-2 border-2 shadow-MB ${incoming === false ? "text-black border-black bg-white self-end ml-3" : "self-start text-white border-white bg-black mr-3"}`}>
+            {inText}
         </div>
     );
   }
