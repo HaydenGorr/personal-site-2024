@@ -4,7 +4,8 @@ import { getSortedPostsData } from '../lib/posts'
 import Container from '../components/container/container';
 import home_posts from '../home_posts.json'
 import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
-import {moddedChip} from '../components/chip';
+import ClosableChip from '../components/closable_chip';
+
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
@@ -21,6 +22,10 @@ export default function Home() {
   const add_to_keywords = (inText) => {
     setSelectedKeywords([...selectedKeywords, inText])
   }
+
+  const remove_keywords = (inText) => {
+    setSelectedKeywords(selectedKeywords.filter(keyword => keyword !== inText));
+  }
  
   // Assuming selectedKeywords is meant to be an array
   const filteredPosts = selectedKeywords.length > 0
@@ -34,9 +39,18 @@ export default function Home() {
 
       <section>
 
-        {selectedKeywords.length > 0 && <div className='flex mx-6 mt-3'>
-          <moddedChip chip_text={"asd"} add_keywords_to_filter={() => {}}/>
-        </div>}
+      {selectedKeywords.length > 0 && (
+        <div className="flex flex-wrap mx-6 mt-3">
+          {selectedKeywords.map((item, index) => (
+            <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} />
+          ))}
+        </div>
+      )}
+
+
+        <div>
+
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-content-around">
           {filteredPosts.map((item, index) => (
