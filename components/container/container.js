@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import Image from "next/image";
-
+import Chip from "../chip";
 import chip_colour_lookup from '../../chip_colour_lookup.json'
 
-export default function Container({ title="", image_src="", body_text="", btnAction = () => {}, colour="bg-transparent", button_type=false, chips }) {
+export default function Container({ title="", image_src="", body_text="", btnAction = () => {}, colour="bg-transparent", chips, add_keywords_to_filter }) {
 
     useEffect(() => {
         // setBtnText(lowercase ? text : text.toUpperCase())
@@ -27,10 +27,11 @@ export default function Container({ title="", image_src="", body_text="", btnAct
 
             <div className="flex flex-wrap w-auto mt-2">
                 {chips.map((chip_text, index) => (
-                    <div key={index} className="flex m-1 px-1 py-1 text-xs font cursor-pointer border-2 rounded-md border-black">
-                        <Image className="mr-1" src={`/images/chip_icons/${chip_text.toLowerCase()}.svg`} width={20} height={20}></Image>
-                        {chip_text}
-                    </div>
+                    <Chip chip_text={chip_text} add_keywords_to_filter={add_keywords_to_filter} index={index}></Chip>
+                    // <div key={index} className="flex m-1 px-1 py-1 text-xs font cursor-pointer border-2 rounded-md border-black" onClick={() => add_keywords_to_filter(chip_text)}>
+                    //     <Image className="mr-1" src={`/images/chip_icons/${chip_text.toLowerCase()}.svg`} width={20} height={20}></Image>
+                    //     {chip_text}
+                    // </div>
                 ))}
             </div>
 

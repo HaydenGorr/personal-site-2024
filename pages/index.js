@@ -3,6 +3,8 @@ import Layout from '../components/layout';
 import { getSortedPostsData } from '../lib/posts'
 import Container from '../components/container/container';
 import home_posts from '../home_posts.json'
+import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
+import {moddedChip} from '../components/chip';
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
@@ -14,6 +16,16 @@ export async function getStaticProps() {
 }
 
 export default function Home() {
+  const [selectedKeywords, setSelectedKeywords] = useState([]);
+
+  const add_to_keywords = (inText) => {
+    setSelectedKeywords([...selectedKeywords, inText])
+  }
+ 
+  // Assuming selectedKeywords is meant to be an array
+  const filteredPosts = selectedKeywords.length > 0
+  ? home_posts.filter(post => selectedKeywords.some(keyword => post.chips.includes(keyword))) : home_posts;
+
   return (
     <Layout home>
       <Head>
@@ -21,10 +33,15 @@ export default function Home() {
       </Head>
 
       <section>
+
+        {selectedKeywords.length > 0 && <div className='flex mx-6 mt-3'>
+          <moddedChip chip_text={"asd"} add_keywords_to_filter={() => {}}/>
+        </div>}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-content-around">
-          {home_posts.map((item, index) => (
+          {filteredPosts.map((item, index) => (
             <div className='my-6 flex justify-center mx-6'>
-              <Container title={item.title} body_text={item.desc} image_src={item.image} chips={item.chips}/>
+              <Container title={item.title} body_text={item.desc} image_src={item.image} chips={item.chips} add_keywords_to_filter={add_to_keywords}/>
             </div>
           ))}
         </div>
