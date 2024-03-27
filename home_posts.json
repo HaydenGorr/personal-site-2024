@@ -13,7 +13,7 @@
         "image": "/images/container_images/italy_2023.png",
         "desc": "My december trip to Italy with plenty of photos",
         "chips": [
-            "Photography", "Emma"
+            "Photography", "Emma", "Travel"
         ]
     },
     {
@@ -37,7 +37,7 @@
         "image": "/images/container_images/brunel_uni.png",
         "desc": "Obtained a degree in Computer Science",
         "chips": [
-            "Brunel Univeisty", "significant work"
+            "Brunel University", "Significant Work"
         ]
     }
 ]
