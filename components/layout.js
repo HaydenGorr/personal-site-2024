@@ -42,7 +42,7 @@ export default function Layout({ children, home }) {
         <p class="text-white text relative bottom-0.5">Hi Emma :)</p>
       </div>
 
-      <main>{children}</main>
+      <main className='max-w-7xl mx-auto'>{children}</main>
 
     </div>
   );

@@ -5,21 +5,26 @@ import Container from '../components/container/container';
 import home_posts from '../home_posts.json'
 import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
-
+import SuggestionTextBox from '../components/suggestion_text_box';
+import { generateUniqueChips } from '../utils/generate_unique_posts';
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
+  const chipsText = generateUniqueChips(home_posts);
   return {
     props: {
       allPostsData,
+      chipsText
     },
   };
 }
 
-export default function Home() {
+export default function Home({chipsText}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
 
   const add_to_keywords = (inText) => {
+    if (selectedKeywords.includes(inText)) return;  
+
     setSelectedKeywords([...selectedKeywords, inText])
   }
 
@@ -40,17 +45,17 @@ export default function Home() {
       <section>
 
       {selectedKeywords.length > 0 && (
-        <div className="flex flex-wrap mx-6 mt-3">
-          {selectedKeywords.map((item, index) => (
-            <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} />
-          ))}
+        <div className="mx-6 mt-3">
+          <div className="flex flex-wrap">
+            {selectedKeywords.map((item, index) => (
+              <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} />
+            ))}
+          </div>
+          <div className="mt-3 h-10">
+            <SuggestionTextBox add_to_keywords={add_to_keywords} chipsText={chipsText} selectedChips_text={selectedKeywords}/>
+          </div>
         </div>
       )}
-
-
-        <div>
-
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-content-around">
           {filteredPosts.map((item, index) => (
