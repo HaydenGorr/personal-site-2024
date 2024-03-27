@@ -41,7 +41,7 @@ export default function SuggestionTextBox({add_to_keywords, chipsText, selectedC
                 <InputBox onChange={onChange} valueStorage={userText} onFocus={() => setShowSuggestions(true)}/>
             </div>
             {showSuggestions && (
-                <div className="bg-black text-white z-10 mt-1">
+                <div className="bg-black text-white z-10 mt-1 h-96 overflow-scroll">
                     <ul>
                         {filteredChips.map((text, index) => (
                             <div className={`flex ${index % 2 == 0 ? "bg-black " : "bg-white text-black "} pl-3 py-1.5 cursor-pointer ${shouldGreyout(text)}`} onClick={() => {add_to_keywords(text)}}>

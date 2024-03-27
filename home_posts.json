@@ -1,11 +1,11 @@
 [
 
     {
-        "title": "Freelance App Dev",
+        "title": "Sensor Story App",
         "image": "/images/container_images/sensor_story.png",
-        "desc": "Open to work",
+        "desc": "A cross platform app created for a client",
         "chips": [
-            "Javascript", "Cypress", "QA", "React"
+            "Swift", "Kotlin", "Android", "iOS", "Mobile Development", "Freelance", "App Development"
         ]
     },
     {

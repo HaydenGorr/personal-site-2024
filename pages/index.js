@@ -10,21 +10,25 @@ import { generateUniqueChips } from '../utils/generate_unique_posts';
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
-  const chipsText = generateUniqueChips(home_posts);
+  var chipsText = generateUniqueChips(home_posts);
+
+  // Sort the chipsText array alphabetically
+  chipsText.sort((a, b) => a.localeCompare(b));
+  
   return {
     props: {
       allPostsData,
-      chipsText
+      chipsText,
     },
   };
 }
+
 
 export default function Home({chipsText}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
 
   const add_to_keywords = (inText) => {
     if (selectedKeywords.includes(inText)) return;  
-
     setSelectedKeywords([...selectedKeywords, inText])
   }
 
@@ -48,7 +52,9 @@ export default function Home({chipsText}) {
         <div className="mx-6 mt-3">
           <div className="flex flex-wrap">
             {selectedKeywords.map((item, index) => (
-              <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} />
+              <div className="mr-3 mt-3"> 
+                <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} />
+              </div>
             ))}
           </div>
           <div className="mt-3 h-10">
