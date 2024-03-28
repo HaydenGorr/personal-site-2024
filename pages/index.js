@@ -52,17 +52,18 @@ export default function Home({chipsText}) {
         {selectedKeywords.length > 0 && (
           <div className="mt-3 mx-3">
             <div className="flex flex-wrap">
+              {/* <div>contains any</div> */}
               {selectedKeywords.map((item, index) => (
                 <div className="mr-3 mt-3"> 
-                  <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} />
+                  <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} svg_path={"images/svgs/cancel.svg"} />
                 </div>
               ))}
             </div>
           </div>
         )}
-          
+
         <div className="w-100% mx-3">
-          <div className="mt-3 h-10 max-w-prose mx-auto">
+          <div className="mt-6 mb-3 h-10 max-w-prose mx-auto">
             <SuggestionTextBox add_to_keywords={add_to_keywords} chipsText={chipsText} selectedChips_text={selectedKeywords} defaultText={"search tags"}/>
           </div>
         </div>
@@ -71,7 +72,7 @@ export default function Home({chipsText}) {
           <Masonry gutter="0px">
             {filteredPosts.map((item, index) => (
               <div className='my-3 flex justify-center mx-3'>
-                <Container home_post_obj={item} add_keywords_to_filter={add_to_keywords}/>
+                <Container home_post_obj={item} add_keywords_to_filter={add_to_keywords} remove_keyword_from_filer={remove_keywords} selectedKeywords={selectedKeywords}/>
               </div>
             ))}
           </Masonry>

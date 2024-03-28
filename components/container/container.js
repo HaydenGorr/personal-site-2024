@@ -2,8 +2,9 @@ import { useState, useEffect } from "react"
 import Image from "next/image";
 import Chip from "../chip";
 import chip_colour_lookup from '../../chip_colour_lookup.json'
+import ClosableChip from "../closable_chip";
 
-export default function Container({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter }) {
+export default function Container({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer}) {
 
     useEffect(() => {
         // setBtnText(lowercase ? text : text.toUpperCase())
@@ -37,7 +38,8 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
             <div className="flex flex-wrap w-auto mt-2">
                 {home_post_obj.chips.map((chip_text, index) => (
                     <div className={`mr-3 mt-3`}>
-                    <Chip chip_text={chip_text} add_keywords_to_filter={add_keywords_to_filter} index={index}/>
+                    {/* <Chip chip_text={chip_text} add_keywords_to_filter={add_keywords_to_filter} index={index}/> */}
+                    <ClosableChip key={index} chip_text={chip_text} remove_keywords={selectedKeywords.includes(chip_text) ? remove_keyword_from_filer : add_keywords_to_filter} svg_path={`images/svgs/${selectedKeywords.includes(chip_text) ? "star" : "add"}.svg`} />
                     </div>
                 ))}
             </div>
