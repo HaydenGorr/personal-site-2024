@@ -14,7 +14,7 @@ export default function Layout({ children, home }) {
       {/** The modal for downloading my cv. hidden by default. Shown on a button click*/}
       <CVDownloadModal></CVDownloadModal>
 
-      <header className='flex flex-col items-center default_colour sticky top-0'>
+      <header className='flex flex-col items-center default_colour sticky top-0 z-40'>
         <div className="flex justify-between w-full">
         <h1 className='my-auto ml-10 text-xl font-bold hideonmobile'>Hayden</h1>
           <div className='flex justify-center md:justify-end flex-grow my-3'>
