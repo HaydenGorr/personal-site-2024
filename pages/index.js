@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react'; // Import useState and useEffect if
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
 import { generateUniqueChips } from '../utils/generate_unique_posts';
+import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
+
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
@@ -22,7 +24,6 @@ export async function getStaticProps() {
     },
   };
 }
-
 
 export default function Home({chipsText}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
@@ -48,28 +49,33 @@ export default function Home({chipsText}) {
 
       <section>
 
-      {selectedKeywords.length > 0 && (
-        <div className="mx-6 mt-3">
-          <div className="flex flex-wrap">
-            {selectedKeywords.map((item, index) => (
-              <div className="mr-3 mt-3"> 
-                <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} />
+        {selectedKeywords.length > 0 && (
+          <div className="mx-6 mt-3">
+            <div className="flex flex-wrap">
+              {selectedKeywords.map((item, index) => (
+                <div className="mr-3 mt-3"> 
+                  <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+          
+        
+        <div className="mt-3 h-10 mx-6 max-w-prose mx-auto">
+          <SuggestionTextBox add_to_keywords={add_to_keywords} chipsText={chipsText} selectedChips_text={selectedKeywords}/>
+        </div>
+
+        <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 900: 3}}>
+          <Masonry gutter="10px">
+            {filteredPosts.map((item, index) => (
+              <div className='my-6 flex justify-center mx-6'>
+                <Container title={item.title} body_text={item.desc} image_src={item.image} chips={item.chips} add_keywords_to_filter={add_to_keywords}/>
               </div>
             ))}
-          </div>
-          <div className="mt-3 h-10">
-            <SuggestionTextBox add_to_keywords={add_to_keywords} chipsText={chipsText} selectedChips_text={selectedKeywords}/>
-          </div>
-        </div>
-      )}
+          </Masonry>
+        </ResponsiveMasonry>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-content-around">
-          {filteredPosts.map((item, index) => (
-            <div className='my-6 flex justify-center mx-6'>
-              <Container title={item.title} body_text={item.desc} image_src={item.image} chips={item.chips} add_keywords_to_filter={add_to_keywords}/>
-            </div>
-          ))}
-        </div>
       </section>
     </Layout>
   );
