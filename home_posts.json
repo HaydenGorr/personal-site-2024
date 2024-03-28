@@ -3,6 +3,7 @@
         "title": "Upgraded my PC",
         "image": "/images/container_images/gentrack.png",
         "desc": "My new PC build",
+        "infoText": "Temp Info Text",
         "chips": [
             "Article"
         ]
@@ -11,6 +12,7 @@
         "title": "Sensor Story App",
         "image": "/images/container_images/sensor_story.png",
         "desc": "A cross platform app created for a client",
+        "infoText": "Temp Info Text",
         "chips": [
             "Swift", "Kotlin", "Android", "iOS", "Mobile Development", "Freelance", "App Development"
         ]
@@ -19,6 +21,7 @@
         "title": "Trip To Italy with Emma",
         "image": "/images/container_images/italy_2023.png",
         "desc": "My december trip to Italy with plenty of photos",
+        "infoText": "Temp Info Text",
         "chips": [
             "Photography", "Emma", "Travel"
         ]
@@ -27,6 +30,7 @@
         "title": "Globalstep",
         "image": "/images/container_images/globalstep.png",
         "desc": "I am currently employed here",
+        "infoText": "Temp Info Text",
         "chips": [
             "Javascript", "Cypress", "QA", "React"
         ]
@@ -35,6 +39,7 @@
         "title": "Gentrack",
         "image": "/images/container_images/gentrack.png",
         "desc": "I worked here between 2019 and 2020",
+        "infoText": "Temp Info Text",
         "chips": [
             "BASIC", "Full Stack"
         ]
@@ -43,6 +48,7 @@
         "title": "Brunel University",
         "image": "/images/container_images/brunel_uni.png",
         "desc": "Obtained a degree in Computer Science",
+        "infoText": "Temp Info Text",
         "chips": [
             "Brunel University", "Significant Work", "AI", "Java"
         ]
@@ -51,8 +57,18 @@
         "title": "Gamesys",
         "image": "/images/container_images/gamesys.png",
         "desc": "my first job",
+        "infoText": "Temp Info Text",
         "chips": [
             "QA", "Writing"
+        ]
+    },
+    {
+        "title": "This Website",
+        "image": "/images/container_images/gamesys.png",
+        "desc": "There've been a few iterations",
+        "infoText": "Temp Info Text",
+        "chips": [
+            "React", "NextJS", "Javascript", "Tailwind"
         ]
     }
 ]

@@ -12,6 +12,7 @@ module.exports = {
     extend: {
       boxShadow: {
         'MB': '5px 5px 0 0 #000',
+        'MBs': '2px 2px 0 0 #000',
         'MB_clicked': '2px 2px 0 0 #000',
       },
       "backgroundColor":{

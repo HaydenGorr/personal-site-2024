@@ -2,7 +2,7 @@ import InputBox from "./inputBox"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
 
-export default function SuggestionTextBox({add_to_keywords, chipsText, selectedChips_text}) {
+export default function SuggestionTextBox({add_to_keywords, chipsText, selectedChips_text, defaultText}) {
 
     const containerRef = useRef(null); // Ref for the container
     const [filteredChips, setFilteredChips] = useState(chipsText);
@@ -16,10 +16,7 @@ export default function SuggestionTextBox({add_to_keywords, chipsText, selectedC
     }
 
     const shouldGreyout = (text) => {
-        // Is clickable
-        const styling =  selectedChips_text.includes(text) ? "cursor-default bg-neutral-700 text-neutral-500" : ""
-
-        return styling
+        return selectedChips_text.includes(text)
     }
 
     // Listen for clicks outside of the component to close suggestions
@@ -38,14 +35,16 @@ export default function SuggestionTextBox({add_to_keywords, chipsText, selectedC
     return (
         <div className="flex flex-col" ref={containerRef}>
             <div className="h-9">
-                <InputBox onChange={onChange} valueStorage={userText} onFocus={() => setShowSuggestions(true)}/>
+                <InputBox onChange={onChange} valueStorage={userText} onFocus={() => setShowSuggestions(true)} defaultText={defaultText}/>
             </div>
             {showSuggestions && (
-                <div className="bg-black text-white z-10 mt-1 h-96 overflow-scroll">
+                <div className="Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md">
                     <ul>
                         {filteredChips.map((text, index) => (
-                            <div className={`flex ${index % 2 == 0 ? "bg-black " : "bg-white text-black "} pl-3 py-1.5 cursor-pointer ${shouldGreyout(text)}`} onClick={() => {add_to_keywords(text)}}>
-                                <Image className="mr-3" src={`/images/chip_icons/${text.toLowerCase()}.svg`} width={20} height={20}/>
+                            <div className={`flex pl-3 py-1.5 cursor-pointer hover:bg-neutral-200 ${shouldGreyout(text) ? "cursor-default text-neutral-300" : ''}`} onClick={() => {add_to_keywords(text)}}>
+                                <div className={`${shouldGreyout(text) ? "opacity-25" : ""} flex`}> {/* Adjust the opacity value as needed */}
+                                    <Image className="mr-3" src={`/images/chip_icons/${text.toLowerCase()}.svg`} width={25} height={25}/>
+                                </div>
                                 <li key={index}>{text}</li>
                             </div>
                         ))}

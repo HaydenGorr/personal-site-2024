@@ -50,7 +50,7 @@ export default function Home({chipsText}) {
       <section>
 
         {selectedKeywords.length > 0 && (
-          <div className="mx-6 mt-3">
+          <div className="mt-3 mx-3">
             <div className="flex flex-wrap">
               {selectedKeywords.map((item, index) => (
                 <div className="mr-3 mt-3"> 
@@ -61,16 +61,17 @@ export default function Home({chipsText}) {
           </div>
         )}
           
-        
-        <div className="mt-3 h-10 mx-6 max-w-prose mx-auto">
-          <SuggestionTextBox add_to_keywords={add_to_keywords} chipsText={chipsText} selectedChips_text={selectedKeywords}/>
+        <div className="w-100% mx-3">
+          <div className="mt-3 h-10 max-w-prose mx-auto">
+            <SuggestionTextBox add_to_keywords={add_to_keywords} chipsText={chipsText} selectedChips_text={selectedKeywords} defaultText={"search tags"}/>
+          </div>
         </div>
 
-        <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 900: 3}}>
-          <Masonry gutter="10px">
+        <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
+          <Masonry gutter="0px">
             {filteredPosts.map((item, index) => (
-              <div className='my-6 flex justify-center mx-6'>
-                <Container title={item.title} body_text={item.desc} image_src={item.image} chips={item.chips} add_keywords_to_filter={add_to_keywords}/>
+              <div className='my-3 flex justify-center mx-3'>
+                <Container home_post_obj={item} add_keywords_to_filter={add_to_keywords}/>
               </div>
             ))}
           </Masonry>

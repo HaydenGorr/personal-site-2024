@@ -17,8 +17,8 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
     };
 
     const getParentElement = (child) => {
-        if (given_href[0] == '/' ) return <Link onClick={handleClick} class={`${colour} btn-primary h-10 flex shadow-MB w-fit active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked`} href={given_href}>{child}</Link>
-        else return <a onClick={handleClick} class={`${colour} btn-primary h-10 flex shadow-MB w-fit active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked`} href={given_href} target='_blank'>{child}</a>
+        if (given_href[0] == '/' ) return <Link onClick={handleClick} class={`${colour} btn-primary h-10 flex Neo-Brutal-White w-fit active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked`} href={given_href}>{child}</Link>
+        else return <a onClick={handleClick} class={`${colour} btn-primary h-10 flex Neo-Brutal-White w-fit active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked`} href={given_href} target='_blank'>{child}</a>
     }
 
     return (
