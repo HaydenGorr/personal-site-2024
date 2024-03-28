@@ -8,7 +8,7 @@ export default function ChatBubble({incoming = true, inText="Example text"}) {
     const classes = `${baseClasses} ${incoming === false ? outgoingClasses : incomingClasses}`;
 
     return (
-        <div className={`p-3 max-w-xs my-2 border-2 shadow-MB ${incoming === false ? "text-black border-black bg-white self-end ml-3" : "self-start text-white border-white bg-black mr-3"}`}>
+        <div className={`p-3 max-w-xs my-2 border-2 shadow-MB ${incoming === false ? "Neo-Brutal-White self-end ml-3" : "self-start Neo-Brutal mr-3"}`}>
             {inText}
         </div>
     );

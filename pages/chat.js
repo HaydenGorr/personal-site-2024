@@ -58,7 +58,7 @@ export default function Chat() {
                 <div className="flex absolute bottom-0 max-w-prose w-full mb-3 px-3 h-10">
                     <Special_Button image_src="/images/svgs/send.svg" btnAction = {() => send_message()} error_wiggle={displayError}/>
                     <input
-                        className="bg-black h-full w-full ml-3 text-white px-3 shadow-MB border-white border-2 focus:outline-none focus:rounded-none"
+                        className="Neo-Brutal h-full w-full ml-3 px-3 shadow-MB border-white border-2 focus:outline-none focus:rounded-none"
                         type="text"
                         value={inputValue} // Bind the input value to the component's state
                         onChange={handleInputChange} // Update the state every time the input changes
