@@ -14,7 +14,7 @@
         "desc": "A cross platform app created for a client",
         "infoText": "Temp Info Text",
         "chips": [
-            "Swift", "Kotlin", "Android", "iOS", "Mobile Development", "Freelance", "App Development"
+            "Swift", "Android", "iOS", "Mobile Development", "Freelance", "App Development"
         ]
     },
     {

@@ -18,7 +18,7 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
     };
 
     return (
-        <div className={`${colour} flex flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit`}>
+        <div className={`${colour} flex flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width`}>
 
             <div className="flex items-center my-6 font-medium text-xl leading-none justify-center">
                 <div>
@@ -35,11 +35,11 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
                 {/* <Image className='cursor-pointer' src='/images/svgs/uparrow.svg' width={24} height={24}></Image> */}
             </div>
 
-            <div className="flex flex-wrap w-auto mt-2">
+            <div className="flex flex-wrap mt-2">
                 {home_post_obj.chips.map((chip_text, index) => (
                     <div className={`mr-3 mt-3`}>
-                    {/* <Chip chip_text={chip_text} add_keywords_to_filter={add_keywords_to_filter} index={index}/> */}
-                    <ClosableChip key={index} chip_text={chip_text} remove_keywords={selectedKeywords.includes(chip_text) ? remove_keyword_from_filer : add_keywords_to_filter} svg_path={`images/svgs/${selectedKeywords.includes(chip_text) ? "star" : "add"}.svg`} />
+                        {/* <Chip chip_text={chip_text} add_keywords_to_filter={add_keywords_to_filter} index={index}/> */}
+                        <ClosableChip key={index} chip_text={chip_text} remove_keywords={selectedKeywords.includes(chip_text) ? remove_keyword_from_filer : add_keywords_to_filter} svg_path={`images/svgs/${selectedKeywords.includes(chip_text) ? "star" : "add"}.svg`} />
                     </div>
                 ))}
             </div>

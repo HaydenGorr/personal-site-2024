@@ -70,7 +70,9 @@ h1 {
   @apply hidden md:block
 }
 
-
+.container-max-width {
+  width: 600px;
+}
 
 
 .Neo-Brutal {
