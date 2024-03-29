@@ -74,6 +74,13 @@ h1 {
   width: 600px;
 }
 
+p > img {
+  @apply rounded-md Neo-Brutal-White
+}
+
+pre {
+  @apply rounded-md Neo-Brutal-White
+}
 
 .Neo-Brutal {
   @apply border-2 rounded-md bg-black text-white shadow-MB border-white border-2;

@@ -1,9 +1,8 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
-import { getSortedPostsData } from '../lib/posts'
 import Container from '../components/container/container';
 import home_posts from '../home_posts.json'
-import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
+import { useState } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
 import { generateUniqueChips } from '../utils/generate_unique_posts';
@@ -12,7 +11,6 @@ import ToggleButton from '../components/buttons/toggle_button';
 import Image from 'next/image';
 
 export async function getStaticProps() {
-  const allPostsData = getSortedPostsData();
   var chipsText = generateUniqueChips(home_posts);
 
   // Sort the chipsText array alphabetically
@@ -20,7 +18,6 @@ export async function getStaticProps() {
   
   return {
     props: {
-      allPostsData,
       chipsText,
     },
   };
@@ -100,7 +97,11 @@ export default function Home({chipsText}) {
           <Masonry gutter="0px">
             {filteredPosts.map((item, index) => (
               <div className='my-3 flex justify-center mx-3'>
-                <Container home_post_obj={item} add_keywords_to_filter={add_to_keywords} remove_keyword_from_filer={remove_keywords} selectedKeywords={selectedKeywords}/>
+                <Container 
+                  home_post_obj={item}
+                  add_keywords_to_filter={add_to_keywords}
+                  remove_keyword_from_filer={remove_keywords}
+                  selectedKeywords={selectedKeywords}/>
               </div>
             ))}
           </Masonry>
@@ -112,11 +113,9 @@ export default function Home({chipsText}) {
               <Image
                 src="/images/empty.gif"
                 alt="Description of GIF"
-                width={500} // Specify the width
-                height={300} // And the height
-                // Uncomment the line below if you want the GIF to take up the entire container space
-                // layout="fill"
-                className="your-tailwind-classes" // Tailwind classes can still be applied
+                width={500}
+                height={300}
+                className="your-tailwind-classes"
               />
           </div>
         }

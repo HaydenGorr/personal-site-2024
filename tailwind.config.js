@@ -15,9 +15,21 @@ module.exports = {
         'MBs': '2px 2px 0 0 #000',
         'MB_clicked': '2px 2px 0 0 #000',
       },
-      "backgroundColor":{
+      backgroundColor:{
         'MB_clicked': '#e2e2e2'
       },
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            'img': {
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              maxWidth: '100%',
+              display: 'block',
+            }
+          },
+        },
+      }),
     },
   },
   plugins: [
@@ -29,5 +41,6 @@ module.exports = {
         },
       });
     },
+    require('@tailwindcss/typography'),
   ],
 }
