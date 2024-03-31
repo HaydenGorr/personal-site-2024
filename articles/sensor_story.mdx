@@ -1,0 +1,33 @@
+import MB_Button from '../components/buttons/MB_Button';
+import Image from "next/image";
+import home_posts from '../home_posts.json'
+import Chip from '../components/chip';
+
+<div className="mt-6"/>
+# Sensor Story App
+
+<div className="flex place-content-around not-prose">
+    <div className="flex flex-wrap">
+        {
+        home_posts.find((element) => element.title === "Sensor Story App").chips.map((chip_text, index) => (
+            <div key={index} className="mr-3 mt-3">
+            <Chip chip_text={chip_text} />
+            </div>
+        ))
+        }
+    </div>
+</div>
+
+<div className="flex mt-6 not-prose">
+    <div className="mr-6">
+        <MB_Button text="App Store" image_src="/images/chip_icons/ios.svg" given_href="https://apps.apple.com/gb/app/sensorstory-baby-classes/id6448684530"/>
+    </div>
+    <div>
+        <MB_Button text="Google Play" image_src="/images/chip_icons/android.svg" given_href="https://play.google.com/store/apps/details?id=com.sensorstorybabyclasses.sensor_story&pli=1"/>
+    </div>
+</div>
+
+<div className="flex mt-6 not-prose">
+    <MB_Button text="App Store" image_src="/images/chip_icons/ios.svg" given_href="https://apps.apple.com/gb/app/sensorstory-baby-classes/id6448684530"/>
+    <MB_Button text="Google Play" image_src="/images/chip_icons/android.svg" given_href="https://play.google.com/store/apps/details?id=com.sensorstorybabyclasses.sensor_story&pli=1"/>
+</div>

@@ -23,15 +23,17 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
     }
 
     const getParentElement = (child) => {
-        if (given_href[0] == '/' ) return <Link onClick={handleClick} class={getStyles()} href={given_href}>{child}</Link>
-        else return <a onClick={handleClick} class={getStyles()} href={given_href} target='_blank'>{child}</a>
+        if (given_href[0] == '/' ) return <Link onClick={handleClick} className={getStyles()} href={given_href}>{child}</Link>
+        else return <a onClick={handleClick} className={getStyles()} href={given_href} target='_blank'>{child}</a>
     }
 
     return (
         getParentElement(
             < >
-                {image_src && <Image src={image_src} alt="LinkedIn Logo" className="mr-2" width={24} height={24} />}
-                <span class="my-auto leading-none font-medium">{btnText}</span>
+                <div className="flex items-center justify-center">
+                    {image_src && <Image src={image_src} alt="logo" className="mr-2" width={24} height={24} />}
+                    <span className="my-auto leading-none font-medium">{btnText}</span>
+                </div>
             </>
         )
     )
