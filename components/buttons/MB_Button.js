@@ -18,13 +18,12 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
 
     const getStyles = () => {
         if (injected_styles) return injected_styles;
-        else return `${colour} btn-primary h-10 flex Neo-Brutal-White w-fit active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked`
-
+        else return `${colour} w-fit btn-primary flex Neo-Brutal-White active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked`
     }
 
     const getParentElement = (child) => {
         if (given_href[0] == '/' ) return <Link onClick={handleClick} class={getStyles()} href={given_href}>{child}</Link>
-        else return <a onClick={handleClick} class={getStyles()} href={given_href} target='_blank'>{child}</a>
+        else return <a onClick={handleClick} className={getStyles()} href={given_href} target='_blank'>{child}</a>
     }
 
     return (
