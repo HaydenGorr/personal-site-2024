@@ -37,11 +37,6 @@ export default function Layout({ children, home }) {
         
       </header>
 
-      {/** The black bar at the top of the page. This is used to show a message*/}
-      <div class="bg-black w-auto h-9 flex items-center justify-center">
-        <p class="text-white text relative bottom-0.5">Hi Emma :)</p>
-      </div>
-
       <main className='max-w-7xl mx-auto'>{children}</main>
 
     </div>
