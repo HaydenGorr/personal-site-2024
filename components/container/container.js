@@ -8,10 +8,9 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
     const go_to_article = (title) => {
         if (title != "") router.push(`/article/${title}`)
         else {
-            router.push(`/article/on_my_cv`)
+            router.push(`/missingArticle`)
         }
     }
-
 
     return (
         <div className={`${colour} flex flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width`}>
@@ -22,7 +21,13 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
                 </div>
             </div>
 
-            <Image className="rounded-md overflow-hidden cursor-pointer" src={home_post_obj.image} alt="" width={600} height={128} onClick={() => {go_to_article(home_post_obj.artcle_title)}}/>
+            <Image className="rounded-md overflow-hidden cursor-pointer"
+                src={home_post_obj.image}
+                alt=""
+                width={600}
+                height={128}
+                onClick={() => {go_to_article(home_post_obj.artcle_title)}}
+            />
 
             <div className="flex mt-3">
                 <div className="flex mt-3 flex-col">
@@ -35,7 +40,12 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
             <div className="flex flex-wrap mt-2">
                 {home_post_obj.chips.map((chip_text, index) => (
                     <div className={`mr-3 mt-3`}>
-                        <ClosableChip key={index} chip_text={chip_text} remove_keywords={selectedKeywords.includes(chip_text) ? remove_keyword_from_filer : add_keywords_to_filter} svg_path={`images/svgs/${selectedKeywords.includes(chip_text) ? "star" : "add"}.svg`} />
+                        <ClosableChip
+                            key={index}
+                            chip_text={chip_text}
+                            remove_keywords={selectedKeywords.includes(chip_text) ? remove_keyword_from_filer : add_keywords_to_filter}
+                            svg_path={`images/svgs/${selectedKeywords.includes(chip_text) ? "star" : "add"}.svg`}
+                        />
                     </div>
                 ))}
             </div>

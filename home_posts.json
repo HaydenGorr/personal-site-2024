@@ -4,17 +4,17 @@
         "image": "/images/container_images/gentrack.png",
         "desc": "An article elaborating on my CV",
         "infoText": "Click image to open",
-        "artcle_title": "on_my_cv",
+        "artcle_title": "cv",
         "chips": [
             "Article"
         ]
     },
     {
-        "title": "Upgraded my PC",
+        "title": "example",
         "image": "/images/container_images/gentrack.png",
         "desc": "My new PC build",
         "infoText": "Click image to open",
-        "artcle_title": "",
+        "artcle_title": "example",
         "chips": [
             "Article"
         ]
