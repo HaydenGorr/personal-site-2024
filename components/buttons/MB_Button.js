@@ -28,7 +28,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
 
     return (
         getParentElement(
-            < >
+            <>
                 {image_src && <Image src={image_src} alt="LinkedIn Logo" className="mr-2" width={24} height={24} />}
                 <span class="my-auto leading-none font-medium">{btnText}</span>
             </>
