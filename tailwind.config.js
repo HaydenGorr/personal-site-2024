@@ -26,6 +26,15 @@ module.exports = {
               marginRight: 'auto',
               maxWidth: '100%',
               display: 'block',
+            },
+            'h1' :{
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              display: 'block',
+              textAlign: 'center',
+            },
+            'p': {
+              textAlign: 'justify',
             }
           },
         },

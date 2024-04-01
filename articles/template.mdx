@@ -4,20 +4,16 @@ import home_posts from '../home_posts.json'
 import Chip from '../components/chip';
 
 <div className="mt-6"/>
-# Article title
+# Sensor Story App
 
-<div className="flex place-content-around not-prose">
-    <div className="flex flex-wrap">
+<div className="flex not-prose">
+    <div className="flex flex-wrap justify-center">
         {
         home_posts.find((element) => element.title === "Sensor Story App").chips.map((chip_text, index) => (
             <div key={index} className="mr-3 mt-3">
-            <Chip chip_text={chip_text} />
+                <Chip chip_text={chip_text} />
             </div>
         ))
         }
     </div>
 </div>
-
-
-asd
-

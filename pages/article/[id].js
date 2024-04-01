@@ -17,8 +17,7 @@ export default function Article() {
   
     return (
         <Layout>
-            <div className='flex justify-center pt-3 py-6'>
-                {/* <div className="prose max-w-prose" dangerouslySetInnerHTML={{ __html: post }}></div> */}
+            <div className='flex justify-center pt-3 py-6 px-3'>
                 <div className="prose max-w-prose">
                     <MDXContent></MDXContent>
                 </div>
