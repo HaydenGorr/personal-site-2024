@@ -1,44 +1,41 @@
 import ChatBubble from "../components/chat_Bubble";
 import Layout from "../components/layout";
-import { get_messages, store_chat_message, clear } from "../utils/session_stoage_util";
 import { useEffect, useState } from "react";
-import MB_Button from "../components/buttons/MB_Button";
 import Special_Button from "../components/buttons/special_button";
+import { get_response } from "../utils/ai_talk";
 
 export default function Chat() {
-    const [chatMessages, setChatMessages] = useState([]);
+    const [chatMessages, setChatMessages] = useState([{incoming: true, text: "Hey feel free to ask anything about Hayden"}]);
     const [inputValue, setInputValue] = useState('');
     const [displayError, setDisplayError] = useState(false);
-
-    useEffect(() => {
-        setChatMessages(get_messages());
-    }, []);
-
 
     useEffect(() => {
         let timer;
         // Check if displayError is true
         if (displayError) {
-            // Set a timer to turn off displayError after 5 seconds
             timer = setTimeout(() => {
                 setDisplayError(false);
             }, 500);
         }
-    
-        // Cleanup function to clear the timer if the component unmounts
-        // or if displayError changes before the timer completes
         return () => clearTimeout(timer);
-    }, [displayError]); // This effect depends on displayError
+    }, [displayError]); 
 
-    const send_message = () => {
+    const send_message = async () => {
         if(inputValue == "") {
             setDisplayError(true)
             console.log("Empty message")
             return
         };
-        store_chat_message({is_incoming: false, message: inputValue})
-        setChatMessages(get_messages());
+        const userMessage = inputValue
+        const messagesBackup = chatMessages
+
+        // Store and clear use input
+        setChatMessages([...chatMessages, {incoming: false, text: userMessage}])
         setInputValue('')
+
+        // Get response from ai
+        const answer = await get_response({ai: "CQ", message: userMessage})
+        setChatMessages([...messagesBackup, ...[{incoming: false, text: userMessage}, {incoming: true, text: answer}]])
     }
 
     const handleInputChange = (event) => {
@@ -48,10 +45,9 @@ export default function Chat() {
     return (
         <Layout>
             <div className="flex place-content-center h-full ">
-
                 <div className="flex flex-col max-w-prose gap-2 w-full m-3">
                     {chatMessages.map((message, index) => (
-                        <ChatBubble incoming={message.incoming} inText={message.text}></ChatBubble>
+                        <ChatBubble key={index} incoming={message.incoming} inText={message.text}></ChatBubble>
                     ))}
                 </div>
 

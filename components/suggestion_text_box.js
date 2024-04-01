@@ -1,19 +1,29 @@
 import InputBox from "./inputBox"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
+import { get_response } from "../utils/ai_talk";
 
-export default function SuggestionTextBox({add_to_keywords, chipsText, selectedChips_text, defaultText}) {
+export default function SuggestionTextBox({filter_keywords, add_to_keywords, chipsText, selectedChips_text, defaultText}) {
 
     const containerRef = useRef(null); // Ref for the container
     const [filteredChips, setFilteredChips] = useState(chipsText);
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [userText, setUserText] = useState("")
-    const onChange = (e) => {
-        setUserText(e.target.value);
 
-        const newFilter = chipsText.filter( chipText => chipText.toLowerCase().includes(e.target.value.toLowerCase()))
+    const onChange = (e) => {
+        const usermsg = e.target.value
+        
+        setUserText(usermsg);
+
+        const newFilter = chipsText.filter( chipText => chipText.toLowerCase().includes(usermsg.toLowerCase()))
         setFilteredChips(newFilter)
     }
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            filter_keywords(userText);
+        }
+    };
 
     const shouldGreyout = (text) => {
         return selectedChips_text.includes(text)
@@ -35,7 +45,13 @@ export default function SuggestionTextBox({add_to_keywords, chipsText, selectedC
     return (
         <div className="flex flex-col" ref={containerRef}>
             <div className="h-9">
-                <InputBox onChange={onChange} valueStorage={userText} onFocus={() => setShowSuggestions(true)} defaultText={defaultText}/>
+            <InputBox 
+                onKeyDown={handleKeyPress}  // Call handleKeyPress directly
+                onChange={onChange} 
+                valueStorage={userText} 
+                onFocus={() => setShowSuggestions(true)} 
+                defaultText={defaultText}
+            />
             </div>
             {showSuggestions && (
                 <div className="Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md">

@@ -1,4 +1,4 @@
-export default function InputBox({onChange, valueStorage, onFocus = () => {}, onBlur = () => {}, defaultText="default text"}) {
+export default function InputBox({onKeyDown, onChange, valueStorage, onFocus = () => {}, onBlur = () => {}, defaultText="default text"}) {
     return (
         <input
             className="Neo-Brutal h-full w-full px-3 focus:outline-none"
@@ -8,6 +8,7 @@ export default function InputBox({onChange, valueStorage, onFocus = () => {}, on
             onFocus={onFocus}
             onBlur={onBlur}
             placeholder={defaultText}
+            onKeyDown={onKeyDown}
         />    
     )
 }
