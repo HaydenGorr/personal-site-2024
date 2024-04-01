@@ -15,7 +15,7 @@ export default function Layout({ children, home }) {
         
         <div className="flex md:justify-between w-full">
             <h1 className='my-auto ml-10 text-xl font-bold hideonmobile'>Hayden</h1>
-            <div className='headerdivhype flex p-3 overflow-x-scroll'>
+            <div className='flex p-3 overflow-x-scroll'>
                 <div className={`mr-4 min-w-fit`}>
                     <MB_Button text={"HOME"} given_href={"/"} image_src={'/images/svgs/home.svg'}/>
                 </div>

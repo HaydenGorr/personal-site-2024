@@ -1,20 +1,10 @@
 [
     {
-        "title": "On my CV",
-        "image": "/images/container_images/gentrack.png",
-        "desc": "An article elaborating on my CV",
-        "infoText": "Click image to open",
-        "artcle_title": "on_my_cv",
-        "chips": [
-            "Article"
-        ]
-    },
-    {
-        "title": "Upgraded my PC",
+        "title": "example",
         "image": "/images/container_images/gentrack.png",
         "desc": "My new PC build",
         "infoText": "Click image to open",
-        "artcle_title": "",
+        "artcle_title": "example",
         "chips": [
             "Article"
         ]
@@ -24,7 +14,7 @@
         "image": "/images/container_images/sensor_story.png",
         "desc": "A cross platform app created for a client",
         "infoText": "Click image to open",
-        "artcle_title": "",
+        "artcle_title": "sensor_story",
         "chips": [
             "Swift", "Android", "iOS", "Mobile Development", "Freelance", "App Development"
         ]
