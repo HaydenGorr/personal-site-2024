@@ -1,15 +1,5 @@
 [
     {
-        "title": "On my CV",
-        "image": "/images/container_images/gentrack.png",
-        "desc": "An article elaborating on my CV",
-        "infoText": "Click image to open",
-        "artcle_title": "cv",
-        "chips": [
-            "Article"
-        ]
-    },
-    {
         "title": "example",
         "image": "/images/container_images/gentrack.png",
         "desc": "My new PC build",
@@ -34,7 +24,7 @@
         "image": "/images/container_images/italy_2023.png",
         "desc": "My december trip to Italy with plenty of photos",
         "infoText": "Click image to open",
-        "artcle_title": "trip_with_emma",
+        "artcle_title": "",
         "chips": [
             "Photography", "Emma", "Travel"
         ]

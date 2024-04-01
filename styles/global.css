@@ -56,10 +56,6 @@ img {
   @apply border border-black border-2 text-black px-2 py-2 transition-all duration-150;
 }
 
-h1 {
-  
-}
-
 .orbitron {
   font-family: "Orbitron", sans-serif;
   font-optical-sizing: auto;
