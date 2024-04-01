@@ -11,7 +11,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
 
     const handleClick = (event) => {
         if (!given_href) {
-            event.preventDefault(); // Prevent navigation if href is empty
+            event.preventDefault();
         }
         btnAction(); // Call additional action if provided
     };
@@ -22,8 +22,8 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
     }
 
     const getParentElement = (child) => {
-        if (given_href[0] == '/' ) return <Link onClick={handleClick} className={getStyles()} href={given_href}>{child}</Link>
-        else return <a onClick={handleClick} className={getStyles()} href={given_href} target='_blank'>{child}</a>
+        if (given_href[0] == '/' ) return <Link touchstart={handleClick} onClick={handleClick} className={getStyles()} href={given_href}>{child}</Link>
+        else return <a touchstart={handleClick} onClick={handleClick} className={getStyles()} href={given_href} target='_blank'>{child}</a>
     }
 
     return (
