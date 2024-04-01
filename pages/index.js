@@ -9,7 +9,7 @@ import { generateUniqueChips } from '../utils/generate_unique_posts';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 import ToggleButton from '../components/buttons/toggle_button';
 import Image from 'next/image';
-
+import MB_Button from '../components/buttons/MB_Button';
 export async function getStaticProps() {
   var chipsText = generateUniqueChips(home_posts);
 
@@ -69,10 +69,10 @@ export default function Home({chipsText}) {
             </div>
             <div className='flex justify-center items-center mt-6'>
               <div className='m3-1'>
-              {"match"}
+                {"match"}
               </div>
 
-              <div className='mx-1'>
+              <div className='mx-1 w-fit over'>
                 <ToggleButton text={"any"} lowercase="true" btnAction={() => {setMatchAnyChip(true)}} toggled={matchAnyChip==true}/>
               </div>
               <div className='mx-1'>
@@ -80,9 +80,9 @@ export default function Home({chipsText}) {
               </div>
 
               <div className='ml-1'>
-              {"of the tags"}
+                {"of the tags"}
               </div>
-
+              
             </div>
           </div>
         )}
