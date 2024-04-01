@@ -5,9 +5,6 @@ import { useRouter } from 'next/router';
 
 
 export default function Layout({ children, home }) {
-  const { pathname } = useRouter();
-  const isChatPage = pathname === '/chat'; // Adjust '/chat' as needed for your chat page's path
-  const isHomePage = pathname === '/'; // Adjust '/chat' as needed for your chat page's path
 
   return (
     <div>
@@ -15,32 +12,28 @@ export default function Layout({ children, home }) {
       <CVDownloadModal></CVDownloadModal>
 
       <header className='flex flex-col items-center default_colour sticky top-0 z-40'>
-        <div className="flex justify-between w-full">
-        <h1 className='my-auto ml-10 text-xl font-bold hideonmobile'>Hayden</h1>
-          <div className='flex justify-center md:justify-end flex-grow my-3'>
-            <div className={`${isHomePage ? 'hidden md:block' : ''} mr-4`}>
-              <MB_Button text={"HOME"} given_href={"/"} image_src={'/images/svgs/home.svg'}/>
+        
+        <div className="flex md:justify-between w-full">
+            <h1 className='my-auto ml-10 text-xl font-bold hideonmobile'>Hayden</h1>
+            <div className='flex p-3 overflow-x-scroll'>
+                <div className={`mr-4 min-w-fit`}>
+                    <MB_Button text={"HOME"} given_href={"/"} image_src={'/images/svgs/home.svg'}/>
+                </div>
+                <div className='mr-4 min-w-fit'>
+                    <MB_Button text={"CV"} image_src={'/images/svgs/cv_light.svg'} btnAction={()=>document.getElementById('cv_download_modal').showModal()}/>
+                </div>
+                <div className='mr-4 min-w-fit'>
+                    <MB_Button text={"LINKDIN"} given_href={"https://www.linkedin.com/in/hayden-gorringe-980753191/"} image_src={'/images/svgs/linkdin.svg'}/>
+                </div>
+                <div className={`min-w-fit`}>
+                    <MB_Button text={"CHAT"} given_href={"/chat"} image_src={'/images/svgs/chat.svg'}/>
+                </div>
             </div>
-            <div className='mr-4'>
-              <MB_Button text={"CV"} image_src={'/images/svgs/cv_light.svg'} btnAction={()=>document.getElementById('cv_download_modal').showModal()}/>
-            </div>
-            <div className='mr-4'>
-              <MB_Button text={"LINKEDIN"} given_href={"https://www.linkedin.com/in/hayden-gorringe-980753191/"} image_src={'/images/svgs/linkdin.svg'}/>
-            </div>
-            <div className={`${isChatPage ? 'hidden md:block' : ''} mr-4`}>
-              <MB_Button text={"CHAT"} given_href={"/chat"} image_src={'/images/svgs/chat.svg'}/>
-            </div>
-          </div>
         </div>
 
         <div className='bg-black w-lvw h-1'/>
         
       </header>
-
-      {/** The black bar at the top of the page. This is used to show a message*/}
-      <div className="bg-black w-auto h-9 flex items-center justify-center">
-        <p className="text-white text relative bottom-0.5">Hi Emma :)</p>
-      </div>
 
       <main className='max-w-7xl mx-auto'>{children}</main>
 
