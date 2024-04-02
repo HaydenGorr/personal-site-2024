@@ -2,7 +2,7 @@ import Image from "next/image";
 import ClosableChip from "../closable_chip";
 import { useRouter } from 'next/router'
 
-export default function Container({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, openArticle}) {
+export default function Container({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer}) {
     const router = useRouter();
 
     const go_to_article = (title) => {

@@ -9,7 +9,9 @@ import { generateUniqueChips } from '../utils/generate_unique_posts';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 import ToggleButton from '../components/buttons/toggle_button';
 import Image from 'next/image';
-import MB_Button from '../components/buttons/MB_Button';
+import { get_response } from '../utils/ai_talk';
+import assert from 'assert';
+
 export async function getStaticProps() {
   var chipsText = generateUniqueChips(home_posts);
 
@@ -26,6 +28,7 @@ export async function getStaticProps() {
 export default function Home({chipsText}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [matchAnyChip, setMatchAnyChip] = useState(true);
+  const [aiSearching, setAISearching] = useState(false)
 
   const add_to_keywords = (inText) => {
     if (selectedKeywords.includes(inText)) return;  
@@ -44,6 +47,41 @@ export default function Home({chipsText}) {
       return home_posts.filter(post => selectedKeywords.every(keyword => post.chips.includes(keyword)))
     }
   }
+
+  const getTagsFromAI = async (userMSG) => {
+    if (!userMSG.startsWith('/')) return
+
+    setAISearching(true)
+
+    const response = await get_response({ ai: "TF", message: userMSG });
+
+    try {
+      let jp = JSON.parse(response); 
+
+      assert(!!jp.viable_tags, "viable_tags is not defined in the response")
+      assert(!!jp.filter_type, "filter_type is not defined in the response")
+
+      console.log(jp)
+
+      let matched_tags = []
+
+      jp.viable_tags.map((item, index) => {
+        console.log(item)
+        chipsText.map((citem, cindex) => {
+          citem.toLowerCase() == item.toLowerCase() ? matched_tags.push(citem) : null;
+        })
+      })
+  
+      setSelectedKeywords(matched_tags);
+      setMatchAnyChip(jp.filter_type == "any")
+    }
+    catch (e) {
+      console.log(e)
+    }
+
+    setAISearching(false)
+
+  };
 
   // Assuming selectedKeywords is meant to be an array
   const filteredPosts = selectedKeywords.length > 0
@@ -89,7 +127,13 @@ export default function Home({chipsText}) {
 
         <div className="w-100% mx-3">
           <div className="mt-6 mb-3 h-10 max-w-prose mx-auto">
-            <SuggestionTextBox add_to_keywords={add_to_keywords} chipsText={chipsText} selectedChips_text={selectedKeywords} defaultText={"search tags"}/>
+            <SuggestionTextBox 
+              aiSearching={aiSearching}
+              filter_keywords={getTagsFromAI}
+              add_to_keywords={add_to_keywords}
+              chipsText={chipsText}
+              selectedChips_text={selectedKeywords}
+              defaultText={"get ai to help with \" /<your search>\""}/>
           </div>
         </div>
 

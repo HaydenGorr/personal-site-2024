@@ -28,6 +28,10 @@ body {
   background-color: #fafafa;
 }
 
+.default_text_colour_white {
+  background-color: #fafafa;
+}
+
 .MB_Button_Clicked_Colour {
   background-color: #e2e2e2;
 }
@@ -89,6 +93,7 @@ pre {
 .Neo-Brutal-White-Small {
   @apply border-2 rounded-md bg-white text-black shadow-MBs border-black border-2;
 }
+
 
 /* pre {
   @apply mx-3 text-wrap

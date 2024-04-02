@@ -1,7 +1,18 @@
 import Head from 'next/head';
 import '../styles/global.css';
+import { useEffect } from 'react';
 
 export default function MyApp({ Component, pageProps }) {
+
+  useEffect(() => {
+    const handleTabClose = (event) => {
+      sessionStorage.clear();
+    };
+    window.addEventListener('beforeunload', handleTabClose);
+    return () => window.removeEventListener('beforeunload', handleTabClose);
+  }, []);
+
+
     return (
       <>
         <Head>
