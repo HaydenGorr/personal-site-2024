@@ -24,7 +24,7 @@ export default function Article({mdxSource}) {
     );
 }
 
-export async function getServerSideProps(context) {
+export async function getStaticProps(context) {
     const { id } = context.params;
     const res = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/CMS/articles/${id}/article.mdx`);
     const mdxContent = await res.text();
@@ -32,5 +32,18 @@ export async function getServerSideProps(context) {
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
-    return { props: { mdxSource } }; 
+    return { props: { mdxSource }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
+
+export async function getStaticPaths() {
+    
+    const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
+
+    const hprJSON = await home_posts_response.json();
+    
+    const paths = hprJSON.map(article => ({
+      params: { id: article.source },
+    }));
+  
+    return { paths, fallback: 'blocking' };
+  }

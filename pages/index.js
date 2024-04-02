@@ -4,14 +4,13 @@ import Container from '../components/container/container';
 import { useState } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
-import { generateUniqueChips } from '../utils/generate_unique_posts';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 import ToggleButton from '../components/buttons/toggle_button';
 import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const CMS_ROUTE = process.env.NEXT_PUBLIC_CMS_ROUTE; // Ensure CMS_ROUTE is defined or use a default value
   
   try {
@@ -32,14 +31,16 @@ export async function getServerSideProps() {
       props: {
         home_posts,
         unique_chips
-      }
+      },
+      revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS),
     };
   } catch (error) {
     console.error('Error fetching data:', error);
     return {
       props: {
-        error: 'Failed to fetch data'
-      }
+        error: 'Failed to fetch data',
+      },
+      revalidate: 60,
     };
   }
 }

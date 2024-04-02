@@ -24,6 +24,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_CMS_ROUTE: process.env.CMS_ROUTE,
     NEXT_PUBLIC_AI_API: process.env.AI_API,
+    NEXT_PUBLIC_REVALIDATE_TIME_SECS: process.env.REVALIDATE_TIME_SECS,
   }
 }
 
