@@ -73,7 +73,7 @@ export default function SuggestionTextBox({aiSearching, filter_keywords, add_to_
                         {!showAISupportBox && filteredChips.map((text, index) => (
                             <div className={`flex pl-3 py-1.5 cursor-pointer hover:bg-neutral-200 ${shouldGreyout(text) ? "cursor-default text-neutral-300" : ''}`} onClick={() => {add_to_keywords(text)}}>
                                 <div className={`${shouldGreyout(text) ? "opacity-25" : ""} flex`}> {/* Adjust the opacity value as needed */}
-                                    <Image className="mr-3" src={`/images/chip_icons/${text.toLowerCase()}.svg`} width={25} height={25}/>
+                                    <Image className="mr-3" src={`${process.env.NEXT_PUBLIC_CMS_ROUTE}/TAG_SVGS/${text.toLowerCase()}.svg`} width={25} height={25}/>
                                 </div>
                                 <li key={index}>{text}</li>
                             </div>

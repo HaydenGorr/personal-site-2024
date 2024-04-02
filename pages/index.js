@@ -11,11 +11,10 @@ import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 
 export async function getStaticProps() {
-  const CMS_ROUTE = process.env.NEXT_PUBLIC_CMS_ROUTE; // Ensure CMS_ROUTE is defined or use a default value
   
   try {
-    const home_posts_response = await fetch(`${CMS_ROUTE}/meta_resources/home_posts`);
-    const unique_chips_response = await fetch(`${CMS_ROUTE}/meta_resources/unique_chips`);
+    const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
+    const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/unique_chips`);
 
     if (!home_posts_response.ok || !unique_chips_response.ok) {
       throw new Error('Failed to fetch data');
@@ -23,9 +22,6 @@ export async function getStaticProps() {
 
     const home_posts = await home_posts_response.json();
     const unique_chips = await unique_chips_response.json();
-
-    console.log(home_posts)
-    console.log(unique_chips)
 
     return {
       props: {
@@ -161,9 +157,7 @@ export default function Home({home_posts, unique_chips}) {
           <Masonry gutter="0px">
             {filteredPosts.map((item, index) => (
               <div className='my-3 flex justify-center mx-3'>
-                {console.log("item ", item)}
                 <Container
-                  home_posts={home_posts}
                   home_post_obj={item}
                   add_keywords_to_filter={add_to_keywords}
                   remove_keyword_from_filer={remove_keywords}
