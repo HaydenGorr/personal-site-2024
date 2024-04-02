@@ -10,7 +10,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
     });
 
     const handleClick = (event) => {
-        if (!given_href) {
+        if (given_href== "") {
             event.preventDefault();
         }
         btnAction(); // Call additional action if provided
@@ -22,8 +22,10 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
     }
 
     const getParentElement = (child) => {
-        if (given_href[0] == '/' ) return <Link touchstart={handleClick} onClick={handleClick} className={getStyles()} href={given_href}>{child}</Link>
-        else return <a touchstart={handleClick} onClick={handleClick} className={getStyles()} href={given_href} target='_blank'>{child}</a>
+        
+        if (given_href == "") { return <button onClick={handleClick} className={getStyles()}>{child}</button> }
+        else if (given_href.startsWith('/')) return <a onClick={handleClick} ><Link className={getStyles()} href={given_href}>{child}</Link></a>
+        else return <a onClick={handleClick} className={getStyles()} href={given_href} target='_blank'>{child}</a>
     }
 
     return (
