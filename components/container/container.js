@@ -22,11 +22,11 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
             </div>
 
             <Image className="rounded-md overflow-hidden cursor-pointer"
-                src={home_post_obj.image}
+                src={`${process.env.NEXT_PUBLIC_CMS_ROUTE}/CMS/articles/${home_post_obj["source"]}/container.png`}
                 alt=""
                 width={600}
                 height={128}
-                onClick={() => {go_to_article(home_post_obj.artcle_title)}}
+                onClick={() => {go_to_article(home_post_obj.source)}}
             />
 
             <div className="flex mt-3">

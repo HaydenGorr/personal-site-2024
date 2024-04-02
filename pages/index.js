@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
 import Container from '../components/container/container';
-import home_posts from '../home_posts.json'
 import { useState } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
@@ -12,20 +11,44 @@ import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 
-export async function getStaticProps() {
-  var chipsText = generateUniqueChips(home_posts);
-
-  // Sort the chipsText array alphabetically
-  chipsText.sort((a, b) => a.localeCompare(b));
+export async function getServerSideProps() {
+  const CMS_ROUTE = process.env.NEXT_PUBLIC_CMS_ROUTE; // Ensure CMS_ROUTE is defined or use a default value
   
-  return {
-    props: {
-      chipsText,
-    },
-  };
+  try {
+    const home_posts_response = await fetch(`${CMS_ROUTE}/meta_resources/home_posts`);
+    const unique_chips_response = await fetch(`${CMS_ROUTE}/meta_resources/unique_chips`);
+  
+    console.log(home_posts_response)
+    console.log(unique_chips_response)
+
+
+    if (!home_posts_response.ok || !unique_chips_response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+
+    const home_posts = await home_posts_response.json();
+    const unique_chips = await unique_chips_response.json();
+
+    console.log(home_posts)
+    console.log(unique_chips)
+
+    return {
+      props: {
+        home_posts,
+        unique_chips
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return {
+      props: {
+        error: 'Failed to fetch data'
+      }
+    };
+  }
 }
 
-export default function Home({chipsText}) {
+export default function Home({home_posts, unique_chips}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [matchAnyChip, setMatchAnyChip] = useState(true);
   const [aiSearching, setAISearching] = useState(false)
@@ -67,7 +90,7 @@ export default function Home({chipsText}) {
 
       jp.viable_tags.map((item, index) => {
         console.log(item)
-        chipsText.map((citem, cindex) => {
+        unique_chips.map((citem, cindex) => {
           citem.toLowerCase() == item.toLowerCase() ? matched_tags.push(citem) : null;
         })
       })
@@ -131,7 +154,7 @@ export default function Home({chipsText}) {
               aiSearching={aiSearching}
               filter_keywords={getTagsFromAI}
               add_to_keywords={add_to_keywords}
-              chipsText={chipsText}
+              chipsText={unique_chips}
               selectedChips_text={selectedKeywords}
               defaultText={"get ai to help with \" /<your search>\""}/>
           </div>
@@ -141,6 +164,7 @@ export default function Home({chipsText}) {
           <Masonry gutter="0px">
             {filteredPosts.map((item, index) => (
               <div className='my-3 flex justify-center mx-3'>
+                {console.log("item ", item)}
                 <Container 
                   home_post_obj={item}
                   add_keywords_to_filter={add_to_keywords}

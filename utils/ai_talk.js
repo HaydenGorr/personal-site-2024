@@ -5,7 +5,7 @@ export const get_response = async ({ai, message}) => {
     }
 
     try {
-        const response = await fetch(`http://93.127.163.46:3001/api/${ai}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_AI_API}/api/${ai}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
