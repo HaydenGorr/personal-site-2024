@@ -17,10 +17,6 @@ export async function getServerSideProps() {
   try {
     const home_posts_response = await fetch(`${CMS_ROUTE}/meta_resources/home_posts`);
     const unique_chips_response = await fetch(`${CMS_ROUTE}/meta_resources/unique_chips`);
-  
-    console.log(home_posts_response)
-    console.log(unique_chips_response)
-
 
     if (!home_posts_response.ok || !unique_chips_response.ok) {
       throw new Error('Failed to fetch data');
@@ -165,7 +161,8 @@ export default function Home({home_posts, unique_chips}) {
             {filteredPosts.map((item, index) => (
               <div className='my-3 flex justify-center mx-3'>
                 {console.log("item ", item)}
-                <Container 
+                <Container
+                  home_posts={home_posts}
                   home_post_obj={item}
                   add_keywords_to_filter={add_to_keywords}
                   remove_keyword_from_filer={remove_keywords}
