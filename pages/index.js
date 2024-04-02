@@ -34,7 +34,8 @@ export async function getStaticProps() {
     console.error('Error fetching data:', error);
     return {
       props: {
-        error: 'Failed to fetch data',
+        home_posts: [],
+        unique_chips: []
       },
       revalidate: 60,
     };
