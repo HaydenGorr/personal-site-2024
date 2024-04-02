@@ -24,7 +24,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
     const getParentElement = (child) => {
         
         if (given_href == "") { return <button onClick={handleClick} className={getStyles()}>{child}</button> }
-        else if (given_href.startsWith('/')) return <a onClick={handleClick} ><Link className={getStyles()} href={given_href}>{child}</Link></a>
+        else if (given_href.startsWith('/')) return <Link onClick={handleClick} className={getStyles()} href={given_href}>{child}</Link>
         else return <a onClick={handleClick} className={getStyles()} href={given_href} target='_blank'>{child}</a>
     }
 
