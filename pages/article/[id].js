@@ -2,7 +2,7 @@ import Layout from '../../components/layout';
 import { serialize } from 'next-mdx-remote/serialize';
 import { MDXRemote } from 'next-mdx-remote';
 import Chip from '../../components/chip';
-import MB_Button from '../../components/buttons/MB_Button';
+import MB_Button from '../../components/MB_Button';
 import Image from 'next/image';
 
 export default function Article({mdxSource}) {

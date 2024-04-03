@@ -1,4 +1,4 @@
-import ChatBubble from "../components/chat_Bubble";
+import ChatBubble from "../components/chat_bubble";
 import Layout from "../components/layout";
 import Image from "next/image";
 

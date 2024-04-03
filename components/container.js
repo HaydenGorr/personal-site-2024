@@ -1,5 +1,5 @@
 import Image from "next/image";
-import ClosableChip from "../closable_chip";
+import ClosableChip from "./closable_chip";
 import { useRouter } from 'next/router'
 
 export default function Container({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer}) {
