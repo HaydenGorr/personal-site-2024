@@ -87,11 +87,11 @@ pre {
 }
 
 .Neo-Brutal-White {
-  @apply border-2 rounded-md bg-white text-black border-black border-2;
+  @apply border-2 rounded-md bg-white text-black border-black border-4;
 }
 
 .Neo-Brutal-White {
-  box-shadow: 5px 5px 0 #FF5F1F;
+  box-shadow: 7px 7px 0 #FF5F1F;
 }
 
 .Neo-Brutal-White-Small {
@@ -104,7 +104,7 @@ pre {
 
 
 .orange_background {
-  
+
 }
 
 /* pre {
