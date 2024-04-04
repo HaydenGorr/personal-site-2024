@@ -87,13 +87,25 @@ pre {
 }
 
 .Neo-Brutal-White {
-  @apply border-2 rounded-md bg-white text-black shadow-MB border-black border-2;
+  @apply border-2 rounded-md bg-white text-black border-black border-2;
+}
+
+.Neo-Brutal-White {
+  box-shadow: 5px 5px 0 #FF5F1F;
 }
 
 .Neo-Brutal-White-Small {
   @apply border-2 rounded-md bg-white text-black shadow-MBs border-black border-2;
 }
 
+.divider {
+  background-color: #FF5F1F;
+}
+
+
+.orange_background {
+  
+}
 
 /* pre {
   @apply mx-3 text-wrap

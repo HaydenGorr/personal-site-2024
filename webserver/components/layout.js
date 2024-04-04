@@ -31,7 +31,7 @@ export default function Layout({ children, home }) {
             </div>
         </div>
 
-        <div className='bg-black w-lvw h-1'/>
+        <div className='divider w-lvw h-1'/>
         
       </header>
 
