@@ -13,6 +13,7 @@ COPY components/ components/
 RUN npm run build
 
 FROM node:18 AS runner
+
 WORKDIR /app
 
 COPY --from=builder /app/next.config.js ./
