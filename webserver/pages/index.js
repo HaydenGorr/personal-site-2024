@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
-import Container from '../components/container/container';
+import Container from '../components/container';
 import { useState } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
-import ToggleButton from '../components/buttons/toggle_button';
+import ToggleButton from '../components/toggle_button';
 import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';

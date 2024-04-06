@@ -1,4 +1,4 @@
-import MB_Button from "../buttons/MB_Button"
+import MB_Button from "./MB_Button"
 
 export default function CVDownloadModal({  }) {
     return (

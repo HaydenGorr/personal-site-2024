@@ -1,4 +1,4 @@
-FROM node:18 AS builder
+FROM node:latest
 
 WORKDIR /app
 
@@ -8,6 +8,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3002
+EXPOSE 3001
 
 CMD ["npm", "run", "start:dev"]

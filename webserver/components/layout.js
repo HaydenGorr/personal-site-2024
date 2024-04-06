@@ -1,5 +1,5 @@
-import MB_Button from './buttons/MB_Button.js';
-import CVDownloadModal from './download_modal/cvdownload_modal.js';
+import MB_Button from './MB_Button.js';
+import CVDownloadModal from './cvdownload_modal.js';
 import { useRouter } from 'next/router';
 
 
