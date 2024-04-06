@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "cross-env ENV_PATH=.env.local node -r dotenv/config app.js dotenv_config_path=$ENV_PATH",
-    "start:prod": "cross-env ENV_PATH=.env.production node -r dotenv/config app.js dotenv_config_path=$ENV_PATH"
+    "start:dev": "cross-env ENV_FILE=.env.local node app.js",
+    "start:prod": "cross-env ENV_FILE=.env.prod node app.js"
   },
   "author": "",
   "license": "ISC",

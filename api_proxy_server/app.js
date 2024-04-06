@@ -1,4 +1,5 @@
-require('dotenv').config();
+require('dotenv').config({ path: process.env.ENV_FILE });
+console.log(process.env.PORT);
 const Anthropic = require('@anthropic-ai/sdk');
 const express = require('express');
 const cors = require('cors');
