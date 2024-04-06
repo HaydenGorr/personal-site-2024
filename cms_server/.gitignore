@@ -1,0 +1,26 @@
+# Ignore Markdown Extended files
+*.mdx
+
+# Ignore SVG files
+*.svg
+
+# Ignore common image formats
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Ignore video files
+*.mp4
+*.avi
+*.mov
+
+# Ignore audio files
+*.mp3
+*.wav
+*.ogg
+
+# Ignore JSONs
+*.json
+!package.json
+!package-lock.json

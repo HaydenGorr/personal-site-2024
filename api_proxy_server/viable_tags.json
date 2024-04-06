@@ -1,0 +1,98 @@
+[
+    {
+        "viable tag": "ai",
+        "description": "artificial intelligence"
+    },
+    {
+        "viable tag": "basic",
+        "description": "the programming language"
+    },
+    {
+        "viable tag": "brunel university",
+        "description": "the university that Hayden attended"
+    },
+    {
+        "viable tag": "full stack",
+        "description": "the ability to work on both the front and back end of a website"
+    },
+    {
+        "viable tag": "java",
+        "description": "the programming language"
+    },
+    {
+        "viable tag": "article",
+        "description": "a piece of non-fiction writing covering miscellaneous topics."
+    },
+    {
+        "viable tag": "nextjs",
+        "description": "the website building framework"
+    },
+    {
+        "viable tag": "emma",
+        "description": "Hayden's girlfriend"
+    },
+    {
+        "viable tag": "javascript",
+        "description": "the programming language"
+    },
+    {
+        "viable tag": "cypress",
+        "description": "the website testing framework"
+    },
+    {
+        "viable tag": "QA",
+        "description": "Quality Assurance"
+    },
+    {
+        "viable tag": "react",
+        "description": "the website building framework"
+    },
+    {
+        "viable tag": "photography",
+        "description": "Hayden's hobby"
+    },
+    {
+        "viable tag": "travel",
+        "description": "generally covers world travel"
+    },
+    {
+        "viable tag": "swift",
+        "description": "the programming language for iOS"
+    },
+    {
+        "viable tag": "android",
+        "description": "the mobile operating system by Google"
+    },
+    {
+        "viable tag": "ios",
+        "description": "the mobile operating system by Apple"
+    },
+    {
+        "viable tag": "mobile development",
+        "description": "the development of mobile applications"
+    },
+    {
+        "viable tag": "freelance",
+        "description": "working for oneself"
+    },
+    {
+        "viable tag": "App Development",
+        "description": "the development of mobile applications"
+    },
+    {
+        "viable tag": "ios",
+        "description": "the mobile operating system by Apple"
+    },
+    {
+        "viable tag": "significant work",
+        "description": "a piece of work that is important to Hayden and shows strong skill"
+    },
+    {
+        "viable tag": "tailwind",
+        "description": "the CSS framework"
+    },
+    {
+        "viable tag": "writing",
+        "description": "creative artistic writing"
+    }
+]
