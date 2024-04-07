@@ -5,7 +5,7 @@ export const get_response = async ({ai, message}) => {
     }
 
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_AI_API}/api/${ai}`, {
+        const response = await fetch(`${process.env.AI_API}/api/${ai}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ export const get_response = async ({ai, message}) => {
         }
 
         const data = await response.json();
-        console.log(data)
+        console.log("AI RESPONSE: ", data)
         return data.content[0].text; // Make sure this is the data you want
     } catch (error) {
         console.error('Error:', error);

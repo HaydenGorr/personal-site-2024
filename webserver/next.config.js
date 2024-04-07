@@ -19,12 +19,22 @@ const nextConfig = {
       hostname: 'localhost',
       port: '3002',
       pathname: '/CMS/articles/**',
-    }]
+    },
+    {/**
+      * http://127.0.0.1:3002 - this is the same as localhost. For some reason the dns was resolving localhost to ipv6 which was causing connection issues with cms.
+      * So I've defined the ipv4 address here.
+      */
+      protocol: 'http',
+      hostname: '127.0.0.1',
+      port: '3002',
+      pathname: '/CMS/articles/**',
+    },
+  ]
   },
   env: {
-    NEXT_PUBLIC_CMS_ROUTE: process.env.CMS_ROUTE,
-    NEXT_PUBLIC_AI_API: process.env.AI_API,
-    NEXT_PUBLIC_REVALIDATE_TIME_SECS: process.env.REVALIDATE_TIME_SECS,
+    CMS_ROUTE: process.env.CMS_ROUTE,
+    AI_API: process.env.AI_API,
+    REVALIDATE_TIME_SECS: process.env.REVALIDATE_TIME_SECS,
   }
 }
 
