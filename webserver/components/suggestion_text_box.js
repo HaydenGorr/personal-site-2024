@@ -1,7 +1,7 @@
 import InputBox from "./inputBox"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
-import MB_Button from "./buttons/MB_Button";
+import MB_Button from "./MB_Button";
 
 export default function SuggestionTextBox({aiSearching, filter_keywords, add_to_keywords, chipsText, selectedChips_text, defaultText}) {
 

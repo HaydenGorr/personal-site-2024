@@ -2,7 +2,7 @@ import Layout from '../../components/layout';
 import { serialize } from 'next-mdx-remote/serialize';
 import { MDXRemote } from 'next-mdx-remote';
 import Chip from '../../components/chip';
-import MB_Button from '../../components/buttons/MB_Button';
+import MB_Button from '../../components/MB_Button';
 import Image from 'next/image';
 
 export default function Article({mdxSource}) {
@@ -36,6 +36,8 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths() {
+
+    console.log("[id].js - getStaticPaths() - CMS ROUTE ENV VAR: ", process.env.NEXT_PUBLIC_CMS_ROUTE)
     
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
 
@@ -46,4 +48,38 @@ export async function getStaticPaths() {
     }));
   
     return { paths, fallback: 'blocking' };
+
+    // const cmsRoute = process.env.CMS_ROUTE;
+
+    // try {
+    //     const homePostsResponse = await fetch(`${cmsRoute}/meta_resources/home_posts`);
+    
+    //     if (!homePostsResponse.ok) {
+    //       console.error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);
+    //       throw new Error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);
+    //     }
+    
+    //     const hprJSON = await homePostsResponse.json();
+        
+    //     if (!Array.isArray(hprJSON)) {
+    //       console.error('Expected an array from the CMS response');
+    //       throw new Error('Invalid format for home_posts response.');
+    //     }
+    
+    //     const paths = hprJSON.map(article => {
+    //       if (!article.source) {
+    //         console.warn('Article without a source detected.');
+    //       }
+    //       return {
+    //         params: { id: article.source ? article.source.toString() : '' },
+    //       };
+    //     })
+    
+    //     return { paths, fallback: 'blocking' };
+    //   } catch (error) {
+    //     console.error(`Error in getStaticPaths: ${error.message}`);
+    
+    //     return { paths: [], fallback: 'blocking' };
+    //   }
+
   }

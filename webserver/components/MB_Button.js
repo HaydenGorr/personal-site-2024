@@ -13,7 +13,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
         if (given_href== "") {
             event.preventDefault();
         }
-        btnAction(); // Call additional action if provided
+        btnAction();
     };
 
     const getStyles = () => {

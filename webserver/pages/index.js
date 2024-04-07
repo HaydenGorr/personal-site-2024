@@ -1,16 +1,18 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
-import Container from '../components/container/container';
+import Container from '../components/container';
 import { useState } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
-import ToggleButton from '../components/buttons/toggle_button';
+import ToggleButton from '../components/toggle_button';
 import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 
 export async function getStaticProps() {
+
+  console.log("\n\n\nLOOK", process.env.CMS_ROUTE, "\n\n\n");
   
   try {
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
@@ -37,7 +39,9 @@ export async function getStaticProps() {
         home_posts: [],
         unique_chips: []
       },
-      revalidate: 60,
+      // We revalidate every 10 seconds if there'a a failure. A failure is likely due to CMS being down.
+      // When it's up getStaticProps will not fail, and the other revalidate above will apply
+      revalidate: 10,
     };
   }
 }
@@ -72,22 +76,26 @@ export default function Home({home_posts, unique_chips}) {
 
     const response = await get_response({ ai: "TF", message: userMSG });
 
+    console.log("\n\nresponse", response, "\n\n");
+
+
     try {
-      let jp = JSON.parse(response); 
+      let jp = JSON.parse(response);
+
+      console.log("\n\njp", jp, "\n\n");
+
 
       assert(!!jp.viable_tags, "viable_tags is not defined in the response")
       assert(!!jp.filter_type, "filter_type is not defined in the response")
 
-      console.log(jp)
-
       let matched_tags = []
 
       jp.viable_tags.map((item, index) => {
-        console.log(item)
         unique_chips.map((citem, cindex) => {
           citem.toLowerCase() == item.toLowerCase() ? matched_tags.push(citem) : null;
         })
       })
+
   
       setSelectedKeywords(matched_tags);
       setMatchAnyChip(jp.filter_type == "any")

@@ -1,7 +1,7 @@
-import ChatBubble from "../components/chat_Bubble";
+import ChatBubble from "../components/chat_bubble";
 import Layout from "../components/layout";
 import { useEffect, useState } from "react";
-import Special_Button from "../components/buttons/special_button";
+import Special_Button from "../components/special_button";
 import { get_response } from "../utils/ai_talk";
 
 export default function Chat() {

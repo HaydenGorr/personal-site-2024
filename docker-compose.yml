@@ -1,0 +1,25 @@
+version: '3'
+services:
+  api_proxy_server:
+    build: ./api_proxy_server
+    ports:
+      - "3001:3001"
+    environment:
+      - ANTHROPIC_API_KEY=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
+      - CMS_ROUTE=http://host.docker.internal:3002
+      - PORT=3001
+  webserver:
+    build:
+      context: ./webserver
+      args:
+        # These args are given during build time
+        CMS_ROUTE: http://host.docker.internal:3002
+        REVALIDATE_TIME_SECS: 15
+        AI_API: http://localhost:3001
+    ports:
+      - "3000:3000"
+    environment:
+      # These args are given during runtime
+      - AI_API=http://localhost:3001
+      - CMS_ROUTE=http://host.docker.internal:3002
+      - REVALIDATE_TIME_SECS=15
