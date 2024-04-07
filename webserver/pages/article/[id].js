@@ -26,20 +26,20 @@ export default function Article({mdxSource}) {
 
 export async function getStaticProps(context) {
     const { id } = context.params;
-    const res = await fetch(`${process.env.CMS_ROUTE}/CMS/articles/${id}/article.mdx`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/CMS/articles/${id}/article.mdx`);
     const mdxContent = await res.text();
     
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
-    return { props: { mdxSource }, revalidate: Number(process.env.REVALIDATE_TIME_SECS), }; 
+    return { props: { mdxSource }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {
 
-    console.log("[id].js - getStaticPaths() - CMS ROUTE ENV VAR: ", process.env.CMS_ROUTE)
+    console.log("[id].js - getStaticPaths() - CMS ROUTE ENV VAR: ", process.env.NEXT_PUBLIC_CMS_ROUTE)
     
-    const home_posts_response = await fetch(`${process.env.CMS_ROUTE}/meta_resources/home_posts`);
+    const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
 
     const hprJSON = await home_posts_response.json();
     

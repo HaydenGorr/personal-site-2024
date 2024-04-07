@@ -12,11 +12,11 @@ import assert from 'assert';
 
 export async function getStaticProps() {
 
-  console.log("\n\n\nLOOK", process.env.CMS_ROUTE);
+  console.log("\n\n\nLOOK", process.env.CMS_ROUTE, "\n\n\n");
   
   try {
-    const home_posts_response = await fetch(`${process.env.CMS_ROUTE}/meta_resources/home_posts`);
-    const unique_chips_response = await fetch(`${process.env.CMS_ROUTE}/meta_resources/unique_chips`);
+    const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
+    const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/unique_chips`);
 
     if (!home_posts_response.ok || !unique_chips_response.ok) {
       throw new Error('Failed to fetch data');
@@ -30,7 +30,7 @@ export async function getStaticProps() {
         home_posts,
         unique_chips
       },
-      revalidate: Number(process.env.REVALIDATE_TIME_SECS),
+      revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS),
     };
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -79,25 +79,17 @@ export default function Home({home_posts, unique_chips}) {
     try {
       let jp = JSON.parse(response);
 
-      console.log("JSON response: ", jp)
-
       assert(!!jp.viable_tags, "viable_tags is not defined in the response")
       assert(!!jp.filter_type, "filter_type is not defined in the response")
 
-      console.log("recieved tags: ", jp)
-      console.log("All tags: ", unique_chips)
-
       let matched_tags = []
 
-      console.log("iterating over tags")
       jp.viable_tags.map((item, index) => {
-        console.log(" - At: ", item)
         unique_chips.map((citem, cindex) => {
           citem.toLowerCase() == item.toLowerCase() ? matched_tags.push(citem) : null;
         })
       })
 
-      console.log("matched tags: ", matched_tags)
   
       setSelectedKeywords(matched_tags);
       setMatchAnyChip(jp.filter_type == "any")
