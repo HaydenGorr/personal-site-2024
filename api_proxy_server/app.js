@@ -78,8 +78,6 @@ app.post('/api/TF', async (req, res) => {
     }
     const viable_tags = await response.json();
 
-    console.log("VT ", viable_tags)
-
     try {
         const response = await anthropic.messages.create({
             model: "claude-3-haiku-20240307",

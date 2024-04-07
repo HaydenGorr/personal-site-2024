@@ -11,8 +11,6 @@ import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 
 export async function getStaticProps() {
-
-  console.log("\n\n\nLOOK", process.env.CMS_ROUTE, "\n\n\n");
   
   try {
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);

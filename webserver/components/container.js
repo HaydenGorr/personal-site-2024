@@ -21,8 +21,6 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
                 </div>
             </div>
 
-            {console.log(`LOOK ${process.env.NEXT_PUBLIC_CMS_ROUTE}/CMS/articles/${home_post_obj["source"]}/container.png`)}
-
             <Image className="rounded-md overflow-hidden cursor-pointer"
                 src={`${process.env.NEXT_PUBLIC_CMS_ROUTE}/CMS/articles/${home_post_obj["source"]}/container.png`}
                 unoptimized={true}
