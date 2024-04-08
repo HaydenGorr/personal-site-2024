@@ -1,9 +1,9 @@
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 const fss = require('fs');
 const fs = require('fs').promises;
 const path = require('path');
-const { begin } = require(path.join(__dirname, './generate_unique_chips.js'))
+const { begin } = require(path.join(DATA_DIR, './generate_unique_chips.js'))
 const { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir } = require('./get_file_paths.js')
-
 
 async function get_home_posts() {
     const path = await getDatetimeJsonPath("home_posts")
@@ -23,8 +23,8 @@ async function createHomePostsFile(data) {
     const dataString = JSON.stringify(data, null, 2);
 
     const dateTime = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
-    const directoryPath = path.join(__dirname, '../meta_resources');
-    const filePath = path.join(directoryPath, `home_posts${dateTime}.json`);
+    const directoryPath = path.join(DATA_DIR, '../meta_resources');
+    const filePath = path.join(directoryPath, `home_posts_${dateTime}.json`);
 
 
     fss.writeFileSync(filePath, dataString);

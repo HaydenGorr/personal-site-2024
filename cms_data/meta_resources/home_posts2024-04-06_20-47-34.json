@@ -1,0 +1,67 @@
+[
+  {
+    "title": "Sensor Story App",
+    "desc": "A cross platform app created for a client",
+    "infoText": "Click image to open",
+    "chips": [
+      "Swift",
+      "Android",
+      "iOS",
+      "Mobile Development",
+      "Freelance",
+      "App Development"
+    ],
+    "source": "example"
+  },
+  {
+    "title": "Gentrack",
+    "desc": "A full-stack engineering role from 2019 - 2020",
+    "infoText": "Click image to open",
+    "chips": [
+      "Swift",
+      "Android",
+      "iOS",
+      "Mobile Development",
+      "Freelance",
+      "App Development"
+    ],
+    "source": "gentrack"
+  },
+  {
+    "title": "Globalstep",
+    "desc": "A cross platform app created for a client",
+    "infoText": "Click image to open",
+    "chips": [
+      "Javascript",
+      "Cypress",
+      "QA",
+      "React"
+    ],
+    "source": "globalstep"
+  },
+  {
+    "title": "Trip To Italy with Emma",
+    "desc": "My december trip to Italy with plenty of photos",
+    "infoText": "Click image to open",
+    "chips": [
+      "Photography",
+      "Emma",
+      "Travel"
+    ],
+    "source": "italy2023"
+  },
+  {
+    "title": "Sensor Story App",
+    "desc": "A cross platform app created for a client",
+    "infoText": "Click image to open",
+    "chips": [
+      "Swift",
+      "Android",
+      "iOS",
+      "Mobile Development",
+      "Freelance",
+      "App Development"
+    ],
+    "source": "sensor_story"
+  }
+]

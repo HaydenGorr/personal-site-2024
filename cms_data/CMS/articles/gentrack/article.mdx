@@ -1,0 +1,24 @@
+import MB_Button from '../components/buttons/MB_Button';
+import Image from "next/image";
+import Chip from '../components/chip';
+
+<div className="mt-6"/>
+# Gentrack
+
+<div className="flex not-prose">
+    <div className="flex flex-wrap justify-center">
+        {
+        ["Swift", "Android", "iOS", "Mobile Development", "Freelance", "App Development"].map((chip_text, index) => (
+            <div key={index} className="mr-3 mt-3">
+                <Chip chip_text={chip_text} />
+            </div>
+        ))
+        }
+    </div>
+</div>
+
+---
+
+This was really not a nice place to work. I worked here for 8 weeks.
+
+What else? Oh I LOVE reading cook books.

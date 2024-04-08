@@ -1,10 +1,13 @@
 const fs = require('fs').promises;
 const path = require('path');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 
-const articlesDir = path.join(__dirname, '../CMS/articles/');
-const metasDir = path.join(__dirname, '../meta_resources/');
+
+const articlesDir = path.join(DATA_DIR, './CMS/articles/');
+const metasDir = path.join(DATA_DIR, './meta_resources/');
 
 async function getDatetimeJsonPath(startsWith) {
+    console.log("metasDir: ", metasDir)
     try {
         const files = await fs.readdir(metasDir);
         const filteredFiles = files.filter(file => file.startsWith(startsWith) && file.endsWith('.json'));

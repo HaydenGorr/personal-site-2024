@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs')
 const { getDatetimeJsonPath, deleteUniqueChips } = require('./get_file_paths.js')
-
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 
 function generateUniqueChips(posts) {
     const allChips = posts.flatMap(post => post.chips);
@@ -29,7 +29,7 @@ async function begin(){
 
         deleteUniqueChips()
 
-        await fs.writeFileSync(path.join(__dirname, `../meta_resources/unique_chips_${dateTime}.json`), dataString);
+        await fs.writeFileSync(path.join(DATA_DIR, `../meta_resources/unique_chips_${dateTime}.json`), dataString);
         console.log('JSON data is saved.');
     } catch (error) {
         console.error('Error writing file:', error);

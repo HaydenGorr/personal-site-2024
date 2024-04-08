@@ -4,15 +4,19 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT;
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
 const { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir } = require('./utils/get_file_paths')
+
+console.log(`DATA_DIR: `, DATA_DIR)
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/CMS/articles/', express.static(path.join(__dirname, 'CMS', 'articles')));
-app.use('/TAG_SVGS/', express.static(path.join(__dirname, 'TAG_SVGS')));
+app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
+app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
 
-app.get('/meta_resources/home_posts', async (req, res) => {
+app.get(`/meta_resources/home_posts`, async (req, res) => {
+    console.log("called home_posts")
     try {
         const jsonPath = await getDatetimeJsonPath('home_posts');
 
@@ -21,6 +25,8 @@ app.get('/meta_resources/home_posts', async (req, res) => {
         }
 
         const jsonData = require(jsonPath);
+
+        console.log(jsonData)
         res.json(jsonData);
     } catch (error) {
         console.error('Error proxying request:', error);
@@ -28,7 +34,7 @@ app.get('/meta_resources/home_posts', async (req, res) => {
     }
 });
 
-app.get('/meta_resources/unique_chips', async (req, res) => {
+app.get(`/meta_resources/unique_chips`, async (req, res) => {
     try {
         const jsonPath = await getDatetimeJsonPath('unique_chips');
 
@@ -44,6 +50,8 @@ app.get('/meta_resources/unique_chips', async (req, res) => {
     }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, '::', () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = DATA_DIR;
