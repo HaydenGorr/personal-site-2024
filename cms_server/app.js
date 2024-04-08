@@ -7,8 +7,6 @@ const PORT = process.env.PORT;
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
 const { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir } = require('./utils/get_file_paths')
 
-console.log(`DATA_DIR: `, DATA_DIR)
-
 app.use(cors());
 app.use(express.json());
 
@@ -50,7 +48,7 @@ app.get(`/meta_resources/unique_chips`, async (req, res) => {
     }
 });
 
-app.listen(PORT, '::', () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
 
