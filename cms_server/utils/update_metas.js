@@ -1,18 +1,21 @@
+const path = require('path');
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 const fss = require('fs');
 const fs = require('fs').promises;
-const path = require('path');
-const { begin } = require(path.join(DATA_DIR, './generate_unique_chips.js'))
+const { begin } = require('./generate_unique_chips.js')
 const { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir } = require('./get_file_paths.js')
 
 async function get_home_posts() {
     const path = await getDatetimeJsonPath("home_posts")
+    console.log("got home_posts path")
 
     if (!path) return false;
 
     try {
         const data = await fs.readFile(path, 'utf8');
-        console.log(JSON.parse(data)); // Log the file content to the console
+
+        console.log("obtained home_posts.json.  -   returning...")
+
         return JSON.parse(data)
     } catch (error) {
         console.error('Error reading the latest home_posts file:', error);
@@ -23,9 +26,10 @@ async function createHomePostsFile(data) {
     const dataString = JSON.stringify(data, null, 2);
 
     const dateTime = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
-    const directoryPath = path.join(DATA_DIR, '../meta_resources');
+    const directoryPath = path.join(DATA_DIR, './meta_resources');
     const filePath = path.join(directoryPath, `home_posts_${dateTime}.json`);
 
+    console.log("wrote new home_posts.json to meta_resources")
 
     fss.writeFileSync(filePath, dataString);
 }
@@ -73,11 +77,10 @@ async function compileHomePosts() {
 }
 
 async function start() {
-    // const MDXFilesCount = await countMdxFiles();
 
     if (! await get_home_posts()) await createHomePostsFile([]);
 
-    // const h_posts_count = await countHomePosts();
+    console.log("Got home_posts.json from CMS")
 
     console.log("deleting home_posts.json")
 
@@ -87,6 +90,7 @@ async function start() {
 
     await compileHomePosts();
 
+    // begin creating unique_chips.json
     await begin();
 }
 

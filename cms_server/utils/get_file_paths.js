@@ -7,7 +7,6 @@ const articlesDir = path.join(DATA_DIR, './CMS/articles/');
 const metasDir = path.join(DATA_DIR, './meta_resources/');
 
 async function getDatetimeJsonPath(startsWith) {
-    console.log("metasDir: ", metasDir)
     try {
         const files = await fs.readdir(metasDir);
         const filteredFiles = files.filter(file => file.startsWith(startsWith) && file.endsWith('.json'));

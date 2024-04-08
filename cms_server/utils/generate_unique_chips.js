@@ -16,20 +16,30 @@ function generateUniqueChips(posts) {
 
 async function begin(){
 
+    console.log("Generating unique chips...")
+
     const hp_path = await getDatetimeJsonPath("home_posts")
     const home_posts = require(hp_path)
 
+    console.log("Obtained home_posts")
+
     const data = generateUniqueChips(home_posts);
 
+    console.log("generated unique chips from home_posts")
+
     const dataString = JSON.stringify(data, null, 2);
+
+    console.log("stringified unique chips")
 
     try {
 
         const dateTime = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
 
-        deleteUniqueChips()
+        await deleteUniqueChips()
+        console.log("deleted old unique_chips file")
 
-        await fs.writeFileSync(path.join(DATA_DIR, `../meta_resources/unique_chips_${dateTime}.json`), dataString);
+        console.log("Writing new unique chips file")
+        await fs.writeFileSync(path.join(DATA_DIR, `./meta_resources/unique_chips_${dateTime}.json`), dataString);
         console.log('JSON data is saved.');
     } catch (error) {
         console.error('Error writing file:', error);
