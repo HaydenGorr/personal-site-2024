@@ -13,6 +13,7 @@ import assert from 'assert';
 export async function getStaticProps() {
   
   try {
+
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
     const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/unique_chips`);
 

@@ -1,8 +1,10 @@
 const fs = require('fs').promises;
 const path = require('path');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 
-const articlesDir = path.join(__dirname, '../CMS/articles/');
-const metasDir = path.join(__dirname, '../meta_resources/');
+
+const articlesDir = path.join(DATA_DIR, './CMS/articles/');
+const metasDir = path.join(DATA_DIR, './meta_resources/');
 
 async function getDatetimeJsonPath(startsWith) {
     try {
