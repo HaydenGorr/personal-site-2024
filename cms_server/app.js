@@ -44,6 +44,10 @@ app.get('/meta_resources/unique_chips', async (req, res) => {
     }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+/**
+ * the :: here makes the server listen on an ipv6 address. 
+ * the NextJS webserver automatically resolves localhost to ipv6
+ */
+app.listen(PORT, '::', () => {
     console.log(`Server running on port ${PORT}`);
 });
