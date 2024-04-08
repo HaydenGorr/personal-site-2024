@@ -5,7 +5,6 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const prompt_data = require('./sys-prompt.json');
-const viabletags = require('./viable_tags.json');
 
 const PORT = process.env.PORT;
 
