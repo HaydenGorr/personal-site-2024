@@ -5,7 +5,6 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const prompt_data = require('./sys-prompt.json');
-const viabletags = require('./viable_tags.json');
 
 const PORT = process.env.PORT;
 
@@ -99,6 +98,10 @@ app.post('/api/TF', async (req, res) => {
     }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+/**
+ * the :: here makes the server listen on an ipv6 address. 
+ * the NextJS webserver automatically resolves localhost to ipv6
+ */
+app.listen(PORT, '::', () => {
     console.log(`Server running on port ${PORT}`);
 });
