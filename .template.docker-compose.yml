@@ -19,7 +19,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - ANTHROPIC_API_KEY=<YOUR API KEY> # ENTER AN API KEY HERE OR AI FUNCTIONALITY WON'T WORK
+      - ANTHROPIC_API_KEY=<API KEY> # ENTER AN API KEY HERE OR AI FUNCTIONALITY WON'T WORK
       - CMS_ROUTE=http://cms_server:3002
       - PORT=3001
   cms_server:
@@ -35,14 +35,18 @@ services:
     build:
       context: ./webserver
       args:
-        CMS_ROUTE: http://host.docker.internal/cms
+        LOCAL_ACCESS_CMS: http://cms_server:3002
+        USER_ACCESS_CMS: http://localhost:80/cms
+        LOCAL_ACCESS_AI: http://api_proxy_server:3001
+        USER_ACCESS_AI: http://localhost:80/api
         REVALIDATE_TIME_SECS: 15
-        AI_API: http://host.docker.internal/api
-        VERSION: 1.5
+        VERSION: 1.6
     ports:
       - "3000:3000"
     environment:
-      - AI_API=http://host.docker.internal/api
-      - CMS_ROUTE=http://host.docker.internal/cms
       - REVALIDATE_TIME_SECS=15
-      - VERSION=1.5
+      - LOCAL_ACCESS_CMS=http://cms_server:3002
+      - USER_ACCESS_CMS=http://localhost:80/cms
+      - LOCAL_ACCESS_AI=http://api_proxy_server:3001
+      - USER_ACCESS_AI=http://localhost:80/api
+      - VERSION=1.6
