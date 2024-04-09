@@ -13,16 +13,26 @@ import assert from 'assert';
 export async function getStaticProps() {
   
   try {
+    console.log("getStaticProps - index.js ")
+    console.log("LOCAL CMS", process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS)
+    console.log("USER CMS", process.env.NEXT_PUBLIC_USER_ACCESS_CMS)
+    console.log("LOCAL AI", process.env.NEXT_PUBLIC_LOCAL_ACCESS_AI)
+    console.log("USER AI", process.env.NEXT_PUBLIC_USER_ACCESS_AI, `\n\n\n`)
 
-    const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
-    const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/unique_chips`);
+    const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/meta_resources/home_posts`);
+    const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/meta_resources/unique_chips`);
 
     if (!home_posts_response.ok || !unique_chips_response.ok) {
       throw new Error('Failed to fetch data');
     }
 
+    console.log("getting homeposts and unique chips...")
+
     const home_posts = await home_posts_response.json();
     const unique_chips = await unique_chips_response.json();
+
+    console.log(home_posts)
+    console.log(unique_chips)
 
     return {
       props: {
@@ -82,7 +92,6 @@ export default function Home({home_posts, unique_chips}) {
       let jp = JSON.parse(response);
 
       console.log("\n\njp", jp, "\n\n");
-
 
       assert(!!jp.viable_tags, "viable_tags is not defined in the response")
       assert(!!jp.filter_type, "filter_type is not defined in the response")

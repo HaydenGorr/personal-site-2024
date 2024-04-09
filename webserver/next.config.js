@@ -32,10 +32,12 @@ const nextConfig = {
   ]
   },
   env: {
-    NEXT_PUBLIC_CMS_ROUTE: process.env.CMS_ROUTE,
-    NEXT_PUBLIC_AI_API: process.env.AI_API,
     NEXT_PUBLIC_REVALIDATE_TIME_SECS: process.env.REVALIDATE_TIME_SECS,
-    NEXT_PUBLIC_VERSION: process.env.VERSION
+    NEXT_PUBLIC_VERSION: process.env.VERSION,
+    NEXT_PUBLIC_LOCAL_ACCESS_CMS: process.env.LOCAL_ACCESS_CMS,
+    NEXT_PUBLIC_USER_ACCESS_CMS: process.env.USER_ACCESS_CMS,
+    NEXT_PUBLIC_LOCAL_ACCESS_AI: process.env.LOCAL_ACCESS_AI,
+    NEXT_PUBLIC_USER_ACCESS_AI: process.env.USER_ACCESS_AI,
   }
 }
 

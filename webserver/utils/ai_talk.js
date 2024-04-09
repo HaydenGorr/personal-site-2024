@@ -5,7 +5,11 @@ export const get_response = async ({ai, message}) => {
     }
 
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_AI_API}/api/${ai}`, {
+        console.log("LOCAL CMS", process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS)
+        console.log("USER CMS", process.env.NEXT_PUBLIC_USER_ACCESS_CMS)
+        console.log("LOCAL AI", process.env.NEXT_PUBLIC_LOCAL_ACCESS_AI)
+        console.log("USER AI", process.env.NEXT_PUBLIC_USER_ACCESS_AI)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_AI}/api/${ai}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

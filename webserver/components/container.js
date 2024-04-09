@@ -22,7 +22,7 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
             </div>
 
             <Image className="rounded-md overflow-hidden cursor-pointer"
-                src={`${process.env.NEXT_PUBLIC_CMS_ROUTE}/CMS/articles/${home_post_obj["source"]}/container.png`}
+                src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`}
                 unoptimized={true}
                 alt=""
                 width={600}

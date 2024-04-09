@@ -12,7 +12,7 @@ export default function Chip({chip_text, add_keywords_to_filter = () => {}, inde
             <div className="flex">
                 <Image 
                 className="mr-2"
-                src={`${process.env.NEXT_PUBLIC_CMS_ROUTE}/TAG_SVGS/${chip_text.toLowerCase()}.svg`}
+                src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${chip_text.toLowerCase()}.svg`}
                 width={20}
                 height={20}/>
 

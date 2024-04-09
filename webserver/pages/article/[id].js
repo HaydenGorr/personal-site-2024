@@ -26,7 +26,7 @@ export default function Article({mdxSource}) {
 
 export async function getStaticProps(context) {
     const { id } = context.params;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/CMS/articles/${id}/article.mdx`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${id}/article.mdx`);
     const mdxContent = await res.text();
     
     // Serialize the MDX content only
