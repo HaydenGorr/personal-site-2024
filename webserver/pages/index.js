@@ -13,12 +13,6 @@ import assert from 'assert';
 export async function getStaticProps() {
   
   try {
-    console.log("getStaticProps - index.js ")
-    console.log("LOCAL CMS", process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS)
-    console.log("USER CMS", process.env.NEXT_PUBLIC_USER_ACCESS_CMS)
-    console.log("LOCAL AI", process.env.NEXT_PUBLIC_LOCAL_ACCESS_AI)
-    console.log("USER AI", process.env.NEXT_PUBLIC_USER_ACCESS_AI, `\n\n\n`)
-
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/meta_resources/home_posts`);
     const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/meta_resources/unique_chips`);
 
