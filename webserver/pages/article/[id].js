@@ -51,7 +51,7 @@ export async function getStaticPaths() {
   
     // return { paths, fallback: 'blocking' };
 
-    const cmsRoute = process.env.CMS_ROUTE;
+    const cmsRoute = process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS;
 
     try {
         const homePostsResponse = await fetch(`${cmsRoute}/meta_resources/home_posts`);

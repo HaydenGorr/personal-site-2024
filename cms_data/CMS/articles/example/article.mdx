@@ -1,10 +1,10 @@
 import MB_Button from '../components/buttons/MB_Button';
 import Image from "next/image";
-import home_posts from '../home_posts.json'
 import Chip from '../components/chip';
+import ImageWrapper from '../components/image_wrapper'
 
 <div className="mt-6"/>
-# Example Article
+# Example
 
 <div className="flex not-prose">
     <div className="flex flex-wrap justify-center">
@@ -20,7 +20,7 @@ import Chip from '../components/chip';
 
 ---
 
-<Image className={"Neo-Brutal-White"} src="/images/container_images/sensor_story.png" width={1000} height={1000}/>
+<ImageWrapper src={`CMS/articles/sensor_story/article_images/1.png`}/>
 
 ### What is Sensor Story?
 **Sensor Story Baby Classes** - to give it its full name - is a montessori based group for babies to toddlers based in North-West London. 
@@ -30,15 +30,15 @@ For a local montessori business a fully integrated multi-platform app is a rare 
 ### Where can I see the app?
 <div className="flex mt-6 not-prose w-full justify-center">
     <div className="mr-3">
-        <MB_Button text="App Store" image_src="/images/chip_icons/ios.svg" given_href="https://apps.apple.com/gb/app/sensorstory-baby-classes/id6448684530"/>
+        <MB_Button from_cms={true} text="App Store" image_src="TAG_SVGS/ios.svg" given_href="https://apps.apple.com/gb/app/sensorstory-baby-classes/id6448684530"/>
     </div>
     <div>
-        <MB_Button text="Google Play" image_src="/images/chip_icons/android.svg" given_href="https://play.google.com/store/apps/details?id=com.sensorstorybabyclasses.sensor_story&pli=1"/>
+        <MB_Button from_cms={true} text="Google Play" image_src="TAG_SVGS/android.svg" given_href="https://play.google.com/store/apps/details?id=com.sensorstorybabyclasses.sensor_story&pli=1"/>
     </div>
 </div>
 *Please note that because of an unpaid api bill on the part of the business owner, the app is currently not functioning at full capacity.*
 
-<Image className={"Neo-Brutal-White"} src="/images/article_images/SS-screenshot.png" width={1000} height={1000}/>
+<ImageWrapper src={`CMS/articles/sensor_story/article_images/2.png`}/>
 
 ### Can we see the code?
 If given a reasonable request I can share *some* of the code, but the repository is private for obvious reasons.

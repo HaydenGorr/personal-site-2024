@@ -29,6 +29,10 @@ const nextConfig = {
       port: '3007',
       pathname: '/CMS/articles/**',
     },
+    {
+      protocol: 'https',
+      hostname: '**', // Allows any hostname
+    }
   ]
   },
   env: {

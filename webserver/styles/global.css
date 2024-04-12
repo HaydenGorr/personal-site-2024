@@ -94,6 +94,12 @@ pre {
   @apply border-2 rounded-md bg-white text-black shadow-MBs border-black border-2;
 }
 
+code {
+  @apply bg-neutral-200 p-1 rounded;
+
+}
+
+
 
 /* pre {
   @apply mx-3 text-wrap

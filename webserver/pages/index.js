@@ -9,6 +9,7 @@ import ToggleButton from '../components/toggle_button';
 import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
+import MB_Button from '../components/MB_Button';
 
 export async function getStaticProps() {
   
@@ -20,13 +21,8 @@ export async function getStaticProps() {
       throw new Error('Failed to fetch data');
     }
 
-    console.log("getting homeposts and unique chips...")
-
     const home_posts = await home_posts_response.json();
     const unique_chips = await unique_chips_response.json();
-
-    console.log(home_posts)
-    console.log(unique_chips)
 
     return {
       props: {
@@ -119,7 +115,6 @@ export default function Home({home_posts, unique_chips}) {
       <Head>
         <title>{"Hayden's Personal Site"}</title>
       </Head>
-
       <section>
 
         {selectedKeywords.length > 0 && (
