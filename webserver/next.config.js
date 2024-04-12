@@ -17,7 +17,7 @@ const nextConfig = {
     remotePatterns: [{
       protocol: 'http',
       hostname: 'localhost',
-      port: '3002',
+      port: '3007',
       pathname: '/CMS/articles/**',
     },
     {/**
@@ -26,7 +26,7 @@ const nextConfig = {
       */
       protocol: 'http',
       hostname: '127.0.0.1',
-      port: '3002',
+      port: '3007',
       pathname: '/CMS/articles/**',
     },
   ]

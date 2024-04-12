@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react"
 import Image from "next/image";
 import Link from "next/link";
-export default function MB_Button({ given_href="", text="", image_src="", lowercase=false, btnAction = () => {}, colour="bg-transparent", injected_styles=""}) {
+import path from "path";
+
+export default function MB_Button({ given_href="", text="", image_src="", lowercase=false, btnAction = () => {}, colour="bg-transparent", injected_styles="", from_cms=false}) {
 
     const [btnText, setBtnText] = useState('');
 
@@ -32,7 +34,18 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
         getParentElement(
             < >
                 <div className="flex items-center justify-center">
-                    {image_src && <Image src={image_src} alt="logo" className="mr-2" width={24} height={24} />}
+
+                    {image_src && <Image 
+                        /**
+                         * If from_cms is true the image request is needed for an article (which comes from cms).
+                         * in that case, we need to append the User Access CMS link to the image_src
+                         */
+                        src={from_cms ? `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/${image_src}`: image_src}
+                        alt="logo"
+                        className="mr-2"
+                        width={24}
+                        height={24} />}
+
                     <span className="my-auto leading-none font-medium">{btnText}</span>
                 </div>
             </>

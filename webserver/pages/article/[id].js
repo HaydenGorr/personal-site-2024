@@ -4,12 +4,14 @@ import { MDXRemote } from 'next-mdx-remote';
 import Chip from '../../components/chip';
 import MB_Button from '../../components/MB_Button';
 import Image from 'next/image';
+import ImageWrapper from '../../components/image_wrapper';
 
 export default function Article({mdxSource}) {
     const components = {
         Chip,
         MB_Button,
         Image,
+        ImageWrapper,
     };
 
     return (
