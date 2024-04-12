@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import Image from "next/image";
 import Link from "next/link";
-import path from "path";
 
 export default function MB_Button({ given_href="", text="", image_src="", lowercase=false, btnAction = () => {}, colour="bg-transparent", injected_styles="", from_cms=false}) {
 
@@ -36,11 +35,6 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
     }
 
     const getImageURL = () => {
-
-        console.log("given_href")
-        console.log(getFavicon)
-        console.log("\n")
-
         if (getFavicon) {
             const url = new URL(given_href);
             const faviconUrl = `${url.origin}/favicon.ico`;
@@ -54,11 +48,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
         getParentElement(
             < >
                 <div className="flex items-center justify-center">
-                    {(getFavicon || image_src) && <Image 
-                        /**
-                         * If from_cms is true the image request is needed for an article (which comes from cms).
-                         * in that case, we need to append the User Access CMS link to the image_src
-                         */
+                    {(getFavicon || image_src) && <Image
                         src={getImageURL()}
                         alt="logo"
                         className="mr-2 my-0"

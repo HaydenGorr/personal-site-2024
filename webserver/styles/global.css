@@ -99,11 +99,23 @@ code {
 
 }
 
+.prose :where(.custom-link) {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
 
+.prose :where(.custom-link) {
+  margin: 0;
+}
 
-/* pre {
-  @apply mx-3 text-wrap
-} */
+.prose :where(.inlineimg) {
+  @apply m-0 inline-flex;
+}
+
+.prose :where(.inlineimg) img {
+  @apply m-0 inline-block;
+}
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .example::-webkit-scrollbar {

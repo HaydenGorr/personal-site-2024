@@ -5,6 +5,12 @@ import Chip from '../../components/chip';
 import MB_Button from '../../components/MB_Button';
 import Image from 'next/image';
 import ImageWrapper from '../../components/image_wrapper';
+// import CustomLink from '../../components/custom_link';
+import dynamic from 'next/dynamic';
+
+const CustomLink = dynamic(() => import('../../components/custom_link'), {
+  ssr: false,
+});
 
 export default function Article({mdxSource}) {
     const components = {
@@ -12,13 +18,13 @@ export default function Article({mdxSource}) {
         MB_Button,
         Image,
         ImageWrapper,
+        a: CustomLink
     };
 
     return (
         <Layout>
             <div className='flex justify-center pt-3 py-6 px-3'>
                 <div className="prose max-w-prose">
-                    {/* <MDXContent home_post_obj_source={id}/> */}
                     <MDXRemote {...mdxSource} components={components}/>
                 </div>
             </div>
@@ -39,22 +45,8 @@ export async function getStaticProps(context) {
 
 export async function getStaticPaths() {
 
-    // console.log("[id].js - getStaticPaths() - CMS ROUTE ENV VAR: ", process.env.NEXT_PUBLIC_CMS_ROUTE)
-    
-    // const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_CMS_ROUTE}/meta_resources/home_posts`);
-
-    // const hprJSON = await home_posts_response.json();
-    
-    // const paths = hprJSON.map(article => ({
-    //   params: { id: article.source },
-    // }));
-  
-    // return { paths, fallback: 'blocking' };
-
-    const cmsRoute = process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS;
-
     try {
-        const homePostsResponse = await fetch(`${cmsRoute}/meta_resources/home_posts`);
+        const homePostsResponse = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/meta_resources/home_posts`);
     
         if (!homePostsResponse.ok) {
           console.error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);
