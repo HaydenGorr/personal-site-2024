@@ -5,7 +5,9 @@ import Special_Button from "../components/special_button";
 import { get_response } from "../utils/ai_talk";
 
 export default function Chat() {
-    const [chatMessages, setChatMessages] = useState([{incoming: true, text: "Hey feel free to ask anything about Hayden"}]);
+
+    const opening_message = "Hey I'm an AI, powered by Claude Sonnet. I'm here to answer any questions you might have about Hayden and his work!";
+    const [chatMessages, setChatMessages] = useState([{incoming: true, text: opening_message}]);
     const [inputValue, setInputValue] = useState('');
     const [displayError, setDisplayError] = useState(false);
 
