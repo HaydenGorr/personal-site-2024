@@ -1,10 +1,22 @@
 import MB_Button from './MB_Button.js';
 import CVDownloadModal from './cvdownload_modal.js';
 import { useRouter } from 'next/router';
-
+import { useState, useEffect } from 'react';
 
 
 export default function Layout({ children, home }) {
+
+  const [isActive, setIsActive] = useState(false);
+
+  // Effect to reset the variable after 5 seconds
+  useEffect(() => {
+    if (isActive) {
+        const timer = setTimeout(() => {
+            setIsActive(false);
+        }, 500);
+        return () => clearTimeout(timer);
+    }
+  }, [isActive]);
 
   return (
     <div>
@@ -14,7 +26,7 @@ export default function Layout({ children, home }) {
       <header className='flex flex-col items-center default_colour sticky top-0 z-40'>
         
         <div className="flex md:justify-between w-full">
-            <h1 className='my-auto ml-10 text-xl font-bold hideonmobile'>Hayden</h1>
+            <h1 className='my-auto ml-10 text-xl font-bold hideonmobile' onClick={() => {setIsActive(true)}}>{ isActive ? process.env.NEXT_PUBLIC_VERSION : "Hayden"}</h1>
             <div className='flex p-3 overflow-x-scroll'>
                 <div className={`mr-4 min-w-fit`}>
                     <MB_Button text={"HOME"} given_href={"/"} image_src={'/images/svgs/home.svg'}/>
@@ -37,7 +49,7 @@ export default function Layout({ children, home }) {
 
       <main className='max-w-7xl mx-auto'>{children}</main>
 
-      <div className='w-auto text-center text-sm italic'>
+      <div className='w-auto text-center text-sm italic fixed bottom-0 right-2'>
         {process.env.NEXT_PUBLIC_VERSION}
       </div>
 
