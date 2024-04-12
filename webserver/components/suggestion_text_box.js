@@ -67,6 +67,7 @@ export default function SuggestionTextBox({aiSearching, filter_keywords, add_to_
                         btnAction = {() => {filter_keywords(userText)}}/>
                 )}
             </div>
+                // Setting to invisible ensures the svgs load once and not every time you click on the input box
                 <div className={`${showSuggestions  ? '' : 'invisible'} Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md`}>
                     <ul>
                         {!showAISupportBox && filteredChips.map((text, index) => (
