@@ -49,10 +49,6 @@ export default function Layout({ children, home }) {
 
       <main className='max-w-7xl mx-auto'>{children}</main>
 
-      <div className='w-auto text-center text-sm italic fixed bottom-0 right-2'>
-        {process.env.NEXT_PUBLIC_VERSION}
-      </div>
-
     </div>
   );
 }
