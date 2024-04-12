@@ -20,7 +20,7 @@ const CustomLink = ({ href, children }) => {
           <Image src={getImageURL()} width={14} height={14} />
         </div>
       </div>
-      <a href={href} className="link">
+      <a href={href} className="link" target="_blank">
         {children}
       </a>
     </div>
