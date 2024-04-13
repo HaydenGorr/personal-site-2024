@@ -71,11 +71,14 @@ app.post('/api/CQ', async (req, res) => {
 
 app.post('/api/TF', async (req, res) => {
 
-    const response = await fetch(`${process.env.CMS_ROUTE}/meta_resources/unique_chips`);
+    const response = await fetch(`${process.env.CMS_ROUTE}/tag_desc`);
+
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     const viable_tags = await response.json();
+
+    console.log(viable_tags)
 
     try {
         const response = await anthropic.messages.create({

@@ -13,6 +13,24 @@ app.use(express.json());
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
 
+
+app.get(`/tag_desc`, async (req, res) => {
+    try {
+        const jsonPath = path.join(DATA_DIR, './meta_resources/chip_description.json');
+
+        if (!jsonPath) {
+            return res.status(404).json({ message: 'Home posts JSON file not found' });
+        }
+
+        const jsonData = require(jsonPath);
+
+        res.json(jsonData);
+    } catch (error) {
+        console.error('Error proxying request:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.get(`/meta_resources/home_posts`, async (req, res) => {
     console.log("called home_posts")
     try {
@@ -24,7 +42,6 @@ app.get(`/meta_resources/home_posts`, async (req, res) => {
 
         const jsonData = require(jsonPath);
 
-        console.log(jsonData)
         res.json(jsonData);
     } catch (error) {
         console.error('Error proxying request:', error);
