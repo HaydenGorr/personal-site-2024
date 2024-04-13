@@ -2,9 +2,9 @@ const fs = require('fs').promises;
 const path = require('path');
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 
-
 const articlesDir = path.join(DATA_DIR, './CMS/articles/');
 const metasDir = path.join(DATA_DIR, './meta_resources/');
+const Temp_Meta_Dir = path.join(DATA_DIR, './temp_meta_resources/');
 
 async function getDatetimeJsonPath(startsWith) {
     try {
@@ -47,4 +47,4 @@ async function deleteUniqueChips() {
     }
 }
 
-module.exports = { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir };
+module.exports = { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir, Temp_Meta_Dir };

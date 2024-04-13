@@ -4,6 +4,20 @@ const fss = require('fs');
 const fs = require('fs').promises;
 const { begin } = require('./generate_unique_chips.js')
 const { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir } = require('./get_file_paths.js')
+const { make_temp_dir, delete_temp_dir, checkDirectoryExists} = require('./misc_utils.js')
+const { articles_dir, metas_dir, temp_meta_dir } = require('./path_consts')
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+function question(text) {
+    return new Promise((resolve) => {
+        rl.question(text, resolve);
+    });
+}
 
 async function get_home_posts() {
     const path = await getDatetimeJsonPath("home_posts")
@@ -76,22 +90,74 @@ async function compileHomePosts() {
     await createHomePostsFile(compiledData);
 }
 
+// Refresh homeposts.json and uniquechips.json
 async function start() {
 
-    if (! await get_home_posts()) await createHomePostsFile([]);
+    console.log("Starting Meta Resources Refresh...");
+    console.log("Checking if temp dir already exists...");
+    const temp_dir_exists = await checkDirectoryExists(temp_meta_dir);
+    
+    if (!temp_dir_exists) {
+      console.log("Temp directory does not exist. Can continue...");
+    } else {
+      console.log("Temp directory already exists.\nYou must remove it to continue");
+      
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+  
+      const answer = await new Promise((resolve) => {
+        rl.question("Do you want to remove the temp directory? (y/n) ", (answer) => {
+          resolve(answer);
+        });
+      });
+  
+      rl.close();
+  
+      if (answer.trim().toLowerCase() === "y") {
+        console.log("Removing temp directory...");
+        await delete_temp_dir();
+        const exists_after_deletion = await (checkDirectoryExists(temp_meta_dir))
+        if (exists_after_deletion) {
+            console.log("An error has occured. The temp directory was not able to be deleted. Returning...");
+            returning
+        }
+      } else {
+        console.log("Closing");
+        return;
+      }
+    }
+    
 
-    console.log("Got home_posts.json from CMS")
 
-    console.log("deleting home_posts.json")
+    console.log("Continuing with the rest of the code...");
 
-    await deleteHomePosts();
+    // if (!make_temp_dir()) {
+    //     console.log("Failed to create temp directory Quitting")
+    //     return;
+    // }
 
-    console.log("compiling new home_posts.json")
+    // console.log("Created temp directory")
 
-    await compileHomePosts();
 
-    // begin creating unique_chips.json
-    await begin();
+    // if (await get_home_posts()) {
+    //     console.log("home_posts.json already exists. Deleting it...")
+    //     await deleteHomePosts();
+    // }
+
+    // console.log("Got home_posts.json from CMS")
+
+    // console.log("deleting home_posts.json")
+
+    // await deleteHomePosts();
+
+    // console.log("compiling new home_posts.json")
+
+    // await compileHomePosts();
+
+    // // begin creating unique_chips.json
+    // await begin();
 }
 
 start();
