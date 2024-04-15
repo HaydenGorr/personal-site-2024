@@ -9,7 +9,6 @@ const CustomLink = ({ href, children }) => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/favicon?href=${encodeURIComponent(href)}`);
         const data = await res.json();
-        console.log("\n\n\nimported SVG: ", data)
         if (data.faviconUrl) setFaviconUrl(data.faviconUrl);
       } catch (e) {
         console.log(e);

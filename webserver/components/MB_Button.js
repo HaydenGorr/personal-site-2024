@@ -8,8 +8,23 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
 
     const getFavicon = !image_src && given_href.startsWith('https://')
 
+    const [faviconUrl, setFaviconUrl] = useState("/images/svgs/link_icon.svg");
+
+
     useEffect(() => {
         setBtnText(lowercase ? text : text.toUpperCase())
+
+        const fetchFavicon = async () => {
+            try {
+              const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/favicon?href=${encodeURIComponent(given_href)}`);
+              const data = await res.json();
+              if (data.faviconUrl) setFaviconUrl(data.faviconUrl);
+            } catch (e) {
+              console.log(e);
+            }
+          };
+      
+          if (getFavicon) fetchFavicon();
     });
 
     const handleClick = (event) => {
@@ -34,22 +49,12 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
         else return <a onClick={handleClick} className={getStyles() + " no-underline"} href={given_href} target='_blank'>{child}</a>
     }
 
-    const getImageURL = () => {
-        if (getFavicon) {
-            const url = new URL(given_href);
-            const faviconUrl = `${url.origin}/favicon.ico`;
-            return faviconUrl.toString();
-        }
-
-        return from_cms ? `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/${image_src}`: image_src
-    }
-
     return (
         getParentElement(
             < >
                 <div className="flex items-center justify-center">
                     {(getFavicon || image_src) && <Image
-                        src={getImageURL()}
+                        src={faviconUrl}
                         alt="logo"
                         className="mr-2 my-0"
                         width={24}
