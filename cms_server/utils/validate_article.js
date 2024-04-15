@@ -41,6 +41,8 @@ async function ensure_article_dir_has_correct_files(path_to_article) {
     // Check if the article.mdx file contains the required images
     const referenced_images = await get_images_referenced_in_article(path.join(path_to_article, "article.mdx"))
 
+    if (!referenced_images) return
+
     // If we have images but no article_images dir, throw error
     if (referenced_images && !article_images_exists){
         throw new Error(`There are Image Wrapper elements in the article ${path_to_article}, but no article_images directory to contain them.`);
@@ -72,6 +74,8 @@ async function get_images_referenced_in_article(artice_mdx_path){
     const matches = mdxContent.match(regex);
 
     var images = []
+
+    if (matches === null) return false
 
     for (const match of matches) {
         const file = match.match(fileNameRegex)[0];
