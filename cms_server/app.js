@@ -32,7 +32,6 @@ app.get(`/tag_desc`, async (req, res) => {
 });
 
 app.get(`/meta_resources/home_posts`, async (req, res) => {
-    console.log("called home_posts")
     try {
         const jsonPath = await getDatetimeJsonPath('home_posts');
 
@@ -65,6 +64,24 @@ app.get(`/meta_resources/unique_chips`, async (req, res) => {
     }
 });
 
+app.get(`/favicon`, async (req, res) => {
+    const { href } = req.query;
+    let faviconUrl = null;
+  
+    try {
+      const url = new URL(href);
+      faviconUrl = `${url.origin}/favicon.ico`;
+  
+      const response = await fetch(faviconUrl);
+      if (!response.ok) {
+        faviconUrl = null;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  
+    res.json({ faviconUrl });
+  });
 /**
  * the :: here makes the server listen on an ipv6 address. 
  * the NextJS webserver automatically resolves localhost to ipv6

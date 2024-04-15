@@ -2,32 +2,29 @@ import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
 const CustomLink = ({ href, children }) => {
-  const [imageURL, setImageURL] = useState('/images/svgs/link_icon.svg');
+  const [faviconUrl, setFaviconUrl] = useState("/images/svgs/link_icon.svg");
 
   useEffect(() => {
-    const getImageURL = async () => {
+    const fetchFavicon = async () => {
       try {
-        const url = new URL(href);
-        const faviconUrl = `${url.origin}/favicon.ico`;
-        const res = await fetch(faviconUrl);
-        if (res.ok) {
-          setImageURL(faviconUrl.toString());
-        }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/favicon?href=${encodeURIComponent(href)}`);
+        const data = await res.json();
+        console.log("\n\n\nimported SVG: ", data)
+        if (data.faviconUrl) setFaviconUrl(data.faviconUrl);
       } catch (e) {
-        console.log(e)
-        return
+        console.log(e);
       }
     };
 
-    getImageURL();
-  }, [href]);
+    fetchFavicon();
+  });
 
 
   return (
     <div className="custom-link bg-gray-200 px-1 rounded-lg">
       <div className="mr-1">
         <div className="inlineimg">
-          <Image src={imageURL} width={14} height={14} />
+          <Image src={faviconUrl} width={14} height={14} />
         </div>
       </div>
       <a href={href} className="link" target="_blank">
