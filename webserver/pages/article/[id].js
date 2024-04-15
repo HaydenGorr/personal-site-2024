@@ -26,7 +26,7 @@ export default function Article({mdxSource, title, chips}) {
             <div className='flex justify-center pt-3 py-6 px-3'>
                 <div className="prose max-w-prose">
                     <h1 className='mt-3'>{title}</h1>
-                    <div className="flex not-prose">
+                    <div className="flex not-prose w-full justify-center">
                       <div className="flex flex-wrap justify-center">
                         {
                         chips.map((chip_text, index) => (
