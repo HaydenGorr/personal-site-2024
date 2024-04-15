@@ -35,10 +35,13 @@ export default function Layout({ children, home }) {
                     <MB_Button text={"CV"} image_src={'/images/svgs/cv_light.svg'} btnAction={()=>document.getElementById('cv_download_modal').showModal()}/>
                 </div>
                 <div className='mr-4 min-w-fit'>
-                    <MB_Button text={"LINKDIN"} given_href={"https://www.linkedin.com/in/hayden-gorringe-980753191/"} image_src={'/images/svgs/linkdin.svg'}/>
+                    <MB_Button text={"LINKEDIN"} given_href={"https://www.linkedin.com/in/hayden-gorringe-980753191/"} image_src={'/images/svgs/linkdin.svg'}/>
                 </div>
                 <div className='mr-4 min-w-fit'>
                     <MB_Button text={"GITHUB"} given_href={"https://github.com/HaydenGorr/"}/>
+                </div>
+                <div className='mr-4 min-w-fit'>
+                    <MB_Button text={"INSTA"} given_href={"https://www.instagram.com/haydengo_/"} image_src={'/images/svgs/instagram.svg'}/>
                 </div>
                 <div className={`min-w-fit`}>
                     <MB_Button text={"CHAT"} given_href={"/chat"} image_src={'/images/svgs/chat.svg'}/>
