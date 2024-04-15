@@ -37,6 +37,9 @@ export default function Layout({ children, home }) {
                 <div className='mr-4 min-w-fit'>
                     <MB_Button text={"LINKDIN"} given_href={"https://www.linkedin.com/in/hayden-gorringe-980753191/"} image_src={'/images/svgs/linkdin.svg'}/>
                 </div>
+                <div className='mr-4 min-w-fit'>
+                    <MB_Button text={"GITHUB"} given_href={"https://github.com/HaydenGorr/"}/>
+                </div>
                 <div className={`min-w-fit`}>
                     <MB_Button text={"CHAT"} given_href={"/chat"} image_src={'/images/svgs/chat.svg'}/>
                 </div>

@@ -8,8 +8,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
 
     const getFavicon = !image_src && given_href.startsWith('https://')
 
-    const [faviconUrl, setFaviconUrl] = useState("/images/svgs/link_icon.svg");
-
+    const [faviconUrl, setFaviconUrl] = useState(getFavicon ||  !image_src ? "/images/svgs/link_icon.svg" : image_src );
 
     useEffect(() => {
         setBtnText(lowercase ? text : text.toUpperCase())
@@ -22,9 +21,9 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
             } catch (e) {
               console.log(e);
             }
-          };
+        };
       
-          if (getFavicon) fetchFavicon();
+        if (getFavicon) fetchFavicon();
     });
 
     const handleClick = (event) => {
