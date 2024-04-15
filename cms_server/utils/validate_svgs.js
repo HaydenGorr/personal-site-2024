@@ -14,7 +14,7 @@ async function validate_chips_have_svgs(path_to_svgs, path_to_unique_chips) {
         const uniqueChips = JSON.parse(jsonData);
     
         for (const chipPath of uniqueChips) {
-            const svgFileName = `${path.basename(chipPath)}.svg`;
+            const svgFileName = `${path.basename(chipPath)}.svg`.toLowerCase();
             const svgFilePath = path.join(path_to_svgs, svgFileName);
   
             try {
