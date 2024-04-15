@@ -1,7 +1,6 @@
 const fs = require('fs').promises;
-const path = require('path');
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
-const { articles_dir, metas_dir, temp_meta_dir } = require('./path_consts')
+const { temp_meta_dir } = require('./path_consts')
+const readline = require('readline');
 
 /**
  * We create a temporary folder before generating home_posts and unique_chips jsons
@@ -31,6 +30,24 @@ async function delete_temp_dir() {
     }
 }
 
+async function delete_directory(path) {
+  try {
+    await fs.rm(path, { recursive: true, force: true });
+    console.log(`Directory deleted successfully: ${path}`);
+  } catch (err) {
+    console.error(`Error deleting directory: ${err}`);
+  }
+}
+
+async function rename_directory(oldPath, newPath) {
+  try {
+    await fs.rename(oldPath, newPath);
+    console.log(`Directory renamed successfully from ${oldPath} to ${newPath}`);
+  } catch (err) {
+    console.error(`Error renaming directory: ${err}`);
+  }
+}
+
 async function checkDirectoryExists(dirPath) {
     try {
       const stats = await fs.stat(dirPath);
@@ -44,4 +61,28 @@ async function checkDirectoryExists(dirPath) {
   }
 
 
-module.exports = { make_temp_dir, delete_temp_dir, checkDirectoryExists };
+async function readJSON(filePath) {
+  try {
+    const data = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(`Error reading JSON file: ${error}`);
+    return null;
+  }
+}
+
+function askQuestion(question) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
+
+module.exports = { make_temp_dir, delete_temp_dir, checkDirectoryExists, readJSON, askQuestion, delete_directory, rename_directory };

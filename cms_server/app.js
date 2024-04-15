@@ -16,7 +16,7 @@ app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
 
 app.get(`/tag_desc`, async (req, res) => {
     try {
-        const jsonPath = path.join(DATA_DIR, './meta_resources/chip_description.json');
+        const jsonPath = path.join(DATA_DIR, './meta_resources/chip_definitions.json');
 
         if (!jsonPath) {
             return res.status(404).json({ message: 'Home posts JSON file not found' });

@@ -1,163 +1,127 @@
 const path = require('path');
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 const fss = require('fs');
 const fs = require('fs').promises;
-const { begin } = require('./generate_unique_chips.js')
+const { generate_unique_chips } = require('./generate_unique_chips.js')
 const { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir } = require('./get_file_paths.js')
-const { make_temp_dir, delete_temp_dir, checkDirectoryExists} = require('./misc_utils.js')
-const { articles_dir, metas_dir, temp_meta_dir } = require('./path_consts')
+const { delete_directory, askQuestion, rename_directory} = require('./misc_utils.js')
+const { articles_dir, metas_dir, temp_meta_dir, svg_dir, temp_unique_chips_path, unique_chips_path, temp_home_posts_path, home_posts_path, temp_chip_definition_path, chip_definition_path } = require('./path_consts')
 const readline = require('readline');
+const { validate_chips_have_svgs } = require('./validate_svgs.js')
+const { ensure_article_dir_has_correct_files } = require('./validate_article.js')
+const { copy_chip_defintiions, validate_chips_have_definitions} = require('./validate_chips.js')
+const { does_temp_meta_dir_exist, make_temp_dir, delete_temp_dir } = require('./prepare_meta_dir.js');
+const { error } = require('console');
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-function question(text) {
-    return new Promise((resolve) => {
-        rl.question(text, resolve);
-    });
-}
+/**
+ * Reads through articles directory and create a home_posts.json summary of them.
+ * This file is essential in the CMS operating
+ * @param {string} save_directory - The path of the dir the home_posts file saves to
+ * @returns {string} The SVG file name in lowercase.
+ */
+async function generate_home_posts(save_directory, articles_dir, ignore_example_article=true) {
+  let compiledData = [];
 
-async function get_home_posts() {
-    const path = await getDatetimeJsonPath("home_posts")
-    console.log("got home_posts path")
+  // Get the articles directory
+  const subDirs = await fs.readdir(articles_dir, { withFileTypes: true });
+  // Get all of the indivudual article directories
+  for (const dir of subDirs.filter(dirent => dirent.isDirectory())) {
+    const metaPath = path.join(articlesDir, dir.name);
+    if (ignore_example_article && dir.name=="example") continue;
 
-    if (!path) return false;
+    // Verify That the current article is ready for deployment
+    if (await !ensure_article_dir_has_correct_files(metaPath)){
+      return false
+    }
 
     try {
-        const data = await fs.readFile(path, 'utf8');
-
-        console.log("obtained home_posts.json.  -   returning...")
-
-        return JSON.parse(data)
-    } catch (error) {
-        console.error('Error reading the latest home_posts file:', error);
+      const metaPath = path.join(articlesDir, dir.name, 'meta.json');
+        const metaData = await fs.readFile(metaPath, 'utf8');
+        let obj = JSON.parse(metaData)
+        obj["source"] = dir.name
+        compiledData.push(obj);
+    } catch (err) {
+        console.error(`Error reading the meta file in ${dir.name}:`, err);
     }
-}
+  }
 
-async function createHomePostsFile(data) {
-    const dataString = JSON.stringify(data, null, 2);
+  const dataString = JSON.stringify(compiledData, null, 2);
 
-    const dateTime = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
-    const directoryPath = path.join(DATA_DIR, './meta_resources');
-    const filePath = path.join(directoryPath, `home_posts_${dateTime}.json`);
+  const filePath = path.join(save_directory, `home_posts.json`);
 
-    console.log("wrote new home_posts.json to meta_resources")
+  fss.writeFileSync(filePath, dataString);
 
-    fss.writeFileSync(filePath, dataString);
-}
+  return true
 
-async function countMdxFiles(dir = articlesDir) {
-
-    // const dir = '../CMS/articles/'
-
-    let count = 0;
-  
-    const items = await fs.readdir(dir, { withFileTypes: true });
-    
-    for (const item of items) {
-      const fullPath = path.join(dir, item.name);
-      if (item.isDirectory()) {
-        count += await countMdxFiles(fullPath);
-      } else {
-        if (path.extname(fullPath) === '.mdx') {
-          count++;
-        }
-      }
-    }
-  
-    return count;
-}
-
-async function compileHomePosts() {
-    let compiledData = [];
-
-    // Step 1: Traverse the articles directory
-    const subDirs = await fs.readdir(articlesDir, { withFileTypes: true });
-    for (const dir of subDirs.filter(dirent => dirent.isDirectory())) {
-        const metaPath = path.join(articlesDir, dir.name, 'meta.json');
-        try {
-            const metaData = await fs.readFile(metaPath, 'utf8');
-            let obj = JSON.parse(metaData)
-            obj["source"] = dir.name
-            compiledData.push(obj);
-        } catch (err) {
-            console.error(`Error reading the meta file in ${dir.name}:`, err);
-        }
-    }
-
-    await createHomePostsFile(compiledData);
 }
 
 // Refresh homeposts.json and uniquechips.json
 async function start() {
-
-    console.log("Starting Meta Resources Refresh...");
-    console.log("Checking if temp dir already exists...");
-    const temp_dir_exists = await checkDirectoryExists(temp_meta_dir);
     
-    if (!temp_dir_exists) {
-      console.log("Temp directory does not exist. Can continue...");
-    } else {
-      console.log("Temp directory already exists.\nYou must remove it to continue");
-      
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-      });
-  
-      const answer = await new Promise((resolve) => {
-        rl.question("Do you want to remove the temp directory? (y/n) ", (answer) => {
-          resolve(answer);
-        });
-      });
-  
-      rl.close();
-  
+    if (await does_temp_meta_dir_exist(temp_meta_dir)) {
+      const answer = await askQuestion("The Temp directory already exists. Would you like to delete it? (y/n)")
+      console.log(answer)
       if (answer.trim().toLowerCase() === "y") {
-        console.log("Removing temp directory...");
-        await delete_temp_dir();
-        const exists_after_deletion = await (checkDirectoryExists(temp_meta_dir))
-        if (exists_after_deletion) {
-            console.log("An error has occured. The temp directory was not able to be deleted. Returning...");
-            returning
+        await delete_temp_dir(temp_meta_dir);
+        if (await does_temp_meta_dir_exist(temp_meta_dir)) {
+            throw error ("Failed to delete temp directory. Quitting")
+            process.exit(0);
         }
-      } else {
-        console.log("Closing");
-        return;
       }
+      else console.log("Quitting...")
     }
-    
+
+    if (await !make_temp_dir(temp_meta_dir)) {
+      throw error ("Failed to create temp directory. Quitting")
+      process.exit(0);
+    }
 
 
-    console.log("Continuing with the rest of the code...");
+    console.log("generating home posts...")
 
-    // if (!make_temp_dir()) {
-    //     console.log("Failed to create temp directory Quitting")
-    //     return;
-    // }
+    await generate_home_posts(temp_meta_dir, articles_dir)
 
-    // console.log("Created temp directory")
+    console.log("generated home posts succefully.\n")
 
 
-    // if (await get_home_posts()) {
-    //     console.log("home_posts.json already exists. Deleting it...")
-    //     await deleteHomePosts();
-    // }
+    console.log("generating unique chips...")
 
-    // console.log("Got home_posts.json from CMS")
+    await generate_unique_chips(temp_meta_dir, temp_home_posts_path);
 
-    // console.log("deleting home_posts.json")
+    console.log("generated unique chips succefully.\n")
 
-    // await deleteHomePosts();
 
-    // console.log("compiling new home_posts.json")
+    console.log("validating chip SVGS...")
 
-    // await compileHomePosts();
+    if (!await validate_chips_have_svgs(svg_dir, temp_unique_chips_path)) {
+      console.log("There are missing SVGs. Quitting...")
+      process.exit(0);
+    }
 
-    // // begin creating unique_chips.json
-    // await begin();
+    console.log("Validated chip SVGs succefully.\n")
+
+
+
+    await copy_chip_defintiions({from: chip_definition_path, to: temp_chip_definition_path})
+
+
+    console.log("validating chip definitions...")
+
+    await validate_chips_have_definitions(temp_unique_chips_path, temp_chip_definition_path, temp_chip_definition_path)
+
+    console.log("validated chip definitions succefully.\n")
+
+    console.log("Transferring temp directory to meta_resources...")
+
+    await delete_directory(metas_dir)
+
+    await rename_directory(temp_meta_dir, metas_dir)
+
+    process.exit(0);
 }
 
 start();

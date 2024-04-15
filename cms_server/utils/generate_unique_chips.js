@@ -1,9 +1,7 @@
 const path = require('path');
 const fs = require('fs')
-const { getDatetimeJsonPath, deleteUniqueChips } = require('./get_file_paths.js')
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 
-function generateUniqueChips(posts) {
+function generate_non_repeating_list_of_chips_from_home_posts(posts) {
     const allChips = posts.flatMap(post => post.chips);
     
     var chip_array = [...new Set(allChips)];
@@ -13,37 +11,26 @@ function generateUniqueChips(posts) {
     return chip_array
 }
 
+/**
+ * Reads through the home_posts and condenses all of the chips to a nonrepeating array
+ * and saves it as a json
+ * @param {string} save_directory - The path of the dir the home_posts file saves to
+ */
+async function generate_unique_chips(save_directory, home_posts_path){
 
-async function begin(){
+    const home_posts = require(home_posts_path)
 
-    console.log("Generating unique chips...")
-
-    const hp_path = await getDatetimeJsonPath("home_posts")
-    const home_posts = require(hp_path)
-
-    console.log("Obtained home_posts")
-
-    const data = generateUniqueChips(home_posts);
-
-    console.log("generated unique chips from home_posts")
+    const data = generate_non_repeating_list_of_chips_from_home_posts(home_posts);
 
     const dataString = JSON.stringify(data, null, 2);
 
-    console.log("stringified unique chips")
-
     try {
 
-        const dateTime = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
-
-        await deleteUniqueChips()
-        console.log("deleted old unique_chips file")
-
-        console.log("Writing new unique chips file")
-        await fs.writeFileSync(path.join(DATA_DIR, `./meta_resources/unique_chips_${dateTime}.json`), dataString);
+        await fs.writeFileSync(path.join(save_directory, "unique_chips.json"), dataString);
         console.log('JSON data is saved.');
     } catch (error) {
         console.error('Error writing file:', error);
     }
 }
 
-module.exports = { begin };
+module.exports = { generate_unique_chips };
