@@ -104,8 +104,6 @@ async function start() {
 
     console.log("Validated chip SVGs succefully.\n")
 
-
-
     await copy_chip_defintiions({from: chip_definition_path, to: temp_chip_definition_path})
 
 
