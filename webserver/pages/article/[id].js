@@ -12,7 +12,7 @@ const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource}) {
+export default function Article({mdxSource, title, chips}) {
     const components = {
         Chip,
         MB_Button,
@@ -25,7 +25,23 @@ export default function Article({mdxSource}) {
         <Layout>
             <div className='flex justify-center pt-3 py-6 px-3'>
                 <div className="prose max-w-prose">
+                    <h1 className='mt-3'>{title}</h1>
+                    <div className="flex not-prose">
+                      <div className="flex flex-wrap justify-center">
+                        {
+                        chips.map((chip_text, index) => (
+                          <div key={index} className="mr-3 mt-3">
+                            <Chip chip_text={chip_text} />
+                          </div>
+                        ))
+                        }
+                      </div>
+                    </div>
+
+                    <hr/>
+
                     <MDXRemote {...mdxSource} components={components}/>
+                    <div className="flex justify-center position">written by Hayden</div>
                 </div>
             </div>
         </Layout>
@@ -40,7 +56,19 @@ export async function getStaticProps(context) {
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
-    return { props: { mdxSource }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
+    const article_meta = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${id}/meta.json`);
+
+    if (!article_meta.ok) {
+      console.error(`Failed to fetch from CMS: ${article_meta.statusText}`);
+      throw new Error(`Failed to fetch from CMS: ${article_meta.statusText}`);
+    }
+
+    const Article_Meta_JSON = await article_meta.json();
+
+    const chips = Article_Meta_JSON.chips;
+    const title = Article_Meta_JSON.title;
+
+    return { props: { mdxSource, title, chips }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {

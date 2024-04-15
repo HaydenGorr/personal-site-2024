@@ -16,9 +16,7 @@ const nextConfig = {
   images: {
     remotePatterns: [{
       protocol: 'http',
-      hostname: 'localhost',
-      port: '3001',
-      pathname: '/CMS/articles/**',
+      hostname: '**',
     },
     {/**
       * http://127.0.0.1:3002 - this is the same as localhost. For some reason the dns was resolving localhost to ipv6 which was causing connection issues with cms.
