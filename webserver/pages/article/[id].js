@@ -74,7 +74,7 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
 
     try {
-        const homePostsResponse = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/meta_resources/home_posts`);
+        const homePostsResponse = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_articles`);
     
         if (!homePostsResponse.ok) {
           console.error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);

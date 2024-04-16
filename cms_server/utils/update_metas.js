@@ -2,7 +2,6 @@ const path = require('path');
 const fss = require('fs');
 const fs = require('fs').promises;
 const readline = require('readline');
-const { generate_unique_chips } = require('./generate_unique_chips.js')
 const { delete_directory, askQuestion, rename_directory} = require('./misc_utils.js')
 const { validate_chips_have_svgs } = require('./validate_svgs.js')
 const { ensure_article_dir_has_correct_files } = require('./validate_article.js')
@@ -90,7 +89,7 @@ async function start() {
 
       console.log("generating unique chips...")
 
-      await generate_unique_chips(temp_meta_dir, temp_home_posts_path);
+      // await generate_unique_chips(temp_meta_dir, temp_home_posts_path);
 
       console.log("generated unique chips succefully.\n")
 

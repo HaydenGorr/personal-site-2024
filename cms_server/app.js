@@ -5,64 +5,37 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT;
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
-const { metas_dir } = require('./utils/path_consts')
+const { get_unique_chips, get_all_ready_articles, create_article, add_view } = require('./utils/mongo_utils');
 
 app.use(cors());
 app.use(express.json());
 
+/**
+ * THIS IS A REPLACEMENT FOR HOME_POSTS AND UNIQUE CHIPS
+ */
+app.get('/get_all_ready_articles', async (req, res) => {
+
+    const result = await get_all_ready_articles()
+
+    if (result.error) {res.status(500).json({ error: 'Internal server error' }); return}
+
+    res.json(result);
+
+
+});
+app.get('/get_unique_chips', async (req, res) => {
+    const chips = await get_unique_chips()
+
+    if (!chips) res.status(500).json({ error: 'Internal server error' });
+
+    res.json(chips)
+});
+
+app.get('/add_view', async (req, res) => {})
+app.get('/create_article', async (req, res) => {create_article(req.query)})
+
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
-
-
-app.get(`/tag_desc`, async (req, res) => {
-    try {
-        const jsonPath = path.join(DATA_DIR, './meta_resources/chip_definitions.json');
-
-        if (!jsonPath) {
-            return res.status(404).json({ message: 'Home posts JSON file not found' });
-        }
-
-        const jsonData = require(jsonPath);
-
-        res.json(jsonData);
-    } catch (error) {
-        console.error('Error proxying request:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
-app.get(`/meta_resources/home_posts`, async (req, res) => {
-    try {
-        const jsonPath = path.join(metas_dir, "home_posts.json");
-
-        if (!jsonPath) {
-            return res.status(404).json({ message: 'Home posts JSON file not found' });
-        }
-
-        const jsonData = require(jsonPath);
-
-        res.json(jsonData);
-    } catch (error) {
-        console.error('Error proxying request:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
-app.get(`/meta_resources/unique_chips`, async (req, res) => {
-    try {
-        const jsonPath = path.join(metas_dir, "unique_chips");
-
-        if (!jsonPath) {
-            return res.status(404).json({ message: 'Home posts JSON file not found' });
-        }
-
-        const jsonData = require(jsonPath);
-        res.json(jsonData);
-    } catch (error) {
-        console.error('Error proxying request:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
 
 app.get(`/favicon`, async (req, res) => {
     const { href } = req.query;
