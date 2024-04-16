@@ -1,16 +1,16 @@
 const path = require('path');
 const fss = require('fs');
 const fs = require('fs').promises;
-const { generate_unique_chips } = require('./generate_unique_chips.js')
-const { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir } = require('./get_file_paths.js')
-const { delete_directory, askQuestion, rename_directory} = require('./misc_utils.js')
-const { articles_dir, metas_dir, temp_meta_dir, svg_dir, temp_unique_chips_path, unique_chips_path, temp_home_posts_path, home_posts_path, temp_chip_definition_path, chip_definition_path } = require('./path_consts')
 const readline = require('readline');
+const { generate_unique_chips } = require('./generate_unique_chips.js')
+const { delete_directory, askQuestion, rename_directory} = require('./misc_utils.js')
 const { validate_chips_have_svgs } = require('./validate_svgs.js')
 const { ensure_article_dir_has_correct_files } = require('./validate_article.js')
 const { copy_chip_defintiions, validate_chips_have_definitions} = require('./validate_chips.js')
 const { does_temp_meta_dir_exist, make_temp_dir, delete_temp_dir } = require('./prepare_meta_dir.js');
 const { error } = require('console');
+const { articles_dir, metas_dir, temp_meta_dir, svg_dir, temp_unique_chips_path, unique_chips_path, temp_home_posts_path, home_posts_path, temp_chip_definition_path, chip_definition_path } = require('./path_consts')
+
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -30,8 +30,8 @@ async function generate_home_posts(save_directory, articles_dir, ignore_example_
   const subDirs = await fs.readdir(articles_dir, { withFileTypes: true });
   // Get all of the indivudual article directories
   for (const dir of subDirs.filter(dirent => dirent.isDirectory())) {
-    const metaPath = path.join(articlesDir, dir.name);
-    if (ignore_example_article && dir.name=="example") continue;
+    const metaPath = path.join(articles_dir, dir.name);
+    if (ignore_example_article && dir.name==".example") continue;
 
     // Verify That the current article is ready for deployment
     if (await !ensure_article_dir_has_correct_files(metaPath)){
@@ -39,7 +39,7 @@ async function generate_home_posts(save_directory, articles_dir, ignore_example_
     }
 
     try {
-      const metaPath = path.join(articlesDir, dir.name, 'meta.json');
+      const metaPath = path.join(articles_dir, dir.name, 'meta.json');
         const metaData = await fs.readFile(metaPath, 'utf8');
         let obj = JSON.parse(metaData)
         obj["source"] = dir.name

@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT;
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
-const { getDatetimeJsonPath, deleteUniqueChips, deleteHomePosts, articlesDir, metasDir } = require('./utils/get_file_paths')
+const { metas_dir } = require('./utils/path_consts')
 
 app.use(cors());
 app.use(express.json());
@@ -33,7 +33,7 @@ app.get(`/tag_desc`, async (req, res) => {
 
 app.get(`/meta_resources/home_posts`, async (req, res) => {
     try {
-        const jsonPath = await getDatetimeJsonPath('home_posts');
+        const jsonPath = path.join(metas_dir, "home_posts.json");
 
         if (!jsonPath) {
             return res.status(404).json({ message: 'Home posts JSON file not found' });
@@ -50,7 +50,7 @@ app.get(`/meta_resources/home_posts`, async (req, res) => {
 
 app.get(`/meta_resources/unique_chips`, async (req, res) => {
     try {
-        const jsonPath = await getDatetimeJsonPath('unique_chips');
+        const jsonPath = path.join(metas_dir, "unique_chips");
 
         if (!jsonPath) {
             return res.status(404).json({ message: 'Home posts JSON file not found' });
