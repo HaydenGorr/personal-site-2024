@@ -35,7 +35,6 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
                     <p className="flex grow mr-10 text-base font-medium	">{home_post_obj.desc}</p>
                     <p className="font-sm mt-3 text-gray-500 text-sm">{home_post_obj.infoText}</p>
                 </div>
-                {/* <Image className='cursor-pointer' src='/images/svgs/uparrow.svg' width={24} height={24}></Image> */}
             </div>
 
             <div className="flex flex-wrap mt-2">
