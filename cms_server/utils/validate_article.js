@@ -34,6 +34,7 @@ async function ensure_article_dir_has_correct_files(path_to_article) {
         }
 
         if (!fileExists) {
+            console.log(`Required file ${file} is missing.`);
             throw new Error(`Required file ${file} is missing.`);
         }
     }

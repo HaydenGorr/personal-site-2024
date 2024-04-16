@@ -61,63 +61,67 @@ async function generate_home_posts(save_directory, articles_dir, ignore_example_
 
 // Refresh homeposts.json and uniquechips.json
 async function start() {
-    
-    if (await does_temp_meta_dir_exist(temp_meta_dir)) {
-      const answer = await askQuestion("The Temp directory already exists. Would you like to delete it? (y/n)")
-      console.log(answer)
-      if (answer.trim().toLowerCase() === "y") {
-        await delete_temp_dir(temp_meta_dir);
-        if (await does_temp_meta_dir_exist(temp_meta_dir)) {
-            throw error ("Failed to delete temp directory. Quitting")
-            process.exit(0);
+    try{
+      if (await does_temp_meta_dir_exist(temp_meta_dir)) {
+        const answer = await askQuestion("The Temp directory already exists. Would you like to delete it? (y/n)")
+        console.log(answer)
+        if (answer.trim().toLowerCase() === "y") {
+          await delete_temp_dir(temp_meta_dir);
+          if (await does_temp_meta_dir_exist(temp_meta_dir)) {
+              throw error ("Failed to delete temp directory. Quitting")
+              process.exit(0);
+          }
         }
+        else console.log("Quitting...")
       }
-      else console.log("Quitting...")
+
+      if (await !make_temp_dir(temp_meta_dir)) {
+        throw error ("Failed to create temp directory. Quitting")
+        process.exit(0);
+      }
+
+
+      console.log("generating home posts...")
+
+      await generate_home_posts(temp_meta_dir, articles_dir)
+
+      console.log("generated home posts succefully.\n")
+
+
+      console.log("generating unique chips...")
+
+      await generate_unique_chips(temp_meta_dir, temp_home_posts_path);
+
+      console.log("generated unique chips succefully.\n")
+
+
+      console.log("validating chip SVGS...")
+
+      if (!await validate_chips_have_svgs(svg_dir, temp_unique_chips_path)) {
+        console.log("There are missing SVGs. Quitting...")
+        process.exit(0);
+      }
+
+      console.log("Validated chip SVGs succefully.\n")
+
+      await copy_chip_defintiions({from: chip_definition_path, to: temp_chip_definition_path})
+
+
+      console.log("validating chip definitions...")
+
+      await validate_chips_have_definitions(temp_unique_chips_path, temp_chip_definition_path, temp_chip_definition_path)
+
+      console.log("validated chip definitions succefully.\n")
+
+      console.log("Transferring temp directory to meta_resources...")
+
+      await delete_directory(metas_dir)
+
+      await rename_directory(temp_meta_dir, metas_dir)
+    } catch (err) {
+      console.log(err)
     }
 
-    if (await !make_temp_dir(temp_meta_dir)) {
-      throw error ("Failed to create temp directory. Quitting")
-      process.exit(0);
-    }
-
-
-    console.log("generating home posts...")
-
-    await generate_home_posts(temp_meta_dir, articles_dir)
-
-    console.log("generated home posts succefully.\n")
-
-
-    console.log("generating unique chips...")
-
-    await generate_unique_chips(temp_meta_dir, temp_home_posts_path);
-
-    console.log("generated unique chips succefully.\n")
-
-
-    console.log("validating chip SVGS...")
-
-    if (!await validate_chips_have_svgs(svg_dir, temp_unique_chips_path)) {
-      console.log("There are missing SVGs. Quitting...")
-      process.exit(0);
-    }
-
-    console.log("Validated chip SVGs succefully.\n")
-
-    await copy_chip_defintiions({from: chip_definition_path, to: temp_chip_definition_path})
-
-
-    console.log("validating chip definitions...")
-
-    await validate_chips_have_definitions(temp_unique_chips_path, temp_chip_definition_path, temp_chip_definition_path)
-
-    console.log("validated chip definitions succefully.\n")
-
-    console.log("Transferring temp directory to meta_resources...")
-
-    await delete_directory(metas_dir)
-
-    await rename_directory(temp_meta_dir, metas_dir)
 
     process.exit(0);
 }

@@ -1,8 +1,0 @@
-{
-    "title": "Example article",
-    "desc": "A cross platform app created for a client",
-    "infoText": "Click image to open",
-    "chips": [
-        "Swift", "Android", "iOS", "Mobile Development", "Freelance", "App Development"
-    ]
-}
