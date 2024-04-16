@@ -90,6 +90,7 @@ export default function Home({home_posts, unique_chips}) {
 
       jp.viable_tags.map((item, index) => {
         unique_chips.map((citem, cindex) => {
+          if (matched_tags.includes(citem)) return;
           citem.toLowerCase() == item.toLowerCase() ? matched_tags.push(citem) : null;
         })
       })
