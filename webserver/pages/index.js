@@ -75,9 +75,6 @@ export default function Home({home_posts, unique_chips}) {
 
     const response = await get_response({ ai: "TF", message: userMSG });
 
-    console.log("\n\nresponse", response, "\n\n");
-
-
     try {
       let jp = JSON.parse(response);
 
