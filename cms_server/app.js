@@ -7,10 +7,16 @@ const PORT = process.env.PORT;
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
 const { get_unique_chips, get_all_ready_articles, create_article, add_view } = require('./utils/mongo_utils');
 const { get_article } = require('./utils/mongo_utils/get_article')
-
+const Cookies = require('js-cookie');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { get_users_by_username } = require('./utils/mongo_utils/get_user_by_username')
+const { add_user } = require('./utils/mongo_utils/add_user')
 
 app.use(cors());
 app.use(express.json());
+
+const secretKey = 'your-secret-key';
 
 /**
  * THIS IS A REPLACEMENT FOR HOME_POSTS AND UNIQUE CHIPS
@@ -46,8 +52,64 @@ app.get('/get_article_meta', async (req, res) => {
 
 })
 
-app.get('/create_article', async (req, res) => {
-	
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  console.log("loggging in: ", username, password)
+
+  const users = await get_users_by_username(username, password)
+
+  console.log("got users: ", users)
+  
+  if (users.length > 0){
+    var user = users[0]
+  }
+  else {
+    console.log(users)
+    console.log("no users found.")
+    return
+  }
+
+  try {
+    console.log("validate password")
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log("validated")
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    console.log("creating token")
+    const token = await jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
+    console.log("creatied token")
+
+    res.json({ token });
+  } catch(error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
+})
+
+app.post('/signup', async (req, res) => {
+  const { username, password } = req.body;
+
+  console.log(username, password)
+
+  try {
+    // Hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (!await add_user(username, hashedPassword)) {
+      console.log("Failed to add user")
+      return
+    }
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 })
 
 

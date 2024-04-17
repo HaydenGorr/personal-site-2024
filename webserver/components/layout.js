@@ -6,17 +6,27 @@ import { useState, useEffect } from 'react';
 
 export default function Layout({ children, home }) {
 
-  const [isActive, setIsActive] = useState(false);
+  const headerText = ["Hayden", "1.6.1"]
+  const [headerPtr, setHeaderPtr] = useState(0);
+
+  const incrementHeaderLayers = () => {
+    if (headerPtr == 2) {
+      setHeaderPtr(0)
+      return
+    }
+    setHeaderPtr(headerPtr+1)
+  }
+
 
   // Effect to reset the variable after 5 seconds
   useEffect(() => {
-    if (isActive) {
+    if (headerPtr > 0) {
         const timer = setTimeout(() => {
-            setIsActive(false);
-        }, 500);
+          setHeaderPtr(0);
+        }, 1000);
         return () => clearTimeout(timer);
     }
-  }, [isActive]);
+  }, [headerPtr]);
 
   return (
     <div>
@@ -26,7 +36,8 @@ export default function Layout({ children, home }) {
       <header className='flex flex-col items-center default_colour sticky top-0 z-40'>
         
         <div className="flex md:justify-between w-full">
-            <h1 className='my-auto ml-10 text-xl font-bold hideonmobile' onClick={() => {setIsActive(true)}}>{ isActive ? process.env.NEXT_PUBLIC_VERSION : "Hayden"}</h1>
+            {headerPtr==2 && <div className="my-auto ml-10 text-xl font-bold hideonmobile"><MB_Button text="login" given_href="/admin/login"></MB_Button></div>}
+            {headerPtr<3 && <h1 className='my-auto ml-10 text-xl font-bold hideonmobile' onClick={() => {incrementHeaderLayers()}}>{ headerText[headerPtr] }</h1>}
             <div className='flex p-3 overflow-x-scroll'>
                 <div className={`mr-4 min-w-fit`}>
                     <MB_Button text={"HOME"} given_href={"/"} image_src={'/images/svgs/home.svg'}/>
