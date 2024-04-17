@@ -122,8 +122,11 @@ export default function Home({home_posts, unique_chips}) {
       </Head>
       <section>
 
+
+        <h1 className='my-3  text-center font-extrabold text-4xl'>ARTICLES</h1>
+
         {selectedKeywords.length > 0 && (
-          <div className="mt-3 mx-3">
+          <div className="mx-3">
             <div className="flex flex-wrap justify-center">
               {/* <div>contains any</div> */}
               {selectedKeywords.map((item, index) => (

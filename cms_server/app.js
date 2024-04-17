@@ -46,6 +46,11 @@ app.get('/get_article_meta', async (req, res) => {
 
 })
 
+app.get('/create_article', async (req, res) => {
+	
+})
+
+
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
 

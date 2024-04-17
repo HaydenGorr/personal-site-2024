@@ -42,7 +42,7 @@ export default function Article({mdxSource, title, chips, publishDate}) {
                     <hr/>
 
                     <MDXRemote {...mdxSource} components={components}/>
-                    <div className="flex justify-center position">written by Hayden</div>
+                    <div className="flex justify-center position">by Hayden</div>
                     <p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
                 </div>
             </div>

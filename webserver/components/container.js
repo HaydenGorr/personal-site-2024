@@ -2,6 +2,7 @@ import Image from "next/image";
 import ClosableChip from "./closable_chip";
 import { useRouter } from 'next/router'
 import getDate from '../utils/date_utils'
+import { getDaysAgo } from '../utils/date_utils'
 
 export default function Container({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer}) {
     const router = useRouter();
@@ -11,17 +12,6 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
         else {
             router.push(`/missingArticle`)
         }
-    }
-
-    const getDate = (dateString) => {
-        const date = new Date(dateString)
-        const britishDate = date.toLocaleDateString('en-GB', {
-            year: 'numeric', 
-            month: '2-digit', 
-            day: '2-digit'
-        });
-
-        return britishDate
     }
 
     return (
@@ -47,11 +37,14 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
                 <div className="flex mt-3 flex-col w-full">
                     <p className="flex grow mr-10 text-base font-medium	">{home_post_obj.desc}</p>
                     <div className="flex w-full">
-                        <p className="font-sm mt-3 text-gray-500 text-xs">{home_post_obj.infoText + " -"}</p>
-                        <p className="font-sm mt-3 text-gray-500 text-xs">{"- published: " + getDate(home_post_obj.publishDate).toString()}</p>
+                        {/* <p className="font-sm mt-3 text-gray-500 text-xs">{home_post_obj.infoText + " -"}</p> */}
+                        <p className="font-sm mt-3 text-gray-500 text-xs">{"published " + getDaysAgo(home_post_obj.publishDate)}</p>
                     </div>
                 </div>
             </div>
+            
+            <div class="bg-gray-300 h-px mt-4"></div>
+
 
             <div className="flex flex-wrap mt-2">
                 {home_post_obj.chips.map((chip_text, index) => (
