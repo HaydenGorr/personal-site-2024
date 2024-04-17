@@ -1,7 +1,7 @@
 const path = require('path');
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 
-const MONGODB_BASE = 'mongodb://localhost:27017';
+const MONGODB_BASE = `mongodb://localhost:${process.env.MONGO_PORT}`;
 const MONOGDB_ARTICLES = MONGODB_BASE + '/articles';
 const MONOGDB_CHIPS = MONGODB_BASE + '/chips';
 
