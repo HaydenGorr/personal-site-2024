@@ -7,12 +7,14 @@ import Image from 'next/image';
 import ImageWrapper from '../../components/image_wrapper';
 // import CustomLink from '../../components/custom_link';
 import dynamic from 'next/dynamic';
+import getDate from '../../utils/date_utils'
+
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource, title, chips}) {
+export default function Article({mdxSource, title, chips, publishDate}) {
     const components = {
         Chip,
         MB_Button,
@@ -37,11 +39,11 @@ export default function Article({mdxSource, title, chips}) {
                         }
                       </div>
                     </div>
-
                     <hr/>
 
                     <MDXRemote {...mdxSource} components={components}/>
                     <div className="flex justify-center position">written by Hayden</div>
+                    <p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
                 </div>
             </div>
         </Layout>
@@ -56,7 +58,7 @@ export async function getStaticProps(context) {
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
-    const article_meta = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${id}/meta.json`);
+    const article_meta = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_article_meta?articlesrc=${id}`);
 
     if (!article_meta.ok) {
       console.error(`Failed to fetch from CMS: ${article_meta.statusText}`);
@@ -67,8 +69,9 @@ export async function getStaticProps(context) {
 
     const chips = Article_Meta_JSON.chips;
     const title = Article_Meta_JSON.title;
+    const publishDate = Article_Meta_JSON.publishDate;
 
-    return { props: { mdxSource, title, chips }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
+    return { props: { mdxSource, title, chips, publishDate }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {

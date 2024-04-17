@@ -99,17 +99,10 @@ async function create_article({article}){
      */
     const result = await validate_article_before_publishing(new_article_path, article_dir_name)
 
-    console.log(result)
-    console.log("here2")
-
     // If result is false. validate_article_before_publishing() should never return an empty array
     if(!result) return false
 
-    console.log("here3")
-
     const article_meta = await readJSON(path.join(new_article_path, "meta.json"))
-
-    console.log("here4")
 
     if (typeof result == "object") {
       console.log("This article has already been published, but there are updates to commit")

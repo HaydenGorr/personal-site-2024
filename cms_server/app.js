@@ -35,6 +35,16 @@ app.get('/get_unique_chips', async (req, res) => {
 
 app.get('/add_view', async (req, res) => {})
 app.get('/create_article', async (req, res) => {create_article(req.query)})
+app.get('/get_article_meta', async (req, res) => {
+  const {articlesrc} = req.query
+
+  const article = await get_article(articlesrc)
+
+  if (article.length === 0) res.status(404).json({ error: 'Article not found' });
+
+  res.json(article[0])
+
+})
 
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));

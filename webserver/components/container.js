@@ -1,6 +1,7 @@
 import Image from "next/image";
 import ClosableChip from "./closable_chip";
 import { useRouter } from 'next/router'
+import getDate from '../utils/date_utils'
 
 export default function Container({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer}) {
     const router = useRouter();
@@ -12,6 +13,17 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
         }
     }
 
+    const getDate = (dateString) => {
+        const date = new Date(dateString)
+        const britishDate = date.toLocaleDateString('en-GB', {
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit'
+        });
+
+        return britishDate
+    }
+
     return (
         <div className={`${colour} flex flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width`}>
 
@@ -19,6 +31,7 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
                 <div>
                     {home_post_obj.title}
                 </div>
+                
             </div>
 
             <Image className="rounded-md overflow-hidden cursor-pointer"
@@ -30,10 +43,13 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
                 onClick={() => {go_to_article(home_post_obj.source)}}
             />
 
-            <div className="flex mt-3">
-                <div className="flex mt-3 flex-col">
+            <div className="flex mt-3 w-full">
+                <div className="flex mt-3 flex-col w-full">
                     <p className="flex grow mr-10 text-base font-medium	">{home_post_obj.desc}</p>
-                    <p className="font-sm mt-3 text-gray-500 text-sm">{home_post_obj.infoText}</p>
+                    <div className="flex w-full">
+                        <p className="font-sm mt-3 text-gray-500 text-xs">{home_post_obj.infoText + " -"}</p>
+                        <p className="font-sm mt-3 text-gray-500 text-xs">{"- published: " + getDate(home_post_obj.publishDate).toString()}</p>
+                    </div>
                 </div>
             </div>
 
