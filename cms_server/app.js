@@ -6,6 +6,8 @@ const app = express();
 const PORT = process.env.PORT;
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
 const { get_unique_chips, get_all_ready_articles, create_article, add_view } = require('./utils/mongo_utils');
+const { get_article } = require('./utils/mongo_utils/get_article')
+
 
 app.use(cors());
 app.use(express.json());
