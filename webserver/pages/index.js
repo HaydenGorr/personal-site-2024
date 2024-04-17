@@ -28,7 +28,8 @@ export async function getStaticProps() {
 
     console.log(chips)
 
-
+    // Sort by date
+    home_posts.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
 
     return {
       props: {
