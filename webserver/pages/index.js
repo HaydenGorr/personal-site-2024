@@ -123,7 +123,7 @@ export default function Home({home_posts, unique_chips}) {
       <section>
 
 
-        <h1 className='my-3  text-center font-extrabold text-4xl'>ARTICLES</h1>
+        <h1 className='mt-5  text-center font-extrabold text-4xl'>ARTICLES</h1>
 
         {selectedKeywords.length > 0 && (
           <div className="mx-3">
