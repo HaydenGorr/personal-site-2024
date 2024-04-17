@@ -12,9 +12,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { get_users_by_username } = require('./utils/mongo_utils/get_user_by_username')
 const { add_user } = require('./utils/mongo_utils/add_user')
+const cookieParser = require('cookie-parser');
+const { get_all_articles } = require('./utils/get_all_articles')
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 const secretKey = 'your-secret-key';
 
@@ -60,7 +63,7 @@ app.post('/login', async (req, res) => {
   const users = await get_users_by_username(username, password)
 
   console.log("got users: ", users)
-  
+
   if (users.length > 0){
     var user = users[0]
   }
@@ -111,6 +114,41 @@ app.post('/signup', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 })
+
+
+/**
+ * SECURE ENDPOINTS
+ */
+app.get('/secure/get_all_articles', async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+
+  console.log(token)
+
+  try {
+    // Verify the JWT
+    const decoded = jwt.verify(token, secretKey);
+
+    // Access the decoded payload
+    const userId = decoded.userId;
+
+    const articles = await get_all_articles()
+
+    console.log(articles)
+
+    res.json(articles);
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    console.error('Error accessing protected resource:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
+})
+
 
 
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
