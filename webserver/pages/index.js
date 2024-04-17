@@ -14,8 +14,8 @@ import MB_Button from '../components/MB_Button';
 export async function getStaticProps() {
   
   try {
-    const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/meta_resources/home_posts`);
-    const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/meta_resources/unique_chips`);
+    const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_articles`);
+    const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_unique_chips`);
 
     if (!home_posts_response.ok || !unique_chips_response.ok) {
       throw new Error('Failed to fetch data');
@@ -24,10 +24,16 @@ export async function getStaticProps() {
     const home_posts = await home_posts_response.json();
     const unique_chips = await unique_chips_response.json();
 
+    const chips = unique_chips.map( (item, index) => {return item.name} )
+
+    console.log(chips)
+
+
+
     return {
       props: {
         home_posts,
-        unique_chips
+        unique_chips: chips
       },
       revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS),
     };
