@@ -3,10 +3,13 @@ import Layout from "../../components/layout";
 import { useEffect, useState } from "react";
 import Special_Button from "../../components/special_button";
 import { get_response } from "../../utils/ai_talk";
+// import Container from "../../components/container";
+import AdminContainer from "../../components/admin_container";
+import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 
 export default function Admin() {
 
-    const [articles, setArticles] = useState('');
+    const [articles, setArticles] = useState([]);
 
 
     useEffect(() => {
@@ -14,22 +17,35 @@ export default function Admin() {
     }, []); 
 
     const get_articles = async () => {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_articles`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_articles`, {
+            method:'GET',
+            credentials: 'include'
+        });
         if (res.ok) {
-          console.log("response is OKAY");
-          const data = await res.json();
-          console.log(data);
-          setArticles(data);
+            console.log("response is OKAY");
+            const data = await res.json();
+            console.log(data);
+            setArticles(data);
         } else {
-          console.error('Error:', res.statusText);
+            console.error('Error:', res.statusText);
         }
-      };
+    };
 
     return (
         <Layout>
-            <div className="flex place-content-center h-full ">
-                articles
-                {articles}
+            <h1 className='mt-5 mb-2 text-center font-extrabold text-4xl'>ADMIN PAGE</h1>
+            <div className="">
+            <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
+                <Masonry gutter="0px">
+                    {articles.map((item, index) => (
+                        <AdminContainer
+                        home_post_obj={item}
+                        add_keywords_to_filter={() => {}}
+                        remove_keyword_from_filer={() => {}}
+                        selectedKeywords={[]}/>
+                    ))}
+                </Masonry>
+            </ResponsiveMasonry>
             </div>
         </Layout>
     );

@@ -15,7 +15,21 @@ async function get_article(article_dir_name){
     }
 }
 
+async function get_all_articles(){
+    try {
+        await mongoose.connect(MONOGDB_ARTICLES);
+        const articles = await Article.find();
+        return articles
+    } catch (error) {
+        console.error('Error:', error);
+        return 'Internal server error'
+    } finally {
+        await mongoose.connection.close();
+    }
+}
+
 
 module.exports = {
-    get_article
+    get_article,
+    get_all_articles
 };

@@ -13,11 +13,24 @@ const jwt = require('jsonwebtoken');
 const { get_users_by_username } = require('./utils/mongo_utils/get_user_by_username')
 const { add_user } = require('./utils/mongo_utils/add_user')
 const cookieParser = require('cookie-parser');
-const { get_all_articles } = require('./utils/get_all_articles')
+const { get_all_articles } = require('./utils/mongo_utils/get_article')
+const { validate_JWT } = require('./utils/validate_JWT')
 
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+
+const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com'];
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 const secretKey = 'your-secret-key';
 
@@ -54,6 +67,27 @@ app.get('/get_article_meta', async (req, res) => {
   res.json(article[0])
 
 })
+
+app.get('/loggedIn', async (req, res) => {
+  console.log("User opened login page");
+
+  const token = req.cookies.token;
+  if (!token) {
+    // If no token is provided, send a response indicating that the user is not logged in
+    return res.status(200).json({ loggedIn: false });
+  }
+
+  try {
+    // Verify the JWT
+    const decoded = jwt.verify(token, secretKey);
+
+    // If the token is valid, send a response indicating that the user is logged in
+    return res.status(200).json({ loggedIn: true });
+  } catch (error) {
+    // If the token is invalid or has expired, send a response indicating that the user is not logged in
+    return res.status(200).json({ loggedIn: false });
+  }
+});
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -120,32 +154,44 @@ app.post('/signup', async (req, res) => {
  * SECURE ENDPOINTS
  */
 app.get('/secure/get_all_articles', async (req, res) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
   }
+  
+  // Grab and return the articles
+  const articles = await get_all_articles()
+  res.json(articles);
+  
+  // console.log(token)
 
-  console.log(token)
+  // if (!token) {
+  //   return res.status(401).json({ error: 'No token provided' });
+  // }
 
-  try {
-    // Verify the JWT
-    const decoded = jwt.verify(token, secretKey);
+  // console.log(token)
 
-    // Access the decoded payload
-    const userId = decoded.userId;
+  // try {
+  //   // Verify the JWT
+  //   const decoded = jwt.verify(token, secretKey);
 
-    const articles = await get_all_articles()
+  //   // Access the decoded payload
+  //   const userId = decoded.userId;
 
-    console.log(articles)
+  //   const articles = await get_all_articles()
 
-    res.json(articles);
-  } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
-    console.error('Error accessing protected resource:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+  //   console.log("FROM DB: ", articles)
+
+  //   res.json(articles);
+  // } catch (error) {
+  //   if (error instanceof jwt.JsonWebTokenError) {
+  //     return res.status(401).json({ error: 'Invalid token' });
+  //   }
+  //   console.error('Error accessing protected resource:', error);
+  //   res.status(500).json({ error: 'Internal server error' });
+  // }
 
 })
 

@@ -1,3 +1,6 @@
+const fs = require('fs').promises;
+const path = require('path')
+
 const { articles_dir, metas_dir, temp_meta_dir, svg_dir, temp_unique_chips_path, unique_chips_path, temp_home_posts_path, home_posts_path, temp_chip_definition_path, chip_definition_path } = require('./path_consts')
 
 async function get_all_articles() {
@@ -8,12 +11,12 @@ async function get_all_articles() {
     // Get all of the indivudual article directories
     for (const dir of subDirs.filter(dirent => dirent.isDirectory())) {
       const metaPath = path.join(articles_dir, dir.name);
-      if (ignore_example_article && dir.name==".example") continue;
+      if (dir.name==".example") continue;
   
       // Verify That the current article is ready for deployment
-      if (await !ensure_article_dir_has_correct_files(metaPath)){
-        return false
-      }
+      // if (await !ensure_article_dir_has_correct_files(metaPath)){
+      //   return false
+      // }
   
       try {
         const metaPath = path.join(articles_dir, dir.name, 'meta.json');
