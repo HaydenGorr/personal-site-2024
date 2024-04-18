@@ -7,6 +7,7 @@ const { readJSON, askQuestion } = require('./misc_utils.js')
 const mongoose = require('mongoose');
 const { add_chip } = require('../utils/mongo_utils/add_chip.js')
 const { get_definitions_for_new_chips } = require('./validate_chips.js')
+const dbConnect = require('./db_conn.js')
 
 
 async function get_unique_chips(){
@@ -15,6 +16,9 @@ async function get_unique_chips(){
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
+
+        const conn = dbConnect()
+        
         const chips = await Chip.find();
         return chips
     } catch (error) {

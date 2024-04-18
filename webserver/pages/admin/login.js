@@ -128,7 +128,7 @@ export default function Login() {
                     <div className="flex justify-center">
                     <button
                             type="button"
-                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-3"
                             onClick={() => {send_login_request(Uusername, Upassword)}}
                         >
                             Login
@@ -138,7 +138,7 @@ export default function Login() {
                             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
                             onClick={() => {send_sign_up_request(Uusername, Upassword)}}
                         >
-                            SignUp
+                            Sign up
                         </button>
                     </div>
                 </form>
