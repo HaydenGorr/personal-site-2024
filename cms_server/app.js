@@ -15,6 +15,7 @@ const { add_user } = require('./utils/mongo_utils/add_user')
 const cookieParser = require('cookie-parser');
 const { get_all_articles } = require('./utils/mongo_utils/get_article')
 const { validate_JWT } = require('./utils/validate_JWT')
+const dbConnect = require('./utils/db_conn')
 
 app.use(cors());
 app.use(express.json());
@@ -49,6 +50,8 @@ app.get('/get_all_ready_articles', async (req, res) => {
 });
 app.get('/get_unique_chips', async (req, res) => {
     const chips = await get_unique_chips()
+
+    console.log(chips)
 
     if (!chips) res.status(500).json({ error: 'Internal server error' });
 

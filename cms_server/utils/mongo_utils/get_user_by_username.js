@@ -1,18 +1,14 @@
-const { MONOGDB_USERS } = require('../path_consts')
-const mongoose = require('mongoose');
-const { User } = require('../../mongo_schemas/user_schema');
-
+const User = require('../../mongo_schemas/user_schema');
+const { dbConnect } = require('../db_conn')
 async function get_users_by_username(username) {
-  
+    const connection = await dbConnect(process.env.DB_USERS_NAME)
+
     try {
-      await mongoose.connect(MONOGDB_USERS);
-      const users = await User.find({username: username});
+      const users = await User(connection).find({username: username});
       return users
     } catch (error) {
         console.error('Error:', error);
         return 'Internal server error'
-    } finally {
-        await mongoose.connection.close();
     }
 }
 

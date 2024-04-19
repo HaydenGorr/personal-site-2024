@@ -1,5 +1,5 @@
-const { Article } = require('../mongo_schemas/article_schema.js');
-const { Chip } = require('../mongo_schemas/chip_schema.js');
+const Article = require('../mongo_schemas/article_schema.js');
+const Chip = require('../mongo_schemas/chip_schema.js');
 const { MONOGDB_ARTICLES, MONOGDB_CHIPS, articles_dir } = require('./path_consts.js');
 const path = require('path');
 const { validate_article_before_publishing } = require('./validate_before_publishing.js')
@@ -7,44 +7,28 @@ const { readJSON, askQuestion } = require('./misc_utils.js')
 const mongoose = require('mongoose');
 const { add_chip } = require('../utils/mongo_utils/add_chip.js')
 const { get_definitions_for_new_chips } = require('./validate_chips.js')
-const dbConnect = require('./db_conn.js')
+const {dbConnect} = require('./db_conn.js')
 
 
 async function get_unique_chips(){
+  const connection = await dbConnect(process.env.DB_CHIPS_NAME)
     try {
-        await mongoose.connect(MONOGDB_CHIPS, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-
-        const conn = dbConnect()
-        
-        const chips = await Chip.find();
+        const chips = await Chip(connection).find();
         return chips
     } catch (error) {
         console.error('Error:', error);
         return false
-    } finally {
-        await mongoose.connection.close();
     }
 }
 
 async function get_all_ready_articles(){
+  const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
     try {
-        // Connect to the MongoDB database
-        await mongoose.connect(MONOGDB_ARTICLES);
-    
-        // Find all articles in the database
-        const articles = await Article.find({ ready: true });
-    
-        // Send the articles as the response
+        const articles = await Article(connection).find({ ready: true });
         return articles
       } catch (error) {
         console.error('Error:', error);
         return {error: error}
-      } finally {
-        // Close the database connection
-        await mongoose.connection.close();
       }
 }
 
@@ -52,8 +36,8 @@ async function update_article(article_dir_name, updates_obj, article_meta){
 
   console.log("updating now")
 
-  await mongoose.connect(MONOGDB_ARTICLES)
-  .then(async () => {
+  dbConnect(process.env.DB_ARTICLES_NAME)
+  .then(async (conn) => {
       const filter = { source: article_dir_name };  // Criteria to find the document
 
       // Dynamically create the $set object based on updates_obj
@@ -71,12 +55,10 @@ async function update_article(article_dir_name, updates_obj, article_meta){
       };
 
       // Update the document
-      return Article.findOneAndUpdate(filter, update, options);
+      return Article(conn).findOneAndUpdate(filter, update, options);
   })
   .then((doc) => {
       console.log('Document updated successfully', doc);
-      // Close the connection
-      mongoose.connection.close();
   })
   .catch((err) => {
       console.error('Error:', err);
@@ -114,11 +96,11 @@ async function create_article({article}){
       await update_article(article_dir_name, result, article_meta)
     }else {
       // Create a whole new article record
-      await mongoose.connect(MONOGDB_ARTICLES)
-      .then(() => {
+      dbConnect(process.env.DB_ARTICLES_NAME)
+      .then((conn) => {
           
           // Create a new document
-          const newArticle = new Article({
+          const newArticle = new Article(conn)({
           title: article_meta.title,
           desc: article_meta.desc,
           infoText: article_meta.infoText,
@@ -134,8 +116,6 @@ async function create_article({article}){
       })
       .then(() => {
           console.log('Document inserted successfully');
-          // Close the connection
-          mongoose.connection.close();
       })
       .catch((err) => {
           console.error('Error:', err);
@@ -155,9 +135,9 @@ async function create_article({article}){
 
 async function add_view(articleId) {
     try {
-      await mongoose.connect(MONOGDB_ARTICLES);
-  
-      const updatedArticle = await Article.findByIdAndUpdate(
+      const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+      
+      const updatedArticle = await Article(connection).findByIdAndUpdate(
         articleId,
         { $inc: { views: 1 } },
         { new: true }

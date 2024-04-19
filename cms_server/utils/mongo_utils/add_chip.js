@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
-const { MONOGDB_CHIPS } = require('../path_consts')
-const { Chip } = require('../../mongo_schemas/chip_schema')
+const Chip = require('../../mongo_schemas/chip_schema.js');
+const { dbConnect } = require('../db_conn')
+
 
 async function add_chip(inName, inDefinition){
 
     console.log("creating chip")
   
-    await mongoose.connect(MONOGDB_CHIPS)
-    .then(() => {
+    await dbConnect(process.env.MONOGDB_CHIPS)
+    .then((conn) => {
         
         // Create a new document
-        const newChip = new Chip({
+        const newChip = new Chip(conn)({
             name: inName,
             description: inDefinition
         });
@@ -20,8 +20,6 @@ async function add_chip(inName, inDefinition){
     })
     .then(() => {
         console.log('Document inserted successfully');
-        // Close the connection
-        mongoose.connection.close();
     })
     .catch((err) => {
         console.error('Error:', err);

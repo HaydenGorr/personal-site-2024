@@ -1,16 +1,14 @@
-const mongoose = require('mongoose');
-const { MONOGDB_USERS } = require('../path_consts')
-const { User } = require('../../mongo_schemas/user_schema')
-
+const User = require('../../mongo_schemas/user_schema')
+const { dbConnect } = require('../db_conn')
 async function add_user(username, password){
 
     console.log("creating user")
   
-    await mongoose.connect(MONOGDB_USERS)
+    await dbConnect(process.env.DB_USERS_NAME)
     .then(() => {
         
         // Create a new document
-        const newUser = new User({
+        const newUser = new User(connection)({
             username: username,
             password: password
         });
@@ -20,8 +18,6 @@ async function add_user(username, password){
     })
     .then(() => {
         console.log('Document inserted successfully');
-        // Close the connection
-        mongoose.connection.close();
     })
     .catch((err) => {
         console.error('Error:', err);

@@ -53,15 +53,15 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
 
     return (
         <div className="mb-10">
-            <div className="my-3 flex justify-center mx-3 ">
+            <div className="flex justify-center mx-3 ">
                 <div flex className="flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width">
-                    <Container override={true} home_post_obj={home_post_obj} btnAction={btnAction} colour={colour} add_keywords_to_filter={add_keywords_to_filter} selectedKeywords={selectedKeywords} remove_keyword_from_filer={remove_keyword_from_filer}></Container>
+                    <Container override={true} chips={chips} home_post_obj={home_post_obj} btnAction={btnAction} colour={colour} add_keywords_to_filter={add_keywords_to_filter} selectedKeywords={selectedKeywords} remove_keyword_from_filer={remove_keyword_from_filer}></Container>
                 
                     <div className="max-w-28 mt-3">
                         <ClosableChip chip_text="edit chips" remove_keywords={ () => {}}></ClosableChip>
                     </div>
 
-                    <div class="bg-gray-300 h-px mt-4"></div>
+                    <div class="bg-gray-300 h-px mt-4"/>
 
                     <div className="mt-3 self-center flex space-x-3">
                         <MB_Button
