@@ -3,25 +3,27 @@ const { dbConnect } = require('../db_conn')
 async function add_user(username, password){
 
     console.log("creating user")
+
+    const connection = await dbConnect(process.env.DB_USERS_NAME)
   
-    await dbConnect(process.env.DB_USERS_NAME)
-    .then(() => {
-        
-        // Create a new document
-        const newUser = new User(connection)({
+    try {
+        // Obtain the Chip model for the specific database connection
+        const UserModel = User(connection);
+
+        // Now create a new chip instance using the ChipModel
+        const newUser = new UserModel({
             username: username,
             password: password
         });
-        
-        // Save the document
-        return newUser.save();
-    })
-    .then(() => {
-        console.log('Document inserted successfully');
-    })
-    .catch((err) => {
-        console.error('Error:', err);
-    });
+
+        const asd = await newUser.save();
+
+        console.log("SENATORS ", asd)
+
+        return asd;
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 
