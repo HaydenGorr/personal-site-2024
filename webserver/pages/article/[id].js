@@ -85,6 +85,8 @@ export async function getStaticPaths() {
         }
     
         const hprJSON = await homePostsResponse.json();
+
+        console.log("BOTS LIKES ", hprJSON )
         
         if (!Array.isArray(hprJSON)) {
           console.error('Expected an array from the CMS response');

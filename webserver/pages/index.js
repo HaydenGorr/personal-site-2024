@@ -29,8 +29,8 @@ export async function getStaticProps() {
       throw new Error(home_posts_JSON.error + " " + unique_chips_JSON.error);
     }
 
-    var home_posts_DATA = await home_posts_JSON.data;
-    var unique_chips_DATA = await unique_chips_JSON.data;
+    var home_posts_DATA = home_posts_JSON.data;
+    var unique_chips_DATA = unique_chips_JSON.data;
 
     const chips = unique_chips_DATA.map( (item, index) => {return item.name} )
 

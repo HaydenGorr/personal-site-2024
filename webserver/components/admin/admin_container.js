@@ -22,6 +22,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
     const [publishDate, setPublishDate] = useState(new Date(home_post_obj.publishDate))
     const [ready, setReady] = useState(home_post_obj.ready)
     const [image, setImage] = useState(null)
+    const [articleFile, setArticleFile] = useState(null)
 
     const reset = () => {
         setTitle(home_post_obj.title)
@@ -33,6 +34,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         setPublishDate(new Date(home_post_obj.publishDate))
         setReady(home_post_obj.ready)
         setImage(null)
+        setArticleFile(null)
 
         set_in_edit(false)
     }
@@ -85,6 +87,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         formData.append('publishDate', publishDate);
         formData.append('ready', ready);
         formData.append('image', image);
+        formData.append('mdx', articleFile);
         
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/update_article`, {
@@ -157,12 +160,23 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                         <div className="">
                             Container Image
                             <input
-                            type="file"
-                            id="image"
-                            accept=".png"
-                            onChange={(e) => setImage(e.target.files[0])}
-                            className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />      
+                                type="file"
+                                id="image"
+                                accept=".png"
+                                onChange={(e) => setImage(e.target.files[0])}
+                                className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />      
+                        </div>
+
+                        <div className="">
+                            Article file
+                            <input
+                                type="file"
+                                id="image"
+                                accept=".mdx"
+                                onChange={(e) => setArticleFile(e.target.files[0])}
+                                className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />      
                         </div>
 
                         <div className="">

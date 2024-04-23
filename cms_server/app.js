@@ -236,9 +236,10 @@ app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
 /**
  * Upload a new chip with a name, description and image
  */
-app.post('/secure/update_article', upload.single('image'), async (req, res) => {
+app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }]), async (req, res) => {
   const { databaseID, title, desc, infoText, chips, source, views, publishDate, ready} = req.body;
-  const image = req.file;
+  const imageFile = req.files['image'] ? req.files['image'][0] : undefined;
+  const mdxFile = req.files['mdx'] ? req.files['mdx'][0] : undefined;
 
   console.log("\n\n\n\n\ncalled update articles")
   console.log(databaseID, title, desc, infoText, chips, source, views, publishDate, ready)
@@ -249,23 +250,23 @@ app.post('/secure/update_article', upload.single('image'), async (req, res) => {
     return res.status(result.errorcode).json({ error: result.message });
   }
 
-  // Update the article
-  const update_result = await updatedArticle(req.body)
+  try {
 
-  if (image != undefined) {
-    const imagePath = path.join(DATA_DIR, "CMS", "articles", source, "container.png");
+    // Update the article
+    const update_result = await updatedArticle(req.body)
 
-    fs.writeFile(imagePath, image.buffer, (error) => {
-      if (error) {
-        console.error('Error writing the image file:', error);
-        return res.status(500).json({ message: 'An error occurred while uploading the image' });
-      }
-  
-      res.status(200).json({ message: 'article updated successfully' });
-    });
-  }
-  else {
-    res.status(200).json({ message: 'article updated successfully' });
+    if (mdxFile) {
+      const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");
+      fs.writeFileSync(mdxPath, mdxFile.buffer);
+    }
+
+    if (imageFile) {
+      const imagePath = path.join(DATA_DIR, "CMS", "articles", source, "container.png");
+      fs.writeFileSync(imagePath, imageFile.buffer);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'An error occurred during the operation' });
   }
 
 })
