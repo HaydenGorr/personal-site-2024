@@ -13,6 +13,20 @@ async function get_chips() {
     }
 }
 
+async function get_chip(inName) {
+
+    const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+  
+    try {
+      const chips = await Chip(connection).find({name: inName});
+      return chips
+    } catch (error) {
+        console.error('Error:', error);
+        return 'Internal server error'
+    }
+}
+
 module.exports = {
-    get_chips
+    get_chips,
+    get_chip
 };

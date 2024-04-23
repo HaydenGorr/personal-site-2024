@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image";
 import Link from "next/link";
 
-export default function MB_Button({ given_href="", text="", image_src="", lowercase=false, btnAction = () => {}, colour="bg-transparent", injected_styles="", from_cms=false}) {
+export default function MB_Button({ given_href="", text="", image_src="", lowercase=false, btnAction = () => {}, colour="bg-transparent", injected_styles="", from_cms=false, type="button" }) {
 
     const [btnText, setBtnText] = useState('');
 
@@ -41,7 +41,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
     const getParentElement = (child) => {
         
         if (given_href == "") { 
-            return <button onClick={handleClick} className={getStyles()}>{child}</button> 
+            return <button type={type} onClick={handleClick} className={getStyles()}>{child}</button> 
         }
 
         else if (given_href.startsWith('/')) return <Link onClick={handleClick} className={getStyles()} href={given_href}>{child}</Link>

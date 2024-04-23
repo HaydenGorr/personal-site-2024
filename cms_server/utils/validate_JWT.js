@@ -10,8 +10,11 @@ async function validate_JWT(token) {
     try {
         const decoded = await jwt.verify(token, secretKey);
         const userId = await decoded.userId;
+
+        console.log("U authenticated")
         return {success: true, message: "User is authenticated", errorcode: 200, userId: userId};
     } catch (error) {
+        console.log("U UNauthenticated")
         if (error instanceof jwt.JsonWebTokenError) {
             return {success: false, message: "Invalid token", errorcode: 401};
         }

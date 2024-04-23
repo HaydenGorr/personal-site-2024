@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT;
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
+// const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
 const { get_unique_chips, get_all_ready_articles, create_article, add_view } = require('./utils/mongo_utils');
 const { get_article } = require('./utils/mongo_utils/get_article')
 const Cookies = require('js-cookie');
@@ -17,12 +17,21 @@ const { get_all_articles } = require('./utils/mongo_utils/get_article')
 const { validate_JWT } = require('./utils/validate_JWT')
 const dbConnect = require('./utils/db_conn')
 const { Response } = require('./utils/response_obj')
+const multer = require('multer');
+const { DATA_DIR, svg_dir } = require('./utils/path_consts')
+const { get_chip } = require('./utils/mongo_utils/get_chips')
+const { add_chip } = require('./utils/mongo_utils/add_chip')
+const fs = require('fs');
 
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com'];
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+const allowedOrigins = ['http://localhost:3000', 'https://haydengorringe.com'];
+
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -181,35 +190,49 @@ app.get('/secure/get_all_articles', async (req, res) => {
   // Grab and return the articles
   const articles = await get_all_articles()
   res.json(articles);
+})
+
+/**
+ * Upload a new chip with a name, description and image
+ */
+app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
+  const { name, description } = req.body;
+  const image = req.file;
+
+  console.log("called upload chips\nname: ", name, "\ndescription: ", description, "\nimage: ", image)
+
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
+  }
+
+  /**
+   * Check that this tag doesn't already exist in the DB
+   */
+  const foundChips = await get_chip(name)
+
+  if (foundChips.length > 0) {
+    // If it already exists in the DB return early
+    return res.status(500).json({ message: 'An error occurred while uploading the image' });
+  }
+
+  // Put the chip into the DB
+  await add_chip(name, description)
+
+  // Generate the path where we'll write the svg
+  const imagePath = path.join(svg_dir, name+".svg");
   
-  // console.log(token)
+  // WRite the file from the buffer into the CMS
+  fs.writeFile(imagePath, image.buffer, (error) => {
+    if (error) {
+      console.error('Error writing the image file:', error);
+      return res.status(500).json({ message: 'An error occurred while uploading the image' });
+    }
 
-  // if (!token) {
-  //   return res.status(401).json({ error: 'No token provided' });
-  // }
-
-  // console.log(token)
-
-  // try {
-  //   // Verify the JWT
-  //   const decoded = jwt.verify(token, secretKey);
-
-  //   // Access the decoded payload
-  //   const userId = decoded.userId;
-
-  //   const articles = await get_all_articles()
-
-  //   console.log("FROM DB: ", articles)
-
-  //   res.json(articles);
-  // } catch (error) {
-  //   if (error instanceof jwt.JsonWebTokenError) {
-  //     return res.status(401).json({ error: 'Invalid token' });
-  //   }
-  //   console.error('Error accessing protected resource:', error);
-  //   res.status(500).json({ error: 'Internal server error' });
-  // }
-
+    res.status(200).json({ message: 'Chip uploaded successfully' });
+  });
 })
 
 
@@ -235,6 +258,7 @@ app.get(`/favicon`, async (req, res) => {
   
     res.json({ faviconUrl });
   });
+
 /**
  * the :: here makes the server listen on an ipv6 address. 
  * the NextJS webserver automatically resolves localhost to ipv6
