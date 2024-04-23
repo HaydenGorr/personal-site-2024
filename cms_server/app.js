@@ -37,13 +37,14 @@ const upload = multer({ storage: storage });
 const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com'];
 
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS: ' + origin));
-    }
-  },
+  // origin: function(origin, callback) {
+  //   if (!origin || allowedOrigins.includes(origin)) {
+  //     callback(null, true);
+  //   } else {
+  //     callback(new Error('Not allowed by CORS: ' + origin));
+  //   }
+  // },
+  origin: '*',
   credentials: true
 }));
 
