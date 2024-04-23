@@ -34,7 +34,7 @@ app.use(cookieParser());
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const allowedOrigins = ['http://localhost:3000', 'https://haydengorringe.com'];
+const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com'];
 
 app.use(cors({
   origin: function(origin, callback) {
