@@ -9,31 +9,37 @@ import ToggleButton from '../components/toggle_button';
 import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
-import MB_Button from '../components/MB_Button';
 
 export async function getStaticProps() {
-  
+
+  console.log("generating home page in getStaticProps")
+
   try {
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_articles`);
     const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_unique_chips`);
 
     if (!home_posts_response.ok || !unique_chips_response.ok) {
-      throw new Error('Failed to fetch data');
+      throw new Error('Failed to connect to cms');
     }
 
-    const home_posts = await home_posts_response.json();
-    const unique_chips = await unique_chips_response.json();
+    const home_posts_JSON = await home_posts_response.json();
+    const unique_chips_JSON = await unique_chips_response.json();
 
-    const chips = unique_chips.map( (item, index) => {return item.name} )
+    if (home_posts_JSON.error != "" || unique_chips_JSON.error != ""){
+      throw new Error(home_posts_JSON.error + " " + unique_chips_JSON.error);
+    }
 
-    console.log(chips)
+    var home_posts_DATA = home_posts_JSON.data;
+    var unique_chips_DATA = unique_chips_JSON.data;
+
+    const chips = unique_chips_DATA.map( (item, index) => {return item.name} )
 
     // Sort by date
-    home_posts.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
-
+    home_posts_DATA.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+    
     return {
       props: {
-        home_posts,
+        home_posts: home_posts_DATA,
         unique_chips: chips
       },
       revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS),
@@ -50,6 +56,7 @@ export async function getStaticProps() {
       revalidate: 10,
     };
   }
+
 }
 
 export default function Home({home_posts, unique_chips}) {

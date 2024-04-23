@@ -10,10 +10,6 @@ const articleSchema = new mongoose.Schema({
     views: { type: Number, default: 0 },
     publishDate: { type: Date, default: Date.now },
     ready: {type: Boolean, default: false},
-  });
+});
 
-const Article = mongoose.model('articles', articleSchema);
-
-module.exports = {
-    Article,
-};
+module.exports = (conn) => conn.model('articles', articleSchema);

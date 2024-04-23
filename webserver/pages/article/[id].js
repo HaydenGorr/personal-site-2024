@@ -84,7 +84,10 @@ export async function getStaticPaths() {
           throw new Error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);
         }
     
-        const hprJSON = await homePostsResponse.json();
+        const hprJSONs = await homePostsResponse.json();
+        const hprJSON = hprJSONs.data;
+
+        console.log("BOTS LIKES ", hprJSON )
         
         if (!Array.isArray(hprJSON)) {
           console.error('Expected an array from the CMS response');

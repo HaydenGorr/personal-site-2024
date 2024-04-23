@@ -1,23 +1,32 @@
-const { MONOGDB_CHIPS } = require('../path_consts')
-const { Chip } = require('../../mongo_schemas/chip_schema');
-const mongoose = require('mongoose');
-
+const Chip = require('../../mongo_schemas/chip_schema.js');
+const { dbConnect } = require('../db_conn')
 async function get_chips() {
 
-    console.log("connecting to:   ", MONOGDB_CHIPS)
+    const connection = await dbConnect(process.env.DB_CHIPS_NAME)
   
     try {
-      await mongoose.connect(MONOGDB_CHIPS);
-      const chips = await Chip.find();
+      const chips = await Chip(connection).find();
       return chips
     } catch (error) {
         console.error('Error:', error);
         return 'Internal server error'
-    } finally {
-        await mongoose.connection.close();
+    }
+}
+
+async function get_chip(inName) {
+
+    const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+  
+    try {
+      const chips = await Chip(connection).find({name: inName});
+      return chips
+    } catch (error) {
+        console.error('Error:', error);
+        return 'Internal server error'
     }
 }
 
 module.exports = {
-    get_chips
+    get_chips,
+    get_chip
 };

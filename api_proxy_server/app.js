@@ -76,8 +76,9 @@ app.post('/api/TF', async (req, res) => {
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const viable_tags = await response.json();
 
+    let responseJSON = await response.json();
+    const viable_tags = responseJSON.data
     
 
     console.log(viable_tags)

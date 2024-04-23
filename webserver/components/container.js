@@ -3,7 +3,7 @@ import ClosableChip from "./closable_chip";
 import { useRouter } from 'next/router'
 import { getDaysAgo } from '../utils/date_utils'
 
-export default function Container({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer}) {
+export default function Container({ chips=null, home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, override = false }) {
     const router = useRouter();
 
     const go_to_article = (title) => {
@@ -14,7 +14,7 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
     }
 
     return (
-        <div className={`${colour} flex flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width`}>
+        <div className={`${override ? "" : colour + "flex flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width"}`}>
 
             <div className="flex items-center my-6 font-medium text-xl leading-none justify-center">
                 <div>
@@ -46,7 +46,7 @@ export default function Container({ home_post_obj, btnAction = () => {}, colour=
 
 
             <div className={`flex flex-wrap mt-2`}>
-                {home_post_obj.chips.map((chip_text, index) => (
+                {( chips ? chips : home_post_obj.chips).map((chip_text, index) => (
                     <div className={`mr-3 mt-3`}>
                         <ClosableChip
                             key={index}
