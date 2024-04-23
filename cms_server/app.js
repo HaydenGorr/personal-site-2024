@@ -22,6 +22,7 @@ const { DATA_DIR, svg_dir } = require('./utils/path_consts')
 const { get_chip } = require('./utils/mongo_utils/get_chips')
 const { add_chip } = require('./utils/mongo_utils/add_chip')
 const fs = require('fs');
+const { updatedArticle } = require('./utils/mongo_utils/update_article')
 
 app.use(cors());
 app.use(express.json());
@@ -230,6 +231,27 @@ app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
 
     res.status(200).json({ message: 'Chip uploaded successfully' });
   });
+})
+
+/**
+ * Upload a new chip with a name, description and image
+ */
+app.post('/secure/update_article', upload.single('image'), async (req, res) => {
+  const { databaseID, title, desc, infoText, chips, source, views, publishDate, ready} = req.body;
+  // const image = req.file;
+
+  console.log("\n\n\n\n\ncalled update articles")
+  console.log(databaseID, title, desc, infoText, chips, source, views, publishDate, ready)
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
+  }
+
+  // Update the article
+  const update_result = await updatedArticle(req.body)
+  console.log(update_result)
 })
 
 

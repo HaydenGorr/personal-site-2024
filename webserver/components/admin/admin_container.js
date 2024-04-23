@@ -12,6 +12,7 @@ import SuggestionTextBox from "../suggestion_text_box";
 
 export default function AdminContainer({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, all_chips}) {
 
+    const [databaseID, setID] = useState(home_post_obj._id)
     const [title, setTitle] = useState(home_post_obj.title)
     const [desc, setDesc] = useState(home_post_obj.desc)
     const [infoText, setInfoText] = useState(home_post_obj.infoText)
@@ -51,13 +52,55 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         setSource(event.target.value);
     };
 
+    const updateViewsBox = (event) => {
+        setViews(event.target.value);
+    };
+
     // Add or remove chips from the article
     const adjustChips = (chipText) => {
+        {console.log(home_post_obj)}
         if (chips.includes(chipText)) {
             setChips(chips.filter(keyword => keyword !== chipText));
         }
         else {
             setChips([...chips, chipText])
+        }
+    };
+
+    const commit_changes_to_server = async () => {
+        
+        const formData = new FormData();
+
+        formData.append('databaseID', databaseID);
+        formData.append('title', title);
+        formData.append('desc', desc);
+        formData.append('infoText', infoText);
+        chips.forEach(chip => {
+            formData.append('chips[]', chip);
+        });
+        formData.append('source', source);
+        formData.append('views', views);
+        formData.append('publishDate', publishDate);
+        formData.append('ready', ready);
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/update_article`, {
+              method: 'POST',
+              body: formData,
+              credentials: 'include'
+            });
+        
+            if (response.ok) {
+              // Handle successful response
+              console.log('Chip uploaded successfully');
+            } else {
+              // Handle error response
+              console.error('Error uploading chip');
+            }
+
+            await get_chips();
+        } catch (error) {
+            console.error('Error uploading chip', error);
         }
     };
 
@@ -85,7 +128,10 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                     <div className="mt-3 self-center flex space-x-3">
                         <MB_Button
                             text= {in_edit ? "save" : "edit"}
-                            btnAction={() => set_in_edit(!in_edit)}
+                            btnAction={() => { 
+                                if (in_edit) commit_changes_to_server()
+                                set_in_edit(!in_edit)
+                            }}
                         />
                         {in_edit && <MB_Button
                             text= {"cancel"}
@@ -132,6 +178,16 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                                 type="text"
                                 value={source}
                                 onChange={updateSourceBox}
+                            />         
+                        </div>
+
+                        <div className="">
+                            Views
+                            <input
+                                className="Neo-Brutal w-full p-3 text-wrap shadow-MB border-white border-2 focus:outline-none focus:rounded-none"
+                                type="text"
+                                value={views}
+                                onChange={updateViewsBox}
                             />         
                         </div>
 
