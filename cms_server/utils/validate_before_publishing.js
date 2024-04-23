@@ -2,7 +2,7 @@ const path = require('path');
 const {} = require('./path_consts.js')
 const { ensure_article_dir_has_correct_files } = require('./validate_article.js')
 const { validate_chips_in_article } = require('./validate_svgs.js')
-const { readJSON } = require('../utils/misc_utils.js')
+const { readJSON } = require('./misc_utils.js')
 const { is_this_article_already_published } = require('./mongo_utils/is_article_published.js')
 const { compare_meta_to_DB_entry } = require('./mongo_utils/compare_meta_to_DB_entry.js')
 

@@ -16,6 +16,7 @@ const cookieParser = require('cookie-parser');
 const { get_all_articles } = require('./utils/mongo_utils/get_article')
 const { validate_JWT } = require('./utils/validate_JWT')
 const dbConnect = require('./utils/db_conn')
+const { Response } = require('./utils/response_obj')
 
 app.use(cors());
 app.use(express.json());
@@ -40,27 +41,40 @@ const secretKey = 'your-secret-key';
  */
 app.get('/get_all_ready_articles', async (req, res) => {
 
-    const result = await get_all_ready_articles()
+  const response = await get_all_ready_articles()
 
-    if (result.error) {res.status(500).json({ error: 'Internal server error' }); return}
-
-    res.json(result);
-
+  res.json(response);
 
 });
+
 app.get('/get_unique_chips', async (req, res) => {
-    const chips = await get_unique_chips()
+  console.log("called: get unique chips")
 
-    console.log(chips)
+  const response = await get_unique_chips()
 
-    if (!chips) res.status(500).json({ error: 'Internal server error' });
-
-    res.json(chips)
+  res.json(response)
+    
 });
 
 app.get('/add_view', async (req, res) => {})
-app.get('/create_article', async (req, res) => {create_article(req.query)})
+
+app.get('/create_article', async (req, res) => {
+
+  console.log("called: create_article")
+
+  await create_article(req.query)
+
+  if (response.code != 200) {
+    await res.status(response.code).json({ error: response.error_msg });
+  }else {
+    res.json(response)
+  }
+})
+
 app.get('/get_article_meta', async (req, res) => {
+
+  console.log("called: get_article_meta")
+
   const {articlesrc} = req.query
 
   const article = await get_article(articlesrc)

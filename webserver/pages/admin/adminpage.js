@@ -43,7 +43,6 @@ export default function Admin() {
         if (res.ok) {
             console.log("response is OKAY");
             const data = await res.json();
-            console.log(data);
             setArticles(data);
         } else {
             console.error('Error:', res.statusText);
@@ -55,8 +54,8 @@ export default function Admin() {
         if (res.ok) {
             console.log("response is OKAY");
             const data = await res.json();
-            console.log(data);
-            setChips(data);
+            if (data.error) {}
+            setChips(data.data);
         } else {
             console.error('Error:', res.statusText);
         }
