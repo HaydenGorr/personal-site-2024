@@ -238,7 +238,7 @@ app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
  */
 app.post('/secure/update_article', upload.single('image'), async (req, res) => {
   const { databaseID, title, desc, infoText, chips, source, views, publishDate, ready} = req.body;
-  // const image = req.file;
+  const image = req.file;
 
   console.log("\n\n\n\n\ncalled update articles")
   console.log(databaseID, title, desc, infoText, chips, source, views, publishDate, ready)
@@ -251,7 +251,23 @@ app.post('/secure/update_article', upload.single('image'), async (req, res) => {
 
   // Update the article
   const update_result = await updatedArticle(req.body)
-  console.log(update_result)
+
+  if (image != undefined) {
+    const imagePath = path.join(DATA_DIR, "CMS", "articles", source, "container.png");
+
+    fs.writeFile(imagePath, image.buffer, (error) => {
+      if (error) {
+        console.error('Error writing the image file:', error);
+        return res.status(500).json({ message: 'An error occurred while uploading the image' });
+      }
+  
+      res.status(200).json({ message: 'article updated successfully' });
+    });
+  }
+  else {
+    res.status(200).json({ message: 'article updated successfully' });
+  }
+
 })
 
 

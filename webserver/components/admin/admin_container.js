@@ -21,6 +21,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
     const [views, setViews] = useState(home_post_obj.views)
     const [publishDate, setPublishDate] = useState(new Date(home_post_obj.publishDate))
     const [ready, setReady] = useState(home_post_obj.ready)
+    const [image, setImage] = useState(null)
 
     const reset = () => {
         setTitle(home_post_obj.title)
@@ -31,6 +32,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         setViews(home_post_obj.views)
         setPublishDate(new Date(home_post_obj.publishDate))
         setReady(home_post_obj.ready)
+        setImage(null)
 
         set_in_edit(false)
     }
@@ -82,7 +84,8 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         formData.append('views', views);
         formData.append('publishDate', publishDate);
         formData.append('ready', ready);
-
+        formData.append('image', image);
+        
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/update_article`, {
               method: 'POST',
@@ -150,6 +153,17 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                                     onChange={() => setReady(!ready)}/>
                             </div>
                         </AdminSetting>
+
+                        <div className="">
+                            Container Image
+                            <input
+                            type="file"
+                            id="image"
+                            accept=".png"
+                            onChange={(e) => setImage(e.target.files[0])}
+                            className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />      
+                        </div>
 
                         <div className="">
                             Title

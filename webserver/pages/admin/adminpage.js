@@ -15,7 +15,6 @@ export const config = {
 
 export default function Admin() {
 
-    const [addChip, setAddChip] = useState(false);
     const [articles, setArticles] = useState([]);
     const [chips, setChips] = useState([]);
 
@@ -42,6 +41,9 @@ export default function Admin() {
         setAddChipDescText(e.target.value)
     }
 
+    /**
+     * Upload a new chip to the CMS
+     */
     const uploadNewChip = async () => {
 
         const formData = new FormData();
@@ -73,6 +75,9 @@ export default function Admin() {
         }
     }
 
+    /**
+     * Populate the admin page with article containers
+     */
     const get_articles = async () => {
         // This gets all of the articles, even unpublished ones
         const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_articles`, {
@@ -88,6 +93,9 @@ export default function Admin() {
         }
     };
 
+    /**
+     * Populate the admin page with all of the chips
+     */
     const get_chips = async () => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/get_unique_chips`);
         if (res.ok) {
@@ -103,66 +111,67 @@ export default function Admin() {
     return (
         <Layout>
             <h1 className='mt-5 mb-2 text-center font-extrabold text-4xl'>ADMIN PAGE</h1>
-            <div className="">
 
-            <div className={`mx-3`}>
-                <div className={`flex flex-wrap mt-2`}>
-                    {chips.map((chip, index) => (
-                        <div className={`mr-3 mt-3`}>
-                            <ClosableChip
-                                key={index}
-                                chip_text={chip.name}
-                                remove_keywords={() => {}}
-                                svg_path={`images/svgs/star.svg`}
-                            />
-                        </div>
-                    ))}
+            <div className="mx-3">
+                <div className={`mx-3`}>
+                    <div className={`flex flex-wrap mt-2`}>
+                        {chips.map((chip, index) => (
+                            <div className={`mr-3 mt-3`}>
+                                <ClosableChip
+                                    key={index}
+                                    chip_text={chip.name}
+                                    remove_keywords={() => {}}
+                                    svg_path={`images/svgs/star.svg`}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="mt-6 flex">
+                        <MB_Button type={"submit"} text={'add chip'} btnAction={() => uploadNewChip()}></MB_Button>
+                        <InputBox 
+                            className={"max-w-36 h-full p-2 ml-6 self-center"}
+                            onKeyPress={() => {}}
+                            onChange={update_chip_name_text} 
+                            valueStorage={addChipText} 
+                            onFocus={() => {}} 
+                            defaultText={"Chip name"}
+                        />
+                        <InputBox 
+                            className={"ml-6 w-full h-full p-2  self-center"}
+                            onKeyPress={() => {}}
+                            onChange={update_chip_desc_text} 
+                            valueStorage={addChipDescText} 
+                            onFocus={() => {}} 
+                            defaultText={"Chip description"}
+                        />
+                        <input
+                            type="file"
+                            id="image"
+                            accept=".svg"
+                            onChange={(e) => setImage(e.target.files[0])}
+                            className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+                    </div>
                 </div>
                 
-                <div className="mt-6 flex">
-                    <MB_Button type={"submit"} text={'add chip'} btnAction={() => uploadNewChip()}></MB_Button>
-                    <InputBox 
-                        className={"max-w-36 h-full p-2 ml-6 self-center"}
-                        onKeyPress={() => {}}
-                        onChange={update_chip_name_text} 
-                        valueStorage={addChipText} 
-                        onFocus={() => {}} 
-                        defaultText={"Chip name"}
-                    />
-                    <InputBox 
-                        className={"ml-6 w-full h-full p-2  self-center"}
-                        onKeyPress={() => {}}
-                        onChange={update_chip_desc_text} 
-                        valueStorage={addChipDescText} 
-                        onFocus={() => {}} 
-                        defaultText={"Chip description"}
-                    />
-                    <input
-                        type="file"
-                        id="image"
-                        accept=".svg"
-                        onChange={(e) => setImage(e.target.files[0])}
-                        className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                </div>
-            </div>
-            
 
-            <LineBreak className="my-12"/>
-            <div className="mx-3">
-                <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
-                    <Masonry gutter="0px">
-                        {articles.length > 0 && articles.map((item, index) => (
-                            <AdminContainer
-                                home_post_obj={item}
-                                add_keywords_to_filter={() => {}}
-                                remove_keyword_from_filer={() => {}}
-                                selectedKeywords={[]}
-                                all_chips={chips.map((chip, index) => {return chip.name})}/>
-                        ))}
-                    </Masonry>
-                </ResponsiveMasonry>
-            </div>
+                <LineBreak className="my-12"/>
+                <div className="">
+                    <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
+                        <Masonry gutter="0px">
+                            {articles.length > 0 && articles.map((item, index) => (
+                                <AdminContainer
+                                    home_post_obj={item}
+                                    add_keywords_to_filter={() => {}}
+                                    remove_keyword_from_filer={() => {}}
+                                    selectedKeywords={[]}
+                                    all_chips={chips.map((chip, index) => {return chip.name})}/>
+                            ))}
+                        </Masonry>
+                    </ResponsiveMasonry>
+                </div>
+
             </div>
         </Layout>
     );
