@@ -108,6 +108,32 @@ export default function Admin() {
         }
     };
 
+    /**
+     * Add a new unpublished article to DB
+     */
+    const add_unpublished_article = async () => {
+
+        console.log("TIERING")
+
+        try {
+            console.log("honkai")
+            const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/add_unpublished_article`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (response.ok) {
+                // Handle successful response
+                console.log('Chip uploaded successfully');
+            } else {
+                // Handle error response
+                console.error('Error uploading chip');
+            }
+        } catch (error) {
+            console.log("hereer")
+            console.error('Error uploading chip', error);
+        }
+    };
+
     return (
         <Layout>
             <h1 className='mt-5 mb-2 text-center font-extrabold text-4xl'>ADMIN PAGE</h1>
@@ -154,9 +180,13 @@ export default function Admin() {
                         />
                     </div>
                 </div>
-                
 
                 <LineBreak className="my-12"/>
+
+                <div className="mb-12">
+                    <MB_Button text="Create New Article" btnAction={() => add_unpublished_article()}/>
+                </div>
+
                 <div className="">
                     <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
                         <Masonry gutter="0px">

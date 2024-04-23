@@ -21,10 +21,13 @@ const multer = require('multer');
 const { DATA_DIR, svg_dir } = require('./utils/path_consts')
 const { get_chip } = require('./utils/mongo_utils/get_chips')
 const { add_chip } = require('./utils/mongo_utils/add_chip')
+const fss = require('fs').promises;
 const fs = require('fs');
 const { updatedArticle } = require('./utils/mongo_utils/update_article')
+const { add_article } = require('./utils/mongo_utils/add_article')
+const { deleteArticle } = require('./utils/mongo_utils/delete_article')
 
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
@@ -38,11 +41,12 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS: ' + origin));
     }
   },
   credentials: true
 }));
+
 
 const secretKey = 'your-secret-key';
 
@@ -271,7 +275,57 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
 
 })
 
+app.get('/secure/add_unpublished_article', async (req, res) => {
 
+  console.log("\n\n\n\nbreakdown")
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
+  }
+
+  try {
+    const entry = await add_article();
+
+    const new_dir_path = path.join(DATA_DIR, "CMS", "articles", entry.source)
+
+    console.log(new_dir_path)
+
+    console.log("creating dir")
+    await fss.mkdir(new_dir_path);
+    console.log("creatied dir")
+
+    res.status(200).json({ message: 'Chip uploaded successfully' });
+  }
+  catch {
+    res.status(500).json({ message: 'Failed' });
+  }
+
+})
+
+app.post('/secure/delete_article', async (req, res) => {
+  const { databaseID, source } = req.body;
+  
+  console.log("Jason ", databaseID, source)
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
+  }
+
+  try {
+    console.log("look")
+    await deleteArticle(databaseID);
+    await fs.rm(path.join(DATA_DIR, "CMS", "articles", source), {recursive: true});
+
+    res.status(200).json({ message: 'Chip uploaded successfully' });
+  }
+  catch {
+    res.status(500).json({ message: 'Failed' });
+  }
+})
 
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));

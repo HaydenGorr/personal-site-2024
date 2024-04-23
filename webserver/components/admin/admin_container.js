@@ -71,6 +71,35 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         }
     };
 
+    /**
+     * Delete an article from the DB
+     */
+    const delete_article = async () => {
+        const formData = new FormData();
+        formData.append('databaseID', databaseID);
+        formData.append('source', source);
+        
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/delete_article`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ databaseID: databaseID, source: source }),
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                console.log('Chip uploaded successfully');
+            } else {
+                console.error('Error uploading chip');
+            }
+        } catch (error) {
+            console.log("hereer")
+            console.error('Error uploading chip', error);
+        }
+    };
+
     const commit_changes_to_server = async () => {
         
         const formData = new FormData();
@@ -229,7 +258,11 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                                 footer={"pick a day"}/>
                         </div>
 
+                        <div className="">
+                            <MB_Button text="delete article" btnAction={() => delete_article()}>
 
+                            </MB_Button>
+                        </div>
 
 
                     </div>}
