@@ -157,7 +157,8 @@ export default function Admin() {
                                 home_post_obj={item}
                                 add_keywords_to_filter={() => {}}
                                 remove_keyword_from_filer={() => {}}
-                                selectedKeywords={[]}/>
+                                selectedKeywords={[]}
+                                all_chips={chips.map((chip, index) => {return chip.name})}/>
                         ))}
                     </Masonry>
                 </ResponsiveMasonry>

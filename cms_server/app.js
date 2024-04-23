@@ -199,9 +199,6 @@ app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
   const { name, description } = req.body;
   const image = req.file;
 
-  console.log("called upload chips\nname: ", name, "\ndescription: ", description, "\nimage: ", image)
-
-
   const result = await validate_JWT(req.cookies.token)
 
   if (!result.success) {
