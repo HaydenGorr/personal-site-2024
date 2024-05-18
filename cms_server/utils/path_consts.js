@@ -1,10 +1,10 @@
 const path = require('path');
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 
-const MONGODB_BASE = `mongodb://localhost:${process.env.MONGO_PORT}`;
-const MONOGDB_ARTICLES = MONGODB_BASE + '/articles';
-const MONOGDB_CHIPS = MONGODB_BASE + '/chips';
-const MONOGDB_USERS = MONGODB_BASE + '/users';
+const MONGODB_BASE = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@localhost:${process.env.MONGO_PORT}`;
+const MONOGDB_ARTICLES = MONGODB_BASE + '/articles?authSource=<authenticationDatabase>';
+const MONOGDB_CHIPS = MONGODB_BASE + '/chips?authSource=<authenticationDatabase>';
+const MONOGDB_USERS = MONGODB_BASE + '/users?authSource=<authenticationDatabase>';
 
 const articles_dir = path.join(DATA_DIR, './CMS/articles/');
 const metas_dir = path.join(DATA_DIR, './meta_resources/');
