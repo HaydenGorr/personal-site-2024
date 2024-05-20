@@ -133,13 +133,6 @@ export default function Login() {
                         >
                             Login
                         </button>
-                        <button
-                            type="button"
-                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-                            onClick={() => {send_sign_up_request(Uusername, Upassword)}}
-                        >
-                            Sign up
-                        </button>
                     </div>
                 </form>
             </div>
