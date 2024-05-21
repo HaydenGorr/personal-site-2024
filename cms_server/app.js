@@ -123,7 +123,7 @@ app.get('/loggedIn', async (req, res) => {
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  console.log("loggging in: ", username, password)
+  console.log("logging in: ", username, password)
 
   const users = await get_users_by_username(username, password)
 
@@ -144,6 +144,7 @@ app.post('/login', async (req, res) => {
     console.log("validated")
 
     if (!isPasswordValid) {
+      console.log("Password invalid")
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
