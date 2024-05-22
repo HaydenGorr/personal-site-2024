@@ -47,15 +47,17 @@ app.use(cors({
   credentials: true
 }));
 
-
-const secretKey = 'your-secret-key';
-
 /**
  * THIS IS A REPLACEMENT FOR HOME_POSTS AND UNIQUE CHIPS
  */
 app.get('/get_all_ready_articles', async (req, res) => {
 
+  console.log("getting all articles marked ready")
+
   const response = await get_all_ready_articles()
+
+  console.log(`${response.data.length} ready articles retrieved`)
+  console.log(response)
 
   res.json(response);
 
@@ -110,7 +112,7 @@ app.get('/loggedIn', async (req, res) => {
 
   try {
     // Verify the JWT
-    const decoded = jwt.verify(token, secretKey);
+    const decoded = jwt.verify(token, process.env.SECRETKEY);
 
     // If the token is valid, send a response indicating that the user is logged in
     return res.status(200).json({ loggedIn: true });
@@ -123,7 +125,7 @@ app.get('/loggedIn', async (req, res) => {
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  console.log("loggging in: ", username, password)
+  console.log("logging in: ", username, password)
 
   const users = await get_users_by_username(username, password)
 
@@ -144,11 +146,12 @@ app.post('/login', async (req, res) => {
     console.log("validated")
 
     if (!isPasswordValid) {
+      console.log("Password invalid")
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     console.log("creating token")
-    const token = await jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
+    const token = await jwt.sign({ userId: user.id }, process.env.SECRETKEY, { expiresIn: '1h' });
     console.log("creatied token")
 
     res.json({ token });

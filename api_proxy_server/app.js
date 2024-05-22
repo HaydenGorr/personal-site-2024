@@ -35,7 +35,8 @@ app.post('/api/CQ', async (req, res) => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const home_page_articles = await response.json(); // Assuming the response is JSON
+    const home_page_articles_JSON = await response.json(); // Assuming the response is JSON
+    const home_page_articles = home_page_articles_JSON.data
 
     // Make sure to use 'let' or 'const' for variable declarations
     for (let article of home_page_articles) { // Assuming 'home_page_articles' is an iterable array

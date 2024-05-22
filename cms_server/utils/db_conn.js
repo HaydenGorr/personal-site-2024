@@ -45,6 +45,7 @@ async function dbConnect(dbName) {
   try {
     const conn = await mongoose.createConnection(MONGODB_BASE, opts);
     connections[dbName] = conn;
+    console.log("returning connection")
     return conn
   } catch (error) {
     return new Response("", 500, `Could not establish a connection to "${dbName}":`);
