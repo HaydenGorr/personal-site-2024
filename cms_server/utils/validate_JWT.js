@@ -14,7 +14,7 @@ async function validate_JWT(token) {
         console.log("U authenticated")
         return {success: true, message: "User is authenticated", errorcode: 200, userId: userId};
     } catch (error) {
-        console.log("U UNauthenticated")
+        console.log("U UNauthenticated", error)
         if (error instanceof jwt.JsonWebTokenError) {
             return {success: false, message: "Invalid token", errorcode: 401};
         }
