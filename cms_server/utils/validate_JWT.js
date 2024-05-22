@@ -1,14 +1,12 @@
 const jwt = require('jsonwebtoken');
 
-const secretKey = 'your-secret-key';
-
 async function validate_JWT(token) {
     if (!token) {
         return {success: false, message: "No token provided", errorcode: 401};
     }
 
     try {
-        const decoded = await jwt.verify(token, secretKey);
+        const decoded = await jwt.verify(token, process.env.SECRETKEY);
         const userId = await decoded.userId;
 
         console.log("U authenticated")
