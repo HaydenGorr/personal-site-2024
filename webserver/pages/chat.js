@@ -54,7 +54,7 @@ export default function Chat() {
         <Layout>
             <div className="flex place-content-center">
 
-                <div className="flex flex-col max-w-prose gap-2 w-full m-3 overflow-scroll" style={{ height: 'calc(100vh - 170px)' }}>
+                <div className="flex flex-col max-w-prose gap-2 w-full m-3 overflow-scroll px-1" style={{ height: 'calc(100vh - 170px)' }}>
                     {chatMessages.map((message, index) => (
                         <ChatBubble key={index} incoming={message.incoming} inText={message.text}></ChatBubble>
                     ))}
