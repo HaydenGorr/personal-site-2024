@@ -1,6 +1,6 @@
 import ChatBubble from "../components/chat_bubble";
 import Layout from "../components/layout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Special_Button from "../components/special_button";
 import { get_response } from "../utils/ai_talk";
 
@@ -11,16 +11,22 @@ export default function Chat() {
     const [inputValue, setInputValue] = useState('');
     const [displayError, setDisplayError] = useState(false);
 
+    const messagesEndRef = useRef(null);
+
     useEffect(() => {
-        let timer;
+
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
         // Check if displayError is true
         if (displayError) {
+            let timer;
             timer = setTimeout(() => {
                 setDisplayError(false);
             }, 500);
+            return () => clearTimeout(timer);
         }
-        return () => clearTimeout(timer);
-    }, [displayError]); 
+    }, [displayError, chatMessages]); 
+
 
     const send_message = async () => {
         if(inputValue == "") {
@@ -46,11 +52,13 @@ export default function Chat() {
 
     return (
         <Layout>
-            <div className="flex place-content-center h-full ">
-                <div className="flex flex-col max-w-prose gap-2 w-full m-3">
+            <div className="flex place-content-center">
+
+                <div className="flex flex-col max-w-prose gap-2 w-full m-3 overflow-scroll" style={{ height: 'calc(100vh - 170px)' }}>
                     {chatMessages.map((message, index) => (
                         <ChatBubble key={index} incoming={message.incoming} inText={message.text}></ChatBubble>
                     ))}
+                    <div ref={messagesEndRef} /> {/* Invisible element at the end of the messages */}
                 </div>
 
                 <div className="flex absolute bottom-0 max-w-prose w-full mb-3 px-3 h-10">
@@ -60,10 +68,17 @@ export default function Chat() {
                         type="text"
                         value={inputValue} // Bind the input value to the component's state
                         onChange={handleInputChange} // Update the state every time the input changes
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                send_message();
+                                e.preventDefault(); // Prevents the default action of the enter key (e.g., form submission)
+                            }
+                        }}
                     />         
                 </div>
 
             </div>
+
         </Layout>
     );
-  }
+}

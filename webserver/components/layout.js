@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 
 export default function Layout({ children, home }) {
 
-  const headerText = ["Hayden", "1.6.1"]
+  const headerText = ["Hayden", "2.0.1"]
   const [headerPtr, setHeaderPtr] = useState(0);
 
   const incrementHeaderLayers = () => {
