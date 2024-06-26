@@ -160,7 +160,7 @@ export default function Home({home_posts, unique_chips}) {
             }}
             className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
             onClick={() => {
-              setSelectedKeywords(["creative writing", "short story"]);
+              setSelectedKeywords(["Creative Writing", "Short Story"]);
               setPageTitle("Creative Writing")
               }}>
             Creative Writing
@@ -174,7 +174,7 @@ export default function Home({home_posts, unique_chips}) {
             }}
             className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
             onClick={() => {
-              setSelectedKeywords(["significant work", "full stack"]);
+              setSelectedKeywords(["Significant Work", "Full Stack"]);
               setPageTitle("Major Projects")
             }}>
             Major Projects
@@ -188,7 +188,7 @@ export default function Home({home_posts, unique_chips}) {
             }}
             className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
             onClick={() => {
-              setSelectedKeywords(["photography", "gallary"]);
+              setSelectedKeywords(["Photography", "Gallary"]);
               setPageTitle("Photo Galleries")
             }}>
             Photo Galleries
