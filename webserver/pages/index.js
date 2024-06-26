@@ -147,9 +147,9 @@ export default function Home({home_posts, unique_chips}) {
 
         <h1 className='mt-5  text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
 
-        <div className="bg-gray-300 h-px my-4 prose mx-auto" />
+        <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" />
 
-        {selectedKeywords.length == 0 && <div className='flex space-x-4 justify-center'>
+        {selectedKeywords.length == 0 && <div className='flex space-x-4 justify-center mx-3'>
 
           <div
             style={{
@@ -157,7 +157,7 @@ export default function Home({home_posts, unique_chips}) {
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
+            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
             onClick={() => {
               setSelectedKeywords(["Creative Writing", "Short Story"]);
               setPageTitle("Creative Writing")
@@ -171,7 +171,7 @@ export default function Home({home_posts, unique_chips}) {
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
+            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
             onClick={() => {
               setSelectedKeywords(["Significant Work", "Full Stack"]);
               setPageTitle("Major Projects")
@@ -185,7 +185,7 @@ export default function Home({home_posts, unique_chips}) {
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
+            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
             onClick={() => {
               setSelectedKeywords(["Photography", "Gallery"]);
               setPageTitle("Photo Galleries")
