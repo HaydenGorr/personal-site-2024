@@ -78,7 +78,6 @@ export default function Home({home_posts, unique_chips}) {
     console.log("array", array)
 
     array.forEach(kw => {
-      console.log("kw", kw)
       if (!selectedKeywords.includes(kw)) {
         setSelectedKeywords(prevKeywords => [...prevKeywords, kw]);
       }
