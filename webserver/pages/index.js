@@ -188,7 +188,7 @@ export default function Home({home_posts, unique_chips}) {
             }}
             className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
             onClick={() => {
-              setSelectedKeywords(["Photography", "Gallary"]);
+              setSelectedKeywords(["Photography", "Gallery"]);
               setPageTitle("Photo Galleries")
             }}>
             Photo Galleries
