@@ -332,6 +332,7 @@ app.post('/secure/delete_article', async (req, res) => {
 
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
+app.use('/image/', express.static(path.join(DATA_DIR, 'image')));
 
 app.get(`/favicon`, async (req, res) => {
     const { href } = req.query;

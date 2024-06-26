@@ -9,6 +9,7 @@ import ToggleButton from '../components/toggle_button';
 import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
+import MB_Button from '../components/MB_Button';
 
 export async function getStaticProps() {
 
@@ -63,11 +64,26 @@ export default function Home({home_posts, unique_chips}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [matchAnyChip, setMatchAnyChip] = useState(true);
   const [aiSearching, setAISearching] = useState(false)
+  const [pageTitle, setPageTitle] = useState("ALL ENTRIES")
 
   const add_to_keywords = (inText) => {
-    if (selectedKeywords.includes(inText)) return;  
-    setSelectedKeywords([...selectedKeywords, inText])
-  }
+
+    // Check if inText is not an array and make it an array 
+    if (!Array.isArray(inText)) {
+      var array = [inText];
+    }
+    else { var array = inText; }
+
+
+    console.log("array", array)
+
+    array.forEach(kw => {
+      console.log("kw", kw)
+      if (!selectedKeywords.includes(kw)) {
+        setSelectedKeywords(prevKeywords => [...prevKeywords, kw]);
+      }
+    });
+  };
 
   const remove_keywords = (inText) => {
     setSelectedKeywords(selectedKeywords.filter(keyword => keyword !== inText));
@@ -130,10 +146,59 @@ export default function Home({home_posts, unique_chips}) {
       <section>
 
 
-        <h1 className='mt-5  text-center font-extrabold text-4xl'>ARTICLES</h1>
+        <h1 className='mt-5  text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
+
+        <div className="bg-gray-300 h-px my-4 prose mx-auto" />
+
+        {selectedKeywords.length == 0 && <div className='flex space-x-4 justify-center'>
+
+          <div
+            style={{
+              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/writing-desat.png)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
+            onClick={() => {
+              setSelectedKeywords(["creative writing", "short story"]);
+              setPageTitle("Creative Writing")
+              }}>
+            Creative Writing
+          </div>
+
+          <div             
+            style={{
+              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
+            onClick={() => {
+              setSelectedKeywords(["significant work", "full stack"]);
+              setPageTitle("Major Projects")
+            }}>
+            Major Projects
+          </div>
+
+          <div 
+            style={{
+              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/photos-desat.png)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800`}
+            onClick={() => {
+              setSelectedKeywords(["photography", "gallary"]);
+              setPageTitle("Photo Galleries")
+            }}>
+            Photo Galleries
+          </div>
+          
+        </div>}
 
         {selectedKeywords.length > 0 && (
           <div className="mx-3">
+            <div className=" h-px prose mx-auto" />
             <div className="flex flex-wrap justify-center">
               {/* <div>contains any</div> */}
               {selectedKeywords.map((item, index) => (
@@ -170,7 +235,8 @@ export default function Home({home_posts, unique_chips}) {
               add_to_keywords={add_to_keywords}
               chipsText={unique_chips}
               selectedChips_text={selectedKeywords}
-              defaultText={"get ai to help with \" /<your search>\""}/>
+              page_title_callback={(x) => setPageTitle(x)}
+              defaultText={"refine your search. Use \/ to search in natural language"}/>
           </div>
         </div>
 

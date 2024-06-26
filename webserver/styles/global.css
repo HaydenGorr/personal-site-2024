@@ -82,6 +82,10 @@ pre {
   @apply rounded-md Neo-Brutal-White
 }
 
+.Neo-Brutal-No-Colour {
+  @apply border-2 rounded-md  border-2;
+}
+
 .Neo-Brutal {
   @apply border-2 rounded-md bg-black text-white shadow-MB border-white border-2;
 }
@@ -96,7 +100,10 @@ pre {
 
 code {
   @apply bg-neutral-200 p-1 rounded;
+}
 
+.image_opacity {
+  background-color: #0070f3;
 }
 
 .prose :where(.custom-link) {
