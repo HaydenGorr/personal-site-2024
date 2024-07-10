@@ -15,11 +15,14 @@ async function get_chips() {
 
 async function get_chip(inName) {
 
+    console.log("getting chip with name", inName)
+
     const connection = await dbConnect(process.env.DB_CHIPS_NAME)
   
     try {
-      const chips = await Chip(connection).find({name: inName});
-      return chips
+        const chips = await Chip(connection).find({name: inName});
+        console.log("found chips", inName)
+        return chips
     } catch (error) {
         console.error('Error:', error);
         return 'Internal server error'

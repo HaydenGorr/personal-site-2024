@@ -31,9 +31,9 @@ if (!cached) {
 const connections = {};
 
 async function dbConnect(dbName) {
-  console.log("getting connection")
+  // console.log("getting connection")
   if (connections[dbName]) {
-    console.log("got pre-existing connection")
+    // console.log("got pre-existing connection")
     return connections[dbName];
   }
 
@@ -45,7 +45,7 @@ async function dbConnect(dbName) {
   try {
     const conn = await mongoose.createConnection(MONGODB_BASE, opts);
     connections[dbName] = conn;
-    console.log("returning connection")
+    // console.log("returning connection")
     return conn
   } catch (error) {
     return new Response("", 500, `Could not establish a connection to "${dbName}":`);

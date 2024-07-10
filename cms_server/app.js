@@ -26,6 +26,9 @@ const fs = require('fs');
 const { updatedArticle } = require('./utils/mongo_utils/update_article')
 const { add_article } = require('./utils/mongo_utils/add_article')
 const { deleteArticle } = require('./utils/mongo_utils/delete_article')
+const { edit_chip } = require('./utils/mongo_utils/edit_chip')
+const { deleteChip } = require('./utils/mongo_utils/delete_chip')
+
 
 // app.use(cors());
 app.use(express.json());
@@ -241,6 +244,64 @@ app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
 })
 
 /**
+ * Edit a chip with a name, description and image
+ */
+app.post('/secure/edit_chip', upload.single('image'), async (req, res) => {
+  const { name, description, original_name } = req.body;
+  const image = req.file;
+
+  console.log(name, description, original_name)
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
+  }
+
+  /**
+   * Check that this tag doesn't already exist in the DB
+   */
+  const foundChips = await get_chip(original_name)
+
+  const id = foundChips[0]._id
+
+  if (foundChips.length == 0) {
+    console.log("did not find chips. Quitting")
+    // If it already exists in the DB return early
+    return res.status(500).json({ message: 'An error occurred while uploading the image' });
+  }
+
+  console.log("asd ", image)
+
+  if (image){
+    // Generate the path where we'll write the svg
+    const imagePath = path.join(svg_dir, name+".svg");
+
+    // Write the file from the buffer into the CMS
+    fs.writeFile(imagePath, image.buffer, (error) => {
+      if (error) {
+        console.error('Error writing the image file:', error);
+        return res.status(500).json({ message: 'An error occurred while uploading the image' });
+      }
+    });
+  }
+  else {
+    const old_image_path = path.join(svg_dir, original_name+".svg");
+    const new_image_path = path.join(svg_dir, name+".svg");
+    try {
+      fs.renameSync(old_image_path, new_image_path);
+      console.log('File renamed successfully');
+    } catch (err) {
+      console.error('Error renaming file:', err);
+    }
+  }
+
+  // Put the chip into the DB
+  await edit_chip(id, name, description)
+  res.status(200).json({ message: 'Chip uploaded successfully' });
+})
+
+/**
  * Upload a new chip with a name, description and image
  */
 app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }]), async (req, res) => {
@@ -328,6 +389,71 @@ app.post('/secure/delete_article', async (req, res) => {
   catch {
     res.status(500).json({ message: 'Failed' });
   }
+})
+
+app.post('/secure/delete_chip', async (req, res) => {
+  const { name } = req.body;
+
+  console.log("name: ", name)
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
+  }
+
+  try {
+    /**
+     * Check that this tag doesn't already exist in the DB
+     */
+    const foundChips = await get_chip(name)
+
+    const id = foundChips[0]._id
+
+    if (foundChips.length == 0) {
+      console.log("did not find chips. Quitting")
+      // If it already exists in the DB return early
+      return res.status(500).json({ message: 'An error occurred while uploading the image' });
+    }
+
+    await deleteChip(id);
+
+    res.status(200).json({ message: 'Chip uploaded successfully' });
+  }
+  catch {
+    res.status(500).json({ message: 'Failed' });
+  }
+})
+
+
+app.post('/secure/remove_chips', async (req, res) => {
+  const { articles, chips_to_remove } = req.body;
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
+  }
+
+  try {
+
+    // Update the article
+    const update_result = await updatedArticle(req.body)
+
+    if (mdxFile) {
+      const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");
+      fs.writeFileSync(mdxPath, mdxFile.buffer);
+    }
+
+    if (imageFile) {
+      const imagePath = path.join(DATA_DIR, "CMS", "articles", source, "container.png");
+      fs.writeFileSync(imagePath, imageFile.buffer);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'An error occurred during the operation' });
+  }
+
 })
 
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
