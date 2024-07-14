@@ -1,15 +1,19 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
 import Container from '../components/container';
-import { useState } from 'react'; // Import useState and useEffect if not already imported
+import { useState } from 'react';
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 import ToggleButton from '../components/toggle_button';
 import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
-import assert from 'assert';
+import assert, { match } from 'assert';
+import DraggableChip from '../components/draggable_chip';
 import MB_Button from '../components/MB_Button';
+import ChipFiltering from '../components/chip_filtering/chipfiltering'
+import FilterPreset from '../components/chip_filtering/filterPreset';
+import presets from '../presets.json'
 
 export async function getStaticProps() {
 
@@ -62,9 +66,10 @@ export async function getStaticProps() {
 
 export default function Home({home_posts, unique_chips}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
-  const [matchAnyChip, setMatchAnyChip] = useState(true);
+  const [matchAnyChip, setMatchAnyChip] = useState("any");
   const [aiSearching, setAISearching] = useState(false)
   const [pageTitle, setPageTitle] = useState("ALL ENTRIES")
+  // const [currentlyDraggedChip, setCurrentlyDraggedChip] = useState(null)
 
   const add_to_keywords = (inText) => {
 
@@ -89,11 +94,15 @@ export default function Home({home_posts, unique_chips}) {
   }
 
   const filter_posts_out = () => {
-    if (matchAnyChip) {
+    if (matchAnyChip == "any") {
       return home_posts.filter(post => selectedKeywords.some(keyword => post.chips.includes(keyword)))
     }
-    else {
+    else if (matchAnyChip == "all") {
       return home_posts.filter(post => selectedKeywords.every(keyword => post.chips.includes(keyword)))
+    }
+    else if (matchAnyChip == "custom") {
+      // Change this logic to sort by the custom logic
+      return home_posts.filter(post => selectedKeywords.some(keyword => post.chips.includes(keyword)))
     }
   }
 
@@ -123,7 +132,7 @@ export default function Home({home_posts, unique_chips}) {
 
   
       setSelectedKeywords(matched_tags);
-      setMatchAnyChip(jp.filter_type == "any")
+      setMatchAnyChip(jp.filter_type)
     }
     catch (e) {
       console.log(e)
@@ -133,9 +142,7 @@ export default function Home({home_posts, unique_chips}) {
 
   };
 
-  // Assuming selectedKeywords is meant to be an array
-  const filteredPosts = selectedKeywords.length > 0
-  ? filter_posts_out() : home_posts;
+  const filteredPosts = selectedKeywords.length > 0 ? filter_posts_out() : home_posts;
 
   return (
     <Layout home>
@@ -143,88 +150,32 @@ export default function Home({home_posts, unique_chips}) {
         <title>{"Hayden's Personal Site"}</title>
       </Head>
       <section>
-
-
+        
         <h1 className='mt-5  text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
 
         <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" />
 
-        {selectedKeywords.length == 0 && <div className='flex space-x-4 justify-center mx-3'>
+        <div className='flex space-x-4 justify-center mx-3'>
+          {presets.map((item, index) => (
+            <FilterPreset
+              title={item.title}
+              background_img={item.background_img}
+              onClick={ () =>
+                {setSelectedKeywords(item.chips)
+                setPageTitle(item.title)}} 
+              />
+          ))}
+        </div>
 
-          <div
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/writing-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Creative Writing", "Short Story"]);
-              setPageTitle("Creative Writing")
-              }}>
-            Creative Writing
-          </div>
 
-          <div             
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Significant Work", "Full Stack"]);
-              setPageTitle("Major Projects")
-            }}>
-            Major Projects
-          </div>
 
-          <div 
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/photos-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Photography", "Gallery"]);
-              setPageTitle("Photo Galleries")
-            }}>
-            Photo Galleries
-          </div>
-          
-        </div>}
+        <ChipFiltering
+          selectedKeywords={selectedKeywords}
+          remove_keywords={remove_keywords}
+          setMatchAnyChip={setMatchAnyChip}
+          matchAnyChip={matchAnyChip} />
 
-        {selectedKeywords.length > 0 && (
-          <div className="mx-3">
-            <div className=" h-px prose mx-auto" />
-            <div className="flex flex-wrap justify-center">
-              {/* <div>contains any</div> */}
-              {selectedKeywords.map((item, index) => (
-                <div className="mr-3 mt-3"> 
-                  <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} svg_path={"images/svgs/cancel.svg"} />
-                </div>
-              ))}
-            </div>
-            <div className='flex justify-center items-center mt-6'>
-              <div className='m3-1'>
-                {"match"}
-              </div>
 
-              <div className='mx-1 w-fit over'>
-                <ToggleButton text={"any"} lowercase="true" btnAction={() => {setMatchAnyChip(true)}} toggled={matchAnyChip==true}/>
-              </div>
-              <div className='mx-1'>
-                <ToggleButton text={"all"} lowercase="true" btnAction={() => {setMatchAnyChip(false)}} toggled={matchAnyChip==false}/>
-              </div>
-
-              <div className='ml-1'>
-                {"of the tags"}
-              </div>
-              
-            </div>
-          </div>
-        )}
 
         <div className="w-100% mx-3">
           <div className="mt-6 mb-3 h-10 max-w-prose mx-auto">

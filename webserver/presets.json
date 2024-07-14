@@ -1,0 +1,26 @@
+[
+    {
+        "title": "Creative Writing",
+        "chips": ["Creative Writing", "Short Story"],
+        "background_img": "writing-desat",
+        "children":[
+            
+        ]
+    },
+    {
+        "title": "Major Projects",
+        "chips": ["Significant Work", "Full Stack"],
+        "background_img": "tech-desat",
+        "children":[
+            
+        ]
+    },
+    {
+        "title": "Photo Galleries",
+        "chips": ["Photography", "Gallery"],
+        "background_img": "photos-desat",
+        "children":[
+            
+        ]
+    }
+]
