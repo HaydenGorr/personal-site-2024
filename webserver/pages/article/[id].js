@@ -14,7 +14,7 @@ const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource, title, chips, publishDate}) {
+export default function Article({mdxSource, title, chips, publishDate, wordCount}) {
     const components = {
         Chip,
         MB_Button,
@@ -29,17 +29,25 @@ export default function Article({mdxSource, title, chips, publishDate}) {
                 <div className="prose max-w-prose">
                     <h1 className='mt-3'>{title}</h1>
                     <div className="flex not-prose w-full justify-center">
-                      <div className="flex flex-wrap justify-center">
+                      <div className="flex flex-wrap justify-center space-x-3">
                         {
                         chips.map((chip_text, index) => (
-                          <div key={index} className="mr-3 mt-3">
+                          <div key={index} className="mt-3">
                             <Chip chip_text={chip_text} />
                           </div>
                         ))
                         }
                       </div>
                     </div>
-                    <hr/>
+
+                    <div className='relative flex justify-center mt-8'>
+                      <div className='relative flex'>
+                        {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
+                        <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
+                      </div>
+                    </div>
+
+                    <hr className='mt-0'/>
 
                     <MDXRemote {...mdxSource} components={components}/>
                     <div className="flex justify-center position">by Hayden</div>
@@ -67,11 +75,12 @@ export async function getStaticProps(context) {
 
     const Article_Meta_JSON = await article_meta.json();
 
-    const chips = Article_Meta_JSON.chips;
-    const title = Article_Meta_JSON.title;
-    const publishDate = Article_Meta_JSON.publishDate;
+    const chips = Article_Meta_JSON.chips
+    const title = Article_Meta_JSON.title
+    const publishDate = Article_Meta_JSON.publishDate
+    const wordCount = mdxContent.split(' ').length
 
-    return { props: { mdxSource, title, chips, publishDate }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
+    return { props: { mdxSource, title, chips, publishDate, wordCount }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {
@@ -86,8 +95,6 @@ export async function getStaticPaths() {
     
         const hprJSONs = await homePostsResponse.json();
         const hprJSON = hprJSONs.data;
-
-        console.log("BOTS LIKES ", hprJSON )
         
         if (!Array.isArray(hprJSON)) {
           console.error('Expected an array from the CMS response');
