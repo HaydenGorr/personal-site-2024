@@ -14,7 +14,8 @@ export default function Chip({chip_text, add_keywords_to_filter = () => {}, inde
                 className="mr-2"
                 src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${chip_text.toLowerCase()}.svg`}
                 width={20}
-                height={20}/>
+                height={20}
+                alt={`${chip_text} icon`}/>
 
                 <p>{chip_text}</p>
             </div>

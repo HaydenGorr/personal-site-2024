@@ -1,7 +1,7 @@
 import ClosableChip from "./closable_chip";
 import { useEffect, useRef, useState } from "react";
 
-export default function DraggableChip({ id, draggedCallback, chip_text, remove_keywords, index = 0, svg_path = "" }) {
+export default function DraggableChip({ id, mouseDown, mouseUp, chip_text, remove_keywords, index = 0, svg_path = "" }) {
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isReset, setIsReset] = useState(false);
@@ -16,13 +16,11 @@ export default function DraggableChip({ id, draggedCallback, chip_text, remove_k
 
     document.body.style.userSelect = 'none';
 
-    if (draggedCallback) draggedCallback(id);
+    if (mouseDown) mouseDown(id);
   };
 
   const handleMouseMove = (e) => {
     if (!dragging) return;
-
-    console.log(e.clientY)
 
     const x = e.clientX - offset.x;
     const y = e.clientY - offset.y;
@@ -34,8 +32,10 @@ export default function DraggableChip({ id, draggedCallback, chip_text, remove_k
   const handleMouseUp = () => {
     setDragging(false);
     handleResetPosition();
+
     document.body.style.userSelect = 'auto';
-    if (draggedCallback) draggedCallback(null);
+
+    if (mouseUp) mouseUp(id);
   };
 
   const handleResetPosition = () => {
@@ -48,14 +48,19 @@ export default function DraggableChip({ id, draggedCallback, chip_text, remove_k
   };
 
   useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    if (dragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    } else {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    }
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragging, offset]);
+  }, [dragging]);
 
   useEffect(() => {
     if (isReset) {

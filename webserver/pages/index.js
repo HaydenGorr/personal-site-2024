@@ -79,9 +79,6 @@ export default function Home({home_posts, unique_chips}) {
     }
     else { var array = inText; }
 
-
-    console.log("array", array)
-
     array.forEach(kw => {
       if (!selectedKeywords.includes(kw)) {
         setSelectedKeywords(prevKeywords => [...prevKeywords, kw]);
@@ -156,7 +153,7 @@ export default function Home({home_posts, unique_chips}) {
         <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" />
 
         <div className='flex space-x-4 justify-center mx-3'>
-          {presets.map((item, index) => (
+          { selectedKeywords.length == 0 && presets.map((item, index) => (
             <FilterPreset
               title={item.title}
               background_img={item.background_img}
@@ -171,6 +168,7 @@ export default function Home({home_posts, unique_chips}) {
 
         <ChipFiltering
           selectedKeywords={selectedKeywords}
+          reorderChipsCallback={setSelectedKeywords}
           remove_keywords={remove_keywords}
           setMatchAnyChip={setMatchAnyChip}
           matchAnyChip={matchAnyChip} />
