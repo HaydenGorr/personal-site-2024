@@ -40,7 +40,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
                       </div>
                     </div>
 
-                    {(wordCount && wordCount > 0) && <div className='relative flex justify-center mt-8'>
+                    {(wordCount && wordCount > 1) && <div className='relative flex justify-center mt-8'>
                       <div className='relative flex'>
                         {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
                         <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
