@@ -40,12 +40,12 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
                       </div>
                     </div>
 
-                    <div className='relative flex justify-center mt-8'>
+                    {wordCount && wordCount > 0 && <div className='relative flex justify-center mt-8'>
                       <div className='relative flex'>
                         {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
-                        {wordCount && <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>}
+                        <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
                       </div>
-                    </div>
+                    </div>}
 
                     <hr className='mt-0'/>
 
@@ -78,7 +78,7 @@ export async function getStaticProps(context) {
     const chips = Article_Meta_JSON.chips
     const title = Article_Meta_JSON.title
     const publishDate = Article_Meta_JSON.publishDate
-    const wordCount = mdxContent.split(' ').length
+    const wordCount = countWordsInMDX(mdxContent)
 
     return { props: { mdxSource, title, chips, publishDate, wordCount }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
@@ -117,4 +117,17 @@ export async function getStaticPaths() {
         return { paths: [], fallback: 'blocking' };
       }
 
+  }
+
+  function countWordsInMDX(content) {
+    // Remove lines that are code (import statements, JSX tags, etc.)
+    const codeLinePattern = /^\s*(import|<.*>|{|})/;
+    const lines = content.split('\n');
+    const textLines = lines.filter(line => !codeLinePattern.test(line));
+    
+    // Join the text lines and split by whitespace to count words
+    const textContent = textLines.join(' ');
+    const words = textContent.match(/\b\w+\b/g);
+    
+    return words ? words.length : 0;
   }
