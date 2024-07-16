@@ -47,7 +47,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
                       </div>
                     </div>}
 
-                    <hr className={`${(wordCount && wordCount > 0) ? 'mt-0' : ''}`}/>
+                    <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
 
                     <MDXRemote {...mdxSource} components={components}/>
                     <div className="flex justify-center position">by Hayden</div>
