@@ -8,13 +8,15 @@ import ImageWrapper from '../../components/image_wrapper';
 // import CustomLink from '../../components/custom_link';
 import dynamic from 'next/dynamic';
 import getDate from '../../utils/date_utils'
+import { useEffect } from 'react';
+
 
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource, title, chips, publishDate, wordCount}) {
+export default function Article({mdxSource, title, chips, publishDate, wordCount, setBackgroundColour, backgroundColour}) {
     const components = {
         Chip,
         MB_Button,
@@ -23,8 +25,12 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
         a: CustomLink
     };
 
+    useEffect(() => {
+      setBackgroundColour("CreamBackgroundColour")
+    }, []); 
+
     return (
-        <Layout stickyHeader={false}>
+        <Layout stickyHeader={false} setBackgroundColour={setBackgroundColour} backgroundColour={backgroundColour}>
             <div className='flex justify-center pt-3 py-6 px-3'>
                 <div className="prose max-w-prose">
                     <h1 className='mt-3'>{title}</h1>

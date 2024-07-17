@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
 
-export default function Layout({ children, home, stickyHeader=true }) {
+export default function Layout({ children, home, stickyHeader=true, setBackgroundColour, backgroundColour }) {
 
   const headerText = ["Hayden", "2.5.0"]
   const [headerPtr, setHeaderPtr] = useState(0);
@@ -29,11 +29,11 @@ export default function Layout({ children, home, stickyHeader=true }) {
   }, [headerPtr]);
 
   return (
-    <div>
+    <div className=''>
       {/** The modal for downloading my cv. hidden by default. Shown on a button click*/}
       <CVDownloadModal></CVDownloadModal>
 
-      <header className={`flex flex-col items-center default_colour ${ stickyHeader ? 'sticky' : ''} top-0 z-40`}>
+      <header className={`flex flex-col items-center default_colour ${ stickyHeader ? 'sticky' : ''} top-0 z-40 ${backgroundColour ? backgroundColour : ''}`}>
         
         <div className="flex md:justify-between w-full">
             {headerPtr==2 && <div className="my-auto ml-10 text-xl font-bold hideonmobile"><MB_Button text="login" given_href="/admin/login"></MB_Button></div>}
@@ -65,6 +65,8 @@ export default function Layout({ children, home, stickyHeader=true }) {
       </header>
 
       <main className='max-w-7xl mx-auto'>{children}</main>
+
+      <div className='absolute right-10 bottom-10'> asd </div>
 
     </div>
   );
