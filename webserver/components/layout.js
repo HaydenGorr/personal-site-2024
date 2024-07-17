@@ -4,9 +4,9 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
 
-export default function Layout({ children, home }) {
+export default function Layout({ children, home, stickyHeader=true }) {
 
-  const headerText = ["Hayden", "2.0.1"]
+  const headerText = ["Hayden", "2.5.0"]
   const [headerPtr, setHeaderPtr] = useState(0);
 
   const incrementHeaderLayers = () => {
@@ -33,7 +33,7 @@ export default function Layout({ children, home }) {
       {/** The modal for downloading my cv. hidden by default. Shown on a button click*/}
       <CVDownloadModal></CVDownloadModal>
 
-      <header className='flex flex-col items-center default_colour sticky top-0 z-40'>
+      <header className={`flex flex-col items-center default_colour ${ stickyHeader ? 'sticky' : ''} top-0 z-40`}>
         
         <div className="flex md:justify-between w-full">
             {headerPtr==2 && <div className="my-auto ml-10 text-xl font-bold hideonmobile"><MB_Button text="login" given_href="/admin/login"></MB_Button></div>}

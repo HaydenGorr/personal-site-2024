@@ -24,7 +24,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
     };
 
     return (
-        <Layout>
+        <Layout stickyHeader={false}>
             <div className='flex justify-center pt-3 py-6 px-3'>
                 <div className="prose max-w-prose">
                     <h1 className='mt-3'>{title}</h1>
