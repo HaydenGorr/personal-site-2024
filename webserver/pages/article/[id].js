@@ -8,66 +8,92 @@ import ImageWrapper from '../../components/image_wrapper';
 // import CustomLink from '../../components/custom_link';
 import dynamic from 'next/dynamic';
 import getDate from '../../utils/date_utils'
-import { useEffect } from 'react';
-
+import { useRef, useState } from 'react';
+import TableOfContentsButton from '../../components/table_of_contents_button';
 
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource, title, chips, publishDate, wordCount, setBackgroundColour, backgroundColour}) {
-    const components = {
-        Chip,
-        MB_Button,
-        Image,
-        ImageWrapper,
-        a: CustomLink
-    };
+export default function Article({mdxSource, title, chips, publishDate, wordCount, headers}) {
+  const components = {
+      Chip,
+      MB_Button,
+      Image,
+      ImageWrapper,
+      a: CustomLink
+  };
 
-    useEffect(() => {
-      // setBackgroundColour("CreamBackgroundColour")
-    }, []); 
+  const containerRef = useRef(null);
 
-    return (
-        <Layout stickyHeader={false} setBackgroundColour={setBackgroundColour} backgroundColour={backgroundColour}>
-            <div className='flex justify-center pt-3 py-6 px-3'>
-                <div className="prose max-w-prose">
-                    <h1 className='mt-3'>{title}</h1>
-                    <div className="flex not-prose w-full justify-center">
-                      <div className="flex flex-wrap justify-center space-x-3">
-                        {
-                        chips.map((chip_text, index) => (
-                          <div key={index} className="mt-3">
-                            <Chip chip_text={chip_text} />
-                          </div>
-                        ))
-                        }
-                      </div>
-                    </div>
+  const scrollToText = (text) => {
+    const elements = Array.from(containerRef.current.querySelectorAll('h2, h3, h4, h5, h6'))
+      .find(el => el.textContent.includes(text));
+    
+    if (elements) {
+      elements.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
-                    {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center mt-8'>
-                      <div className='relative flex'>
-                        {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
-                        <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
-                      </div>
-                    </div>}
-
-                    <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
-
-                    <MDXRemote {...mdxSource} components={components}/>
-                    <div className="flex justify-center position">by Hayden</div>
-                    <p className="flex justify-center place-content-center font-sm mt-3 text-xs">{"published: " + getDate(publishDate).toString()}</p>
-                </div>
+  return (
+      <Layout stickyHeader={false}>
+        <div className='flex justify-center pt-3 py-6 px-3'>
+          <div className="prose max-w-prose">
+            <h1 className='mt-3'>{title}</h1>
+            <div className="flex not-prose w-full justify-center">
+              <div className="flex flex-wrap justify-center space-x-3">
+                {
+                chips.map((chip_text, index) => (
+                  <div key={index} className="mt-3">
+                    <Chip chip_text={chip_text} />
+                  </div>
+                ))
+                }
+              </div>
             </div>
-        </Layout>
-    );
+                
+            {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center mt-8'>
+              <div className='relative flex'>
+                {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
+                <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
+              </div>
+            </div>}
+
+            <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
+
+            <div ref={containerRef}><MDXRemote {...mdxSource} components={components}/></div>
+            <div className="flex justify-center position">by Hayden</div>
+            <p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
+          </div>
+        </div>
+
+        {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}></TableOfContentsButton>}
+
+      </Layout>
+  );
+}
+
+function getHeaders(text){
+  const regex = /^(#+)\s+(.*)$/gm;
+  const headers = [];
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const level = match[1].length; // Number of '#' characters
+    const text = match[2].trim(); // Header text
+    headers.push({ level, text });
+  }
+
+  return headers;
 }
 
 export async function getStaticProps(context) {
     const { id } = context.params;
     const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${id}/article.mdx`);
     const mdxContent = await res.text();
+
+    console.log("self", mdxContent)
     
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
@@ -85,8 +111,9 @@ export async function getStaticProps(context) {
     const title = Article_Meta_JSON.title
     const publishDate = Article_Meta_JSON.publishDate
     const wordCount = countWordsInMDX(mdxContent)
+    const headers = getHeaders(mdxContent)
 
-    return { props: { mdxSource, title, chips, publishDate, wordCount }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
+    return { props: { mdxSource, title, chips, publishDate, wordCount, headers }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {
@@ -125,15 +152,15 @@ export async function getStaticPaths() {
 
   }
 
-  function countWordsInMDX(content) {
-    // Remove lines that are code (import statements, JSX tags, etc.)
-    const codeLinePattern = /^\s*(import|<.*>|{|})/;
-    const lines = content.split('\n');
-    const textLines = lines.filter(line => !codeLinePattern.test(line));
-    
-    // Join the text lines and split by whitespace to count words
-    const textContent = textLines.join(' ');
-    const words = textContent.match(/\b\w+\b/g);
-    
-    return words ? words.length : 0;
-  }
+function countWordsInMDX(content) {
+  // Remove lines that are code (import statements, JSX tags, etc.)
+  const codeLinePattern = /^\s*(import|<.*>|{|})/;
+  const lines = content.split('\n');
+  const textLines = lines.filter(line => !codeLinePattern.test(line));
+  
+  // Join the text lines and split by whitespace to count words
+  const textContent = textLines.join(' ');
+  const words = textContent.match(/\b\w+\b/g);
+  
+  return words ? words.length : 0;
+}
