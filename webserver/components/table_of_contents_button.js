@@ -67,7 +67,7 @@ export default function TableOfContentsButton({headers, scrollToText}) {
     };
 
     const getButtonStyle = () => {
-        let styles = "flex px-4 w-fit h-8 bg-red-300 shadow items-center justify-center cursor-pointer hover:bg-red-400 transition-all duration-300 font-medium"
+        let styles = "flex px-4 w-fit h-8 bg-indigo-300 shadow items-center justify-center cursor-pointer hover:bg-red-400 transition-all duration-300 font-medium"
 
         if (scrollAway) styles += " translate-y-40"
 
@@ -93,7 +93,7 @@ export default function TableOfContentsButton({headers, scrollToText}) {
             </div>
 
             <div onClick={() => {setButtonPressed(!buttonPressed); setShowTOC(!showTOC)}} className={getButtonStyle()}>
-                <Image className='' src={'/images/svgs/toc.svg'} width={25} height={25}></Image>
+                <Image className='bg-' src={'/images/svgs/toc.svg'} width={25} height={25}></Image>
             </div>
                         
         </div>
