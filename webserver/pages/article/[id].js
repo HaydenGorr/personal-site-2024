@@ -14,7 +14,7 @@ const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource, title, chips, publishDate}) {
+export default function Article({mdxSource, title, chips, publishDate, wordCount}) {
     const components = {
         Chip,
         MB_Button,
@@ -24,22 +24,30 @@ export default function Article({mdxSource, title, chips, publishDate}) {
     };
 
     return (
-        <Layout>
+        <Layout stickyHeader={false}>
             <div className='flex justify-center pt-3 py-6 px-3'>
                 <div className="prose max-w-prose">
                     <h1 className='mt-3'>{title}</h1>
                     <div className="flex not-prose w-full justify-center">
-                      <div className="flex flex-wrap justify-center">
+                      <div className="flex flex-wrap justify-center space-x-3">
                         {
                         chips.map((chip_text, index) => (
-                          <div key={index} className="mr-3 mt-3">
+                          <div key={index} className="mt-3">
                             <Chip chip_text={chip_text} />
                           </div>
                         ))
                         }
                       </div>
                     </div>
-                    <hr/>
+
+                    {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center mt-8'>
+                      <div className='relative flex'>
+                        {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
+                        <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
+                      </div>
+                    </div>}
+
+                    <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
 
                     <MDXRemote {...mdxSource} components={components}/>
                     <div className="flex justify-center position">by Hayden</div>
@@ -67,11 +75,12 @@ export async function getStaticProps(context) {
 
     const Article_Meta_JSON = await article_meta.json();
 
-    const chips = Article_Meta_JSON.chips;
-    const title = Article_Meta_JSON.title;
-    const publishDate = Article_Meta_JSON.publishDate;
+    const chips = Article_Meta_JSON.chips
+    const title = Article_Meta_JSON.title
+    const publishDate = Article_Meta_JSON.publishDate
+    const wordCount = countWordsInMDX(mdxContent)
 
-    return { props: { mdxSource, title, chips, publishDate }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
+    return { props: { mdxSource, title, chips, publishDate, wordCount }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {
@@ -86,8 +95,6 @@ export async function getStaticPaths() {
     
         const hprJSONs = await homePostsResponse.json();
         const hprJSON = hprJSONs.data;
-
-        console.log("BOTS LIKES ", hprJSON )
         
         if (!Array.isArray(hprJSON)) {
           console.error('Expected an array from the CMS response');
@@ -110,4 +117,17 @@ export async function getStaticPaths() {
         return { paths: [], fallback: 'blocking' };
       }
 
+  }
+
+  function countWordsInMDX(content) {
+    // Remove lines that are code (import statements, JSX tags, etc.)
+    const codeLinePattern = /^\s*(import|<.*>|{|})/;
+    const lines = content.split('\n');
+    const textLines = lines.filter(line => !codeLinePattern.test(line));
+    
+    // Join the text lines and split by whitespace to count words
+    const textContent = textLines.join(' ');
+    const words = textContent.match(/\b\w+\b/g);
+    
+    return words ? words.length : 0;
   }
