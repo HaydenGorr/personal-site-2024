@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic';
 import getDate from '../../utils/date_utils'
 import { useRef, useState } from 'react';
 import TableOfContentsButton from '../../components/table_of_contents_button';
-
+import ChangeStyle from '../../components/change_style'
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
@@ -68,7 +68,12 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
           </div>
         </div>
 
-        {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}></TableOfContentsButton>}
+        <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3'>
+          {/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
+          <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>
+          <ChangeStyle/>
+        </div>
+
 
       </Layout>
   );

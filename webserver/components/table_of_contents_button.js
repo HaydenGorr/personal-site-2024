@@ -87,14 +87,13 @@ export default function TableOfContentsButton({headers, scrollToText}) {
     }
 
     return (
-        <div className={`fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text`}>
+        <div className={``}>
             <div className={getTOCStyle()}>
                 {displayTableOfContents(headers)}
             </div>
 
             <div onClick={() => {setButtonPressed(!buttonPressed); setShowTOC(!showTOC)}} className={getButtonStyle()}>
                 <Image className='' src={'/images/svgs/toc.svg'} width={25} height={25}></Image>
-                {/* Table of Contents */}
             </div>
                         
         </div>
