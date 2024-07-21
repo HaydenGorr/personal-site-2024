@@ -5,7 +5,7 @@ import MB_Button from "./MB_Button";
 export default function TableOfContentsButton({headers, scrollToText}) {
 
     const [scrollAway, setScrollAway] = useState(false);
-    const [showTOC, setShowTOC] = useState(true);
+    const [showTOC, setShowTOC] = useState(false);
     const [buttonPressed, setButtonPressed] = useState(false);
 
     useEffect(() => {
