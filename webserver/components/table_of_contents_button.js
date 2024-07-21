@@ -28,6 +28,9 @@ export default function TableOfContentsButton({headers, scrollToText}) {
     }, []);
       
     const displayTableOfContents = (headers) => {
+
+        if (headers.length == 0) return;
+        
         let lastLevel = headers[0].level;
         let nestedContent = [];
         let lastMod = ''

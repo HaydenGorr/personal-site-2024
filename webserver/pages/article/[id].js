@@ -26,7 +26,6 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
   };
 
   const containerRef = useRef(null);
-  const [showTOC, setShowTOC] = useState(false);
 
   const scrollToText = (text) => {
     const elements = Array.from(containerRef.current.querySelectorAll('h2, h3, h4, h5, h6'))
@@ -35,39 +34,6 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
     if (elements) {
       elements.scrollIntoView({ behavior: 'smooth' });
     }
-  };
-
-  const displayTableOfContents = (headers) => {
-    let lastLevel = headers[0].level;
-    let nestedContent = [];
-    let lastMod = ''
-    
-    console.log(headers)
-
-    headers.map((header, index) => {
-      const level = header.level;
-      const text = header.text;
-
-      console.log(level)
-
-      if (level > lastLevel){ // then nest it
-        lastMod = `ml-${3 * (level - 2)}`
-      }
-      else if (level < lastLevel){ // then push it back / unnest it
-        lastMod = ''
-      }
-      
-      nestedContent.push(<div className={`${lastMod} cursor-pointer hover:caret-pink-400`} onClick={() => {scrollToText(text)}}>{text}</div>)
-      
-
-      lastLevel = level;
-    });
-
-    return (
-      <div className={`${showTOC ? '' : 'hidden'}`}>
-        {nestedContent}
-      </div>
-    );
   };
 
   return (
@@ -94,11 +60,6 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
               </div>
             </div>}
 
-            {headers.length > 0 && <div className='flex flex-col flex-wrap content-center'>
-                <div className='text-center cursor-pointer' onClick={() => {setShowTOC(!showTOC)}}>Table Of Contents</div>
-                {displayTableOfContents(headers)}
-            </div>}
-
             <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
 
             <div ref={containerRef}><MDXRemote {...mdxSource} components={components}/></div>
@@ -107,14 +68,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
           </div>
         </div>
 
-        <TableOfContentsButton headers={headers} scrollToText={scrollToText}></TableOfContentsButton>
-        {/* <div className="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-700 focus:outline-none fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96">
-          asd
-        </div>
-
-        <div className="w-16 h-16 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-blue-700 focus:outline-none fixed bottom-4 right-4 lg:right-1/2 lg:transform lg:translate-x-96">
-          assssd
-        </div> */}
+        {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}></TableOfContentsButton>}
 
       </Layout>
   );
