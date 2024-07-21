@@ -8,60 +8,138 @@ import ImageWrapper from '../../components/image_wrapper';
 // import CustomLink from '../../components/custom_link';
 import dynamic from 'next/dynamic';
 import getDate from '../../utils/date_utils'
+import { useRef, useState } from 'react';
+import TableOfContentsButton from '../../components/table_of_contents_button';
 
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource, title, chips, publishDate, wordCount}) {
-    const components = {
-        Chip,
-        MB_Button,
-        Image,
-        ImageWrapper,
-        a: CustomLink
-    };
+export default function Article({mdxSource, title, chips, publishDate, wordCount, headers}) {
+  const components = {
+      Chip,
+      MB_Button,
+      Image,
+      ImageWrapper,
+      a: CustomLink
+  };
+
+  const containerRef = useRef(null);
+  const [showTOC, setShowTOC] = useState(false);
+
+  const scrollToText = (text) => {
+    const elements = Array.from(containerRef.current.querySelectorAll('h2, h3, h4, h5, h6'))
+      .find(el => el.textContent.includes(text));
+    
+    if (elements) {
+      elements.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const displayTableOfContents = (headers) => {
+    let lastLevel = headers[0].level;
+    let nestedContent = [];
+    let lastMod = ''
+    
+    console.log(headers)
+
+    headers.map((header, index) => {
+      const level = header.level;
+      const text = header.text;
+
+      console.log(level)
+
+      if (level > lastLevel){ // then nest it
+        lastMod = `ml-${3 * (level - 2)}`
+      }
+      else if (level < lastLevel){ // then push it back / unnest it
+        lastMod = ''
+      }
+      
+      nestedContent.push(<div className={`${lastMod} cursor-pointer hover:caret-pink-400`} onClick={() => {scrollToText(text)}}>{text}</div>)
+      
+
+      lastLevel = level;
+    });
 
     return (
-        <Layout stickyHeader={false}>
-            <div className='flex justify-center pt-3 py-6 px-3'>
-                <div className="prose max-w-prose">
-                    <h1 className='mt-3'>{title}</h1>
-                    <div className="flex not-prose w-full justify-center">
-                      <div className="flex flex-wrap justify-center space-x-3">
-                        {
-                        chips.map((chip_text, index) => (
-                          <div key={index} className="mt-3">
-                            <Chip chip_text={chip_text} />
-                          </div>
-                        ))
-                        }
-                      </div>
-                    </div>
-
-                    {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center mt-8'>
-                      <div className='relative flex'>
-                        {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
-                        <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
-                      </div>
-                    </div>}
-
-                    <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
-
-                    <MDXRemote {...mdxSource} components={components}/>
-                    <div className="flex justify-center position">by Hayden</div>
-                    <p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
-                </div>
-            </div>
-        </Layout>
+      <div className={`${showTOC ? '' : 'hidden'}`}>
+        {nestedContent}
+      </div>
     );
+  };
+
+  return (
+      <Layout stickyHeader={false}>
+        <div className='flex justify-center pt-3 py-6 px-3'>
+          <div className="prose max-w-prose">
+            <h1 className='mt-3'>{title}</h1>
+            <div className="flex not-prose w-full justify-center">
+              <div className="flex flex-wrap justify-center space-x-3">
+                {
+                chips.map((chip_text, index) => (
+                  <div key={index} className="mt-3">
+                    <Chip chip_text={chip_text} />
+                  </div>
+                ))
+                }
+              </div>
+            </div>
+                
+            {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center mt-8'>
+              <div className='relative flex'>
+                {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
+                <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
+              </div>
+            </div>}
+
+            {headers.length > 0 && <div className='flex flex-col flex-wrap content-center'>
+                <div className='text-center cursor-pointer' onClick={() => {setShowTOC(!showTOC)}}>Table Of Contents</div>
+                {displayTableOfContents(headers)}
+            </div>}
+
+            <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
+
+            <div ref={containerRef}><MDXRemote {...mdxSource} components={components}/></div>
+            <div className="flex justify-center position">by Hayden</div>
+            <p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
+          </div>
+        </div>
+
+        <TableOfContentsButton headers={headers} scrollToText={scrollToText}></TableOfContentsButton>
+        {/* <div className="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-700 focus:outline-none fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96">
+          asd
+        </div>
+
+        <div className="w-16 h-16 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-blue-700 focus:outline-none fixed bottom-4 right-4 lg:right-1/2 lg:transform lg:translate-x-96">
+          assssd
+        </div> */}
+
+      </Layout>
+  );
+}
+
+function getHeaders(text){
+  const regex = /^(#+)\s+(.*)$/gm;
+  const headers = [];
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const level = match[1].length; // Number of '#' characters
+    const text = match[2].trim(); // Header text
+    headers.push({ level, text });
+  }
+
+  return headers;
 }
 
 export async function getStaticProps(context) {
     const { id } = context.params;
     const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${id}/article.mdx`);
     const mdxContent = await res.text();
+
+    console.log("self", mdxContent)
     
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
@@ -79,8 +157,9 @@ export async function getStaticProps(context) {
     const title = Article_Meta_JSON.title
     const publishDate = Article_Meta_JSON.publishDate
     const wordCount = countWordsInMDX(mdxContent)
+    const headers = getHeaders(mdxContent)
 
-    return { props: { mdxSource, title, chips, publishDate, wordCount }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
+    return { props: { mdxSource, title, chips, publishDate, wordCount, headers }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {
@@ -119,15 +198,15 @@ export async function getStaticPaths() {
 
   }
 
-  function countWordsInMDX(content) {
-    // Remove lines that are code (import statements, JSX tags, etc.)
-    const codeLinePattern = /^\s*(import|<.*>|{|})/;
-    const lines = content.split('\n');
-    const textLines = lines.filter(line => !codeLinePattern.test(line));
-    
-    // Join the text lines and split by whitespace to count words
-    const textContent = textLines.join(' ');
-    const words = textContent.match(/\b\w+\b/g);
-    
-    return words ? words.length : 0;
-  }
+function countWordsInMDX(content) {
+  // Remove lines that are code (import statements, JSX tags, etc.)
+  const codeLinePattern = /^\s*(import|<.*>|{|})/;
+  const lines = content.split('\n');
+  const textLines = lines.filter(line => !codeLinePattern.test(line));
+  
+  // Join the text lines and split by whitespace to count words
+  const textContent = textLines.join(' ');
+  const words = textContent.match(/\b\w+\b/g);
+  
+  return words ? words.length : 0;
+}
