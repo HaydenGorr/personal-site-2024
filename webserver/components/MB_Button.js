@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image";
 import Link from "next/link";
 
-export default function MB_Button({ given_href="", text="", image_src="", lowercase=false, btnAction = () => {}, colour="bg-transparent", injected_styles="", from_cms=false, type="button" }) {
+export default function MB_Button({ given_href="", text="", image_src="", lowercase=false, btnAction = () => {}, colour="bg-transparent", injected_styles="", additional_styles="", from_cms=false, type="button" }) {
 
     const [btnText, setBtnText] = useState('');
 
@@ -35,7 +35,7 @@ export default function MB_Button({ given_href="", text="", image_src="", lowerc
 
     const getStyles = () => {
         if (injected_styles) return injected_styles;
-        else return `${colour} w-fit btn-primary flex Neo-Brutal-White active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked`
+        else return `${colour} w-fit btn-primary flex Neo-Brutal-White active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked ` + additional_styles
     }
 
     const getParentElement = (child) => {
