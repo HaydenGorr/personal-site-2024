@@ -66,8 +66,6 @@ export default function Layout({ children, home, stickyHeader=true, setBackgroun
 
       <main className='max-w-7xl mx-auto'>{children}</main>
 
-      <div className='absolute right-10 bottom-10'> asd </div>
-
     </div>
   );
 }

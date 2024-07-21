@@ -25,6 +25,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
       a: CustomLink
   };
 
+  const [useSerif, setUseSerif] = useState(false);
   const containerRef = useRef(null);
 
   const scrollToText = (text) => {
@@ -38,7 +39,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
   return (
       <Layout stickyHeader={false}>
-        <div className='flex justify-center pt-3 py-6 px-3'>
+        <div className={`flex justify-center pt-3 py-6 px-3 ${useSerif ? 'font-serif': 'font-sans'}`}>
           <div className="prose max-w-prose">
             <h1 className='mt-3'>{title}</h1>
             <div className="flex not-prose w-full justify-center">
@@ -71,7 +72,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
         <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3'>
           {/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
           <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>
-          <ChangeStyle/>
+          <ChangeStyle useSerif={setUseSerif}/>
         </div>
 
 
