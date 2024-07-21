@@ -26,7 +26,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
     };
 
     useEffect(() => {
-      setBackgroundColour("CreamBackgroundColour")
+      // setBackgroundColour("CreamBackgroundColour")
     }, []); 
 
     return (
@@ -57,7 +57,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
                     <MDXRemote {...mdxSource} components={components}/>
                     <div className="flex justify-center position">by Hayden</div>
-                    <p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
+                    <p className="flex justify-center place-content-center font-sm mt-3 text-xs">{"published: " + getDate(publishDate).toString()}</p>
                 </div>
             </div>
         </Layout>

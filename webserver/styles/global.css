@@ -143,17 +143,21 @@ code {
 }
 
 .WhiteBackgroundColour {
-  background-color: #fafafa
+  background-color: #fafafa;
+  color: #121212;
 }
 
 .CreamBackgroundColour {
-  background-color: #f7f2e5
+  background-color: #f7f2e5;
+  color: #121212;
 }
 
 .GreyBackgroundColour {
-  background-color: #4a494d
+  background-color: #4a494d;
+  color: #fafafa;
 }
 
 .DarkGreyBackgroundColour {
-  background-color: #121212
+  background-color: #121212;
+  color: #fafafa;
 }
