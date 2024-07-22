@@ -20,13 +20,13 @@ const CustomLink = ({ href, children, backgroundColour }) => {
   });
 
   return (
-    <div className={`custom-link px-1 rounded-lg transition-colors duration-500`} style={{backgroundColor: getTirtaryColour(backgroundColour), color: getTextColour(backgroundColour)}}>
+    <div className={`custom-link px-1 rounded-lg transition-colors duration-500`} style={{backgroundColor: getTirtaryColour(backgroundColour)}}>
       <div className="mr-1">
         <div className="inlineimg">
           <Image src={faviconUrl} width={14} height={14} />
         </div>
       </div>
-      <a href={href} className={`link ${getTextColour(backgroundColour)}`} target="_blank">
+      <a href={href} className={`link`} target="_blank" style={{color: getTextColour(backgroundColour)}}>
         {children}
       </a>
     </div>
