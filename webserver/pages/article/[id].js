@@ -11,7 +11,8 @@ import getDate from '../../utils/date_utils'
 import { useRef, useState } from 'react';
 import TableOfContentsButton from '../../components/table_of_contents_button';
 import ChangeStyle from '../../components/change_style'
-import { getPrimaryColour, getSecondaryColour, getTextColour } from '../../utils/colour';
+import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, updateThemeColor } from '../../utils/colour';
+import LineBreak from '../../components/line_break';
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
@@ -64,8 +65,8 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
               </div>
             </div>}
 
-            <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
-
+            <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`} style={{color: getTirtaryColour(backgroundColour)}}/>
+            
             <div ref={containerRef} className={`${getTextColour(backgroundColour)}`}>
               <MDXRemote {...mdxSource} components={components} />
             </div>

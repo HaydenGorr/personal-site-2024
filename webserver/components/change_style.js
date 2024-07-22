@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
 import MB_Button from "./MB_Button";
+import { getPrimaryColour, getSecondaryColour, getTextColour, updateThemeColor } from '../utils/colour';
 
 export default function ChangeStyle({useSerif, setBackgroundColour}) {
 
@@ -33,10 +34,6 @@ export default function ChangeStyle({useSerif, setBackgroundColour}) {
         else if (pos == "start" && buttonPressed) styles += " rounded-l-2xl rounded-r-sm"
         else if (pos == "start" && !buttonPressed) styles += " rounded-2xl"
 
-        // if (!buttonPressed) styles += " -translate-x-9"
-
-        // if (showColourSelection) styles += " opacity-0 pointer-events-none"
-
         return styles;
     }
 
@@ -49,10 +46,26 @@ export default function ChangeStyle({useSerif, setBackgroundColour}) {
 
             <div className={`${buttonPressed ? '' : 'z-9 opacity-0 pointer-events-none'} flex transition-all duration-300 overflow-hidden`}>
                 <div className={`ml-2 flex space-x-3 ${getbackgoundStyle("middle")} ${!buttonPressed ? ' -translate-x-40' : ''} bg-blue-400 rounded-sm`}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer WhiteBackgroundColour" onClick={() => {setBackgroundColour("WhiteBackgroundColour")}}></div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer CreamBackgroundColour" onClick={() => {setBackgroundColour("CreamBackgroundColour")}}></div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer GreyBackgroundColour" onClick={() => {setBackgroundColour("GreyBackgroundColour")}}></div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer DarkGreyBackgroundColour" onClick={() => {setBackgroundColour("DarkGreyBackgroundColour")}}></div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer WhiteBackgroundColour"
+                        onClick={() => {
+                            setBackgroundColour("WhiteBackgroundColour")
+                            updateThemeColor(getPrimaryColour("WhiteBackgroundColour"))
+                            }}></div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer CreamBackgroundColour"
+                    onClick={() => {
+                        setBackgroundColour("CreamBackgroundColour")
+                        updateThemeColor(getPrimaryColour("CreamBackgroundColour"))
+                    }}></div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer GreyBackgroundColour"
+                    onClick={() => {
+                        setBackgroundColour("GreyBackgroundColour")
+                        updateThemeColor(getPrimaryColour("GreyBackgroundColour"))
+                    }}></div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer DarkGreyBackgroundColour"
+                    onClick={() => {
+                        setBackgroundColour("DarkGreyBackgroundColour")
+                        updateThemeColor(getPrimaryColour("DarkGreyBackgroundColour"))
+                    }}></div>
                 </div>
 
                 <div className={`ml-2 flex space-x-3 ${getbackgoundStyle("end")} ${!buttonPressed ? ' -translate-x-40' : ''} bg-blue-500 rounded-sm`}>
