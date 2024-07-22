@@ -1,5 +1,4 @@
 require('dotenv').config({ path: process.env.ENV_FILE });
-console.log(process.env.PORT);
 const Anthropic = require('@anthropic-ai/sdk');
 const express = require('express');
 const cors = require('cors');
@@ -80,9 +79,6 @@ app.post('/api/TF', async (req, res) => {
 
     let responseJSON = await response.json();
     const viable_tags = responseJSON.data
-    
-
-    console.log(viable_tags)
 
     try {
         const response = await anthropic.messages.create({

@@ -103,8 +103,6 @@ export async function getStaticProps(context) {
     const { id } = context.params;
     const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${id}/article.mdx`);
     const mdxContent = await res.text();
-
-    console.log("self", mdxContent)
     
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);

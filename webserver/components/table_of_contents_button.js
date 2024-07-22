@@ -31,14 +31,10 @@ export default function TableOfContentsButton({headers, scrollToText}) {
         let lastLevel = headers[0].level;
         let nestedContent = [];
         let lastMod = ''
-        
-        console.log(headers)
     
         headers.map((header, index) => {
           const level = header.level;
           const text = header.text;
-    
-          console.log(level)
     
           if (level > lastLevel){ // then nest it
             lastMod = `ml-${6 * (level - 2)}`

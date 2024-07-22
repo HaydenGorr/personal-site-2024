@@ -12,9 +12,6 @@ import assert from 'assert';
 import MB_Button from '../components/MB_Button';
 
 export async function getStaticProps() {
-
-  console.log("generating home page in getStaticProps")
-
   try {
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_articles`);
     const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_unique_chips`);
@@ -74,9 +71,6 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
     }
     else { var array = inText; }
 
-
-    console.log("array", array)
-
     array.forEach(kw => {
       if (!selectedKeywords.includes(kw)) {
         setSelectedKeywords(prevKeywords => [...prevKeywords, kw]);
@@ -106,8 +100,6 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
     try {
       let jp = JSON.parse(response);
-
-      console.log("\n\njp", jp, "\n\n");
 
       assert(!!jp.viable_tags, "viable_tags is not defined in the response")
       assert(!!jp.filter_type, "filter_type is not defined in the response")

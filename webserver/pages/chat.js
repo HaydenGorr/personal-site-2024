@@ -35,7 +35,6 @@ export default function Chat( { setBackgroundColour, backgroundColour } ) {
     const send_message = async () => {
         if(inputValue == "") {
             setDisplayError(true)
-            console.log("Empty message")
             return
         };
         const userMessage = inputValue

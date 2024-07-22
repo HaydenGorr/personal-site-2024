@@ -41,7 +41,6 @@ export default function Login() {
 
     const send_sign_up_request = async (username, password) =>{
         setFailedMessage('')
-        console.log(username, password)
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/signup`, {
                 method: 'POST',
@@ -54,7 +53,6 @@ export default function Login() {
             if (response.ok) {
                 const data = await response.json();
                 console.log("signed up sucessfully");
-                console.log(data.message);
             } else {
                 console.error('Signup error:', response.statusText);
             }
