@@ -11,18 +11,20 @@ import getDate from '../../utils/date_utils'
 import { useRef, useState } from 'react';
 import TableOfContentsButton from '../../components/table_of_contents_button';
 import ChangeStyle from '../../components/change_style'
+import { getPrimaryColour, getSecondaryColour, getTextColour } from '../../utils/colour';
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource, title, chips, publishDate, wordCount, headers}) {
+export default function Article({mdxSource, title, chips, publishDate, wordCount, headers, setBackgroundColour, backgroundColour}) {
   const components = {
       Chip,
       MB_Button,
       Image,
       ImageWrapper,
-      a: CustomLink
+      // a: CustomLink
+      a: ({ href, children }) => <CustomLink href={href} children={children} backgroundColour={backgroundColour} />
   };
 
   const [useSerif, setUseSerif] = useState(false);
@@ -38,16 +40,17 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
   };
 
   return (
-      <Layout stickyHeader={false}>
-        <div className={`flex justify-center pt-3 py-6 px-3 ${useSerif ? 'font-serif': 'font-sans'}`}>
-          <div className="prose max-w-prose">
-            <h1 className='mt-3'>{title}</h1>
+      <Layout stickyHeader={false} backgroundColour={backgroundColour}>
+        <div className={`flex justify-center pt-3 py-6 px-3 ${useSerif ? 'font-serif': 'font-sans'} `}>
+          <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour) }}>
+            <h1 className={`mt-3 text-w`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
+
             <div className="flex not-prose w-full justify-center">
               <div className="flex flex-wrap justify-center space-x-3">
                 {
                 chips.map((chip_text, index) => (
                   <div key={index} className="mt-3">
-                    <Chip chip_text={chip_text} />
+                    <Chip chip_text={chip_text} backgroundColour={backgroundColour}/>
                   </div>
                 ))
                 }
@@ -63,16 +66,18 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
             <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`}/>
 
-            <div ref={containerRef}><MDXRemote {...mdxSource} components={components}/></div>
+            <div ref={containerRef} className={`${getTextColour(backgroundColour)}`}>
+              <MDXRemote {...mdxSource} components={components} />
+            </div>
+
             <div className="flex justify-center position">by Hayden</div>
             <p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
           </div>
         </div>
 
         <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3'>
-          {/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
-          <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>
-          <ChangeStyle useSerif={setUseSerif}/>
+          {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>}
+          <ChangeStyle useSerif={setUseSerif} setBackgroundColour={setBackgroundColour}/>
         </div>
 
 
