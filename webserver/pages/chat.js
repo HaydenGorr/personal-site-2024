@@ -3,17 +3,21 @@ import Layout from "../components/layout";
 import { useEffect, useState, useRef } from "react";
 import Special_Button from "../components/special_button";
 import { get_response } from "../utils/ai_talk";
+import ChangeStyle from "../components/change_style";
 
-export default function Chat() {
+export default function Chat( { setBackgroundColour, backgroundColour } ) {
 
     const opening_message = "Hey I'm an AI, powered by Claude Sonnet. I'm here to answer any questions you might have about Hayden and his work!";
     const [chatMessages, setChatMessages] = useState([{incoming: true, text: opening_message}]);
     const [inputValue, setInputValue] = useState('');
     const [displayError, setDisplayError] = useState(false);
+    const [useSerif, setUseSerif] = useState(false);
 
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
+
+        setBackgroundColour("WhiteBackgroundColour")
 
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -51,7 +55,7 @@ export default function Chat() {
     };
 
     return (
-        <Layout>
+        <Layout backgroundColour={backgroundColour}>
             <div className="flex place-content-center">
 
                 <div className="flex flex-col max-w-prose gap-2 w-full m-3 overflow-scroll px-1" style={{ height: 'calc(100vh - 170px)' }}>

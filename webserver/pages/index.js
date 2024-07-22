@@ -60,7 +60,7 @@ export async function getStaticProps() {
 
 }
 
-export default function Home({home_posts, unique_chips, setBackgroundColour}) {
+export default function Home({home_posts, unique_chips, setBackgroundColour, backgroundColour}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [matchAnyChip, setMatchAnyChip] = useState(true);
   const [aiSearching, setAISearching] = useState(false)
@@ -143,7 +143,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour}) {
   ? filter_posts_out() : home_posts;
 
   return (
-    <Layout>
+    <Layout backgroundColour={backgroundColour}>
       <Head>
         <title>{"Hayden's Personal Site"}</title>
       </Head>
