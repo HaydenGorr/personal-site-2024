@@ -3,7 +3,7 @@ import Image from "next/image";
 import MB_Button from "./MB_Button";
 import { getPrimaryColour, getSecondaryColour, getTextColour, updateThemeColor } from '../utils/colour';
 
-export default function ChangeStyle({useSerif, setBackgroundColour}) {
+export default function ChangeStyle({setFontUsed, setBackgroundColour}) {
 
     const [scrollAway, setScrollAway] = useState(false);
     const [showColourSelection, setShowColourSelection] = useState(false);
@@ -69,8 +69,9 @@ export default function ChangeStyle({useSerif, setBackgroundColour}) {
                 </div>
 
                 <div className={`ml-2 flex space-x-3 ${getbackgoundStyle("end")} ${!buttonPressed ? ' -translate-x-40' : ''} bg-blue-500 rounded-sm`}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer font-serif font-medium text-xl" onClick={() => {useSerif(true)}}>A</div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer font-sans font-medium text-xl" onClick={() => {useSerif(false)}}>A</div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer font-serif font-medium text-xl" onClick={() => {setFontUsed("font-serif")}}>A</div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer font-sans font-medium text-xl" onClick={() => {setFontUsed("font-sans")}}>A</div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer font-dys font-medium text-xl" onClick={() => {setFontUsed("font-dys")}}>D</div>
                 </div>
             </div>
                         

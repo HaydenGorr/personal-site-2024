@@ -28,7 +28,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
       a: ({ href, children }) => <CustomLink href={href} children={children} backgroundColour={backgroundColour} />
   };
 
-  const [useSerif, setUseSerif] = useState(false);
+  const [fontUsed, setFontUsed] = useState("font-sans");
   const containerRef = useRef(null);
 
   const scrollToText = (text) => {
@@ -42,7 +42,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
   return (
       <Layout stickyHeader={false} backgroundColour={backgroundColour}>
-        <div className={`flex justify-center pt-3 py-6 px-3 ${useSerif ? 'font-serif': 'font-sans'} `}>
+        <div className={`flex justify-center pt-3 py-6 px-3 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
           <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour) }}>
             <h1 className={`mt-3 text-w`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
 
@@ -78,7 +78,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
         <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3'>
           {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>}
-          <ChangeStyle useSerif={setUseSerif} setBackgroundColour={setBackgroundColour}/>
+          <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} />
         </div>
 
 
