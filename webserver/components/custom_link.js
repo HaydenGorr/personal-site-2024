@@ -21,7 +21,7 @@ const CustomLink = ({ href, children, backgroundColour }) => {
 
   return (
     <div className={`custom-link px-1 rounded-lg transition-colors duration-500`} style={{backgroundColor: getTirtaryColour(backgroundColour)}}>
-      <div className="mr-1">
+      <div className="mr-2 ml-1 flex items-center">
         <div className="inlineimg">
           <Image src={faviconUrl} width={14} height={14} />
         </div>
