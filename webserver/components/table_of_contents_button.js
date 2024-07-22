@@ -4,21 +4,18 @@ import MB_Button from "./MB_Button";
 
 export default function TableOfContentsButton({headers, scrollToText}) {
 
-    const [scrollAway, setScrollAway] = useState(false);
-    const [showTOC, setShowTOC] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
     const [buttonPressed, setButtonPressed] = useState(false);
 
     useEffect(() => {
         let lastScrollTop = 0;
         const handleScroll = () => {
+          setButtonPressed(false);
           const st = window.pageYOffset || document.documentElement.scrollTop;
           if (st > lastScrollTop) {
             // Scroll down
-            setScrollAway(true);
-            setShowTOC(false)
           } else {
             // Scroll up
-            setScrollAway(false);
           }
           lastScrollTop = st <= 0 ? 0 : st; // For mobile or negative scrolling
         };
@@ -53,7 +50,7 @@ export default function TableOfContentsButton({headers, scrollToText}) {
           nestedContent.push(
             <div className={`${lastMod} px-3 flex`}>
                 {level > 2 && <Image src={'/images/svgs/nested_arrow.svg'} width={15} height={15} className="mr-3"/>}
-                <MB_Button text={text} btnAction={() => { scrollToText(text); setShowTOC(false) }} additional_styles="text-left" ></MB_Button>
+                <MB_Button text={text} btnAction={() => { scrollToText(text) }} additional_styles="text-left" ></MB_Button>
             </div>
         )
           
@@ -69,9 +66,9 @@ export default function TableOfContentsButton({headers, scrollToText}) {
     const getButtonStyle = () => {
         let styles = "flex px-4 w-fit h-8 bg-red-300 shadow items-center justify-center cursor-pointer hover:bg-red-400 transition-all duration-300 font-medium"
 
-        if (scrollAway) styles += " translate-y-40"
+        // if (scrollAway) styles += " translate-y-40"
 
-        if (showTOC) styles += " rounded-b-2xl rounded-r-2xl"
+        if (buttonPressed) styles += " rounded-b-2xl rounded-r-2xl"
         else styles += " rounded-2xl"
 
         return styles;
@@ -80,23 +77,22 @@ export default function TableOfContentsButton({headers, scrollToText}) {
     const getTOCStyle = () => {
         let styles = "bg-red-300 p-3 py-4 mb-2 transition-all duration-300 space-y-2 mr-4"
 
-        if (showTOC) styles += " rounded-t-2xl rounded-r-2xl"
+        if (buttonPressed) styles += " rounded-t-2xl rounded-r-2xl"
         else styles += " opacity-0 pointer-events-none rounded-2xl"
 
         return styles;
     }
 
     return (
-        <div className={`fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text`}>
-            <div className={getTOCStyle()}>
-                {displayTableOfContents(headers)}
-            </div>
+        <div className={``}>
+          <div className={getTOCStyle()}>
+              {displayTableOfContents(headers)}
+          </div>
 
-            <div onClick={() => {setButtonPressed(!buttonPressed); setShowTOC(!showTOC)}} className={getButtonStyle()}>
-                <Image className='' src={'/images/svgs/toc.svg'} width={25} height={25}></Image>
-                {/* Table of Contents */}
-            </div>
-                        
+          <div onClick={() => {setButtonPressed(!buttonPressed)}} className={getButtonStyle()}>
+              <Image className='' src={'/images/svgs/toc.svg'} width={25} height={25}></Image>
+              {/* Table of Contents */}
+          </div>
         </div>
     );
 

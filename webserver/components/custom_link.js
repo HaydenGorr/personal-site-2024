@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { getPrimaryColour, getSecondaryColour, getTirtaryColour, getTextColour } from '../utils/colour';
 
-const CustomLink = ({ href, children }) => {
+const CustomLink = ({ href, children, backgroundColour }) => {
   const [faviconUrl, setFaviconUrl] = useState("/images/svgs/link_icon.svg");
 
   useEffect(() => {
@@ -18,15 +19,14 @@ const CustomLink = ({ href, children }) => {
     fetchFavicon();
   });
 
-
   return (
-    <div className="custom-link bg-gray-200 px-1 rounded-lg">
+    <div className={`custom-link px-1 rounded-lg transition-colors duration-500`} style={{backgroundColor: getTirtaryColour(backgroundColour)}}>
       <div className="mr-1">
         <div className="inlineimg">
           <Image src={faviconUrl} width={14} height={14} />
         </div>
       </div>
-      <a href={href} className="link" target="_blank">
+      <a href={href} className={`link ${getTextColour(backgroundColour)}`} target="_blank">
         {children}
       </a>
     </div>

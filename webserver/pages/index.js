@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
 import Container from '../components/container';
-import { useState } from 'react'; // Import useState and useEffect if not already imported
+import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
@@ -60,7 +60,7 @@ export async function getStaticProps() {
 
 }
 
-export default function Home({home_posts, unique_chips}) {
+export default function Home({home_posts, unique_chips, setBackgroundColour}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [matchAnyChip, setMatchAnyChip] = useState(true);
   const [aiSearching, setAISearching] = useState(false)
@@ -133,12 +133,17 @@ export default function Home({home_posts, unique_chips}) {
 
   };
 
+  useEffect(() => {
+    setBackgroundColour("WhiteBackgroundColour")
+  }, []); 
+
+
   // Assuming selectedKeywords is meant to be an array
   const filteredPosts = selectedKeywords.length > 0
   ? filter_posts_out() : home_posts;
 
   return (
-    <Layout home>
+    <Layout>
       <Head>
         <title>{"Hayden's Personal Site"}</title>
       </Head>
