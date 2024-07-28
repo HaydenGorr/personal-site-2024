@@ -89,8 +89,6 @@ export default function Admin() {
 
         if( !chip_edit_name || !chip_edit_desc ) { return; }
 
-        console.log( original_chip_edit_name , chip_edit_name, chip_edit_desc, image)
-
         formData.append('original_name', original_chip_edit_name);
         formData.append('name', chip_edit_name);
         formData.append('description', chip_edit_desc);
@@ -157,10 +155,7 @@ export default function Admin() {
      */
     const add_unpublished_article = async () => {
 
-        console.log("TIERING")
-
         try {
-            console.log("honkai")
             const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/add_unpublished_article`, {
                 method: 'GET',
                 credentials: 'include'
@@ -173,7 +168,6 @@ export default function Admin() {
                 console.error('Error uploading chip');
             }
         } catch (error) {
-            console.log("hereer")
             console.error('Error uploading chip', error);
         }
     };

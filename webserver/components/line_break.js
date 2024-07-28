@@ -1,6 +1,8 @@
-export default function LineBreak({ className }) {
+import { getTirtaryColour } from "../utils/colour"
+
+export default function LineBreak({ className, colour }) {
     return (
-        <div class={`bg-gray-300 h-px ${className}`}/>
+        <div class={`h-px ${className}`} style={{backgroundColor: getTirtaryColour(colour)}}/>
     )
 }
 

@@ -62,7 +62,6 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
 
     // Add or remove chips from the article
     const adjustChips = (chipText) => {
-        {console.log(home_post_obj)}
         if (chips.includes(chipText)) {
             setChips(chips.filter(keyword => keyword !== chipText));
         }
@@ -95,7 +94,6 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                 console.error('Error uploading chip');
             }
         } catch (error) {
-            console.log("hereer")
             console.error('Error uploading chip', error);
         }
     };

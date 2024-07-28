@@ -10,6 +10,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Roboto', 'sans-serif'],
+        serif: ['Lora', 'serif'],
+        dys: ['Lexend', 'dys'],
+      },
       boxShadow: {
         'MB': '5px 5px 0 0 #000',
         'MBs': '2px 2px 0 0 #000',

@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
 import Container from '../components/container';
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
@@ -16,9 +16,6 @@ import FilterPreset from '../components/chip_filtering/filterPreset';
 import presets from '../presets.json'
 
 export async function getStaticProps() {
-
-  console.log("generating home page in getStaticProps")
-
   try {
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_articles`);
     const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_unique_chips`);
@@ -64,7 +61,7 @@ export async function getStaticProps() {
 
 }
 
-export default function Home({home_posts, unique_chips}) {
+export default function Home({home_posts, unique_chips, setBackgroundColour, backgroundColour}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [matchAnyChip, setMatchAnyChip] = useState("any");
   const [aiSearching, setAISearching] = useState(false)
@@ -113,8 +110,6 @@ export default function Home({home_posts, unique_chips}) {
     try {
       let jp = JSON.parse(response);
 
-      console.log("\n\njp", jp, "\n\n");
-
       assert(!!jp.viable_tags, "viable_tags is not defined in the response")
       assert(!!jp.filter_type, "filter_type is not defined in the response")
 
@@ -139,10 +134,17 @@ export default function Home({home_posts, unique_chips}) {
 
   };
 
-  const filteredPosts = selectedKeywords.length > 0 ? filter_posts_out() : home_posts;
+  useEffect(() => {
+    setBackgroundColour("WhiteBackgroundColour")
+  }, []); 
+
+
+  // Assuming selectedKeywords is meant to be an array
+  const filteredPosts = selectedKeywords.length > 0
+  ? filter_posts_out() : home_posts;
 
   return (
-    <Layout home>
+    <Layout backgroundColour={backgroundColour}>
       <Head>
         <title>{"Hayden's Personal Site"}</title>
       </Head>

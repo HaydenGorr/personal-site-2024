@@ -141,3 +141,27 @@ code {
 .rdp-day_selected {
   @apply cursor-default Neo-Brutal-White
 }
+
+.WhiteBackgroundColour {
+  background-color: #fafafa;
+  color: #121212;
+}
+
+.CreamBackgroundColour {
+  background-color: #f7f2e5;
+  color: #121212;
+}
+
+.GreyBackgroundColour {
+  background-color: #4a494d;
+  color: #fafafa;
+}
+
+.DarkGreyBackgroundColour {
+  background-color: #121212;
+  color: #fafafa;
+}
+
+.transition-background {
+  transition: background-color 0.5s ease; /* Adjust the duration and easing as needed */
+}

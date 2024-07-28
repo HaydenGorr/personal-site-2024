@@ -2,11 +2,11 @@ import MB_Button from './MB_Button.js';
 import CVDownloadModal from './cvdownload_modal.js';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import {getPrimaryColour} from '../utils/colour'
 
+export default function Layout({ children, home, stickyHeader=true, setBackgroundColour, backgroundColour }) {
 
-export default function Layout({ children, home }) {
-
-  const headerText = ["Hayden", "2.0.1"]
+  const headerText = ["Hayden", "2.5.0"]
   const [headerPtr, setHeaderPtr] = useState(0);
 
   const incrementHeaderLayers = () => {
@@ -29,11 +29,11 @@ export default function Layout({ children, home }) {
   }, [headerPtr]);
 
   return (
-    <div>
+    <div className=''>
       {/** The modal for downloading my cv. hidden by default. Shown on a button click*/}
       <CVDownloadModal></CVDownloadModal>
 
-      <header className='flex flex-col items-center default_colour sticky top-0 z-40'>
+      <header className={`flex flex-col items-center default_colour ${ stickyHeader ? 'sticky' : ''} top-0 z-40 transition-colors duration-500 ${backgroundColour ? backgroundColour : ''}`}>
         
         <div className="flex md:justify-between w-full">
             {headerPtr==2 && <div className="my-auto ml-10 text-xl font-bold hideonmobile"><MB_Button text="login" given_href="/admin/login"></MB_Button></div>}
