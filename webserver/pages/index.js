@@ -142,7 +142,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
       <section>
 
 
-        <h1 className='mt-5  text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
+        <h1 className='mt-5 text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
 
         <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" />
 

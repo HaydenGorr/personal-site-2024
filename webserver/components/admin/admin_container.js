@@ -21,10 +21,13 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
     const [views, setViews] = useState(home_post_obj.views)
     const [publishDate, setPublishDate] = useState(new Date(home_post_obj.publishDate))
     const [ready, setReady] = useState(home_post_obj.ready)
+    const [portfolioReady, setPortfolioReady] = useState(home_post_obj.portfolioReady)
     const [image, setImage] = useState(null)
     const [articleFile, setArticleFile] = useState(null)
+    const [bestArticleFile, setBestArticleFile] = useState(null)
 
     const reset = () => {
+        console.log(home_post_obj)
         setTitle(home_post_obj.title)
         setDesc(home_post_obj.desc)
         setInfoText(home_post_obj.infoText)
@@ -33,9 +36,10 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         setViews(home_post_obj.views)
         setPublishDate(new Date(home_post_obj.publishDate))
         setReady(home_post_obj.ready)
+        setPortfolioReady(home_post_obj.portfolioReady)
         setImage(null)
         setArticleFile(null)
-
+        setBestArticleFile(null)
         set_in_edit(false)
     }
 
@@ -115,6 +119,8 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         formData.append('ready', ready);
         formData.append('image', image);
         formData.append('mdx', articleFile);
+        formData.append('best_mdx', bestArticleFile);
+        formData.append('portfolioReady', portfolioReady);
         
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/update_article`, {
@@ -184,6 +190,17 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                             </div>
                         </AdminSetting>
 
+                        <AdminSetting title={"Portfolio"}>
+                            <div className=""> 
+                                <input 
+                                    type="checkbox"
+                                    id="myPortfolioCheckbox"
+                                    className="flex form-checkbox h-5 w-5 text-blue-600"
+                                    checked={portfolioReady}
+                                    onChange={() => setPortfolioReady(!portfolioReady)}/>
+                            </div>
+                        </AdminSetting>
+
                         <div className="">
                             Container Image
                             <input
@@ -201,10 +218,21 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                                 type="file"
                                 id="image"
                                 accept=".mdx"
-                                onChange={(e) => setArticleFile(e.target.files[0])}
+                                onChange={(e) => setBestArticleFile(e.target.files[0])}
                                 className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             />      
                         </div>
+
+                        {portfolioReady && <div className="">
+                            Best bit?
+                            <input
+                                type="file"
+                                id="image"
+                                accept=".mdx"
+                                onChange={(e) => setArticleFile(e.target.files[0])}
+                                className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />      
+                        </div>}
 
                         <div className="">
                             Title
