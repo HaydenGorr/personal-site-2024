@@ -72,8 +72,6 @@ app.get('/get_all_ready_portfolio_articles', async (req, res) => {
 
   var response = await get_all_ready_portfolio_articles()
 
-  console.log(response.data)
-
   // for (let i = 0; i < response.data.length; i++) {
   //   if (await check_if_best_article_exists(response.data[i].source)) {
   //     response.data[i]["has_best_article"] = true
@@ -89,8 +87,6 @@ app.get('/get_all_ready_portfolio_articles', async (req, res) => {
       const hasBestArticle = await check_if_best_article_exists(article.source);
       return { ...article._doc, has_best_article: hasBestArticle };
     }));
-
-    console.log("go go ", updatedData)
 
     res.json({error: "", data: updatedData});
   }

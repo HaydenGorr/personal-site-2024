@@ -17,7 +17,6 @@ export async function getStaticProps() {
       if (portfolio_articles_json.error != ""){
         throw new Error(portfolio_articles_json.error);
       }
-      console.log(portfolio_articles_json)
       return {
         props: {
             portfolio_articles: portfolio_articles_json.data,
@@ -55,7 +54,7 @@ export default function Portfolio({portfolio_articles}) {
 
                 <div className="flex mt-3 flex-col space-y-12">
                     {portfolio_articles.map((item, index) => (
-                        <CondensedArticle name={item.title} desc={item.desc} type={"short story"} has_best_article={item.has_best_article}></CondensedArticle>
+                        <CondensedArticle name={item.title} desc={item.desc} type={"short story"} has_best_article={item.has_best_article} source={item.source}></CondensedArticle>
                     ))}
                 </div>
             </div>   

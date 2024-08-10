@@ -1,8 +1,9 @@
 import Image from "next/image";
 import LineBreak from "../line_break";
 import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
+import router from "next/router";
 
-export default function CondensedArticle({ name, desc, type="", has_best_article }) {
+export default function CondensedArticle({ name, desc, type="", has_best_article, source }) {
 
     
 
@@ -43,7 +44,12 @@ export default function CondensedArticle({ name, desc, type="", has_best_article
         return "Misc."
     }
 
-    
+    const go_to_article = (title) => {
+        if (title != "") router.push(`/portfolio/${title}`)
+        else {
+            router.push(`/missingArticle`)
+        }
+    }
     
     return (
 
@@ -66,14 +72,15 @@ export default function CondensedArticle({ name, desc, type="", has_best_article
             <div className="mt-3 mb-1 w-full flex flex-col items-center">
                 <p className="text-sm">This piece may be a bit long, so you might want to read</p>
                 <div className="flex space-x-3 pt-3">
-                    <button className={getTypeColour(type) + " text-sm font-semibold px-3 py-1 rounded-2xl flex space-x-2"}>
-                        <p>The best bit?</p>
+                    <button className={getTypeColour(type) + " text-sm font-semibold px-3 py-1 rounded-2xl flex space-x-2"} onClick={() => {go_to_article(source+"/bestpart_article.mdx")}}>
+                        <p>The best bit</p>
                         <Image width={20} height={20} src={"/images/svgs/star.svg"}></Image>
                     </button>
+
                     <p>or</p>
 
-                    <button className={getTypeColour(type) + " text-sm font-semibold px-3 py-1 rounded-2xl flex space-x-2"}>
-                        <p>The whole thing?</p>
+                    <button className={getTypeColour(type) + " text-sm font-semibold px-3 py-1 rounded-2xl flex space-x-2"} onClick={() => {go_to_article(source+"/article.mdx")}}>
+                        <p>The whole thing</p>
                         <Image width={20} height={20} src={"/images/svgs/portfolio/short_story.svg"}></Image>
                     </button>
 
@@ -82,7 +89,7 @@ export default function CondensedArticle({ name, desc, type="", has_best_article
 
             {!has_best_article &&
             <div className="mt-3 mb-1 w-full flex flex-col items-center">
-                <button className={getTypeColour(type) + " text-sm font-semibold px-3 py-1 rounded-2xl flex space-x-2"}>
+                <button className={getTypeColour(type) + " text-sm font-semibold px-3 py-1 rounded-2xl flex space-x-2"} onClick={() => {go_to_article(source+"/article.mdx")}}>
                     <p>Click to read</p>
                     <Image width={20} height={20} src={"/images/svgs/portfolio/short_story.svg"}></Image>
                 </button>
