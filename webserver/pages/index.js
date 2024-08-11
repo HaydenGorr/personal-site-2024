@@ -151,21 +151,21 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
           <div
             style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/writing-desat.png)`,
+              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
             className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
             onClick={() => {
               setSelectedKeywords(["Creative Writing", "Short Story"]);
-              setPageTitle("Creative Writing")
+              setPageTitle("Technical Work")
               }}>
-            Creative Writing
+            Technical Work
           </div>
 
           <Link     
             style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
+              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/writing-desat.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
