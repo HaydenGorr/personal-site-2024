@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 import MB_Button from '../components/MB_Button';
+import Link from 'next/link';
 
 export async function getStaticProps() {
   try {
@@ -162,19 +163,16 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
             Creative Writing
           </div>
 
-          <div             
+          <Link     
             style={{
               backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
             className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Significant Work", "Full Stack"]);
-              setPageTitle("Major Projects")
-            }}>
-            Major Projects
-          </div>
+            href={"/portfolio"}>
+            Curated Writing Portfolio
+          </Link>
 
           <div 
             style={{
