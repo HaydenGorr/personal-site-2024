@@ -13,6 +13,7 @@ import TableOfContentsButton from '../../components/table_of_contents_button';
 import ChangeStyle from '../../components/change_style'
 import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, updateThemeColor } from '../../utils/colour';
 import LineBreak from '../../components/line_break';
+import { getTypeColour, getTypeImage, getTypeTitle } from '../../utils/portfolio_utils';
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
@@ -46,7 +47,7 @@ export default function Article({mdxSource, title, type, publishDate, wordCount,
           <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour) }}>
 
             <div className="flex not-prose w-full justify-center my-6">
-              <Image width={50} height={50} src={"/images/svgs/portfolio/short_story.svg"}></Image>
+              <Image width={50} height={50} src={getTypeImage(type)}></Image>
             </div>
 
             {isBestPart && <h1 className={`mt-3 text-w text-lg`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour)}} >The best part of</h1>}
