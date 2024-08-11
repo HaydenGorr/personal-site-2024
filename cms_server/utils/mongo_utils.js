@@ -9,6 +9,8 @@ const { add_chip } = require('../utils/mongo_utils/add_chip.js')
 const { get_definitions_for_new_chips } = require('./validate_chips.js')
 const {dbConnect} = require('./db_conn.js')
 const { Response } = require('./response_obj.js')
+const fs = require('fs').promises;
+
 
 async function get_unique_chips(){
 
@@ -32,6 +34,33 @@ async function get_all_ready_articles(){
     return {"error": "", "data":articles}
   } catch (error) {
     return {"error": "Could not fetch Article data from DB", "data":[]}
+  }
+}
+
+async function get_all_ready_portfolio_articles(){
+  const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+
+  try {
+    const articles = await Article(connection).find({ ready: true, portfolioReady: true });
+    return {"error": "", "data":articles}
+  } catch (error) {
+    return {"error": "Could not fetch Article data from DB", "data":[]}
+  }
+}
+
+async function check_if_best_article_exists(article_dir_name){
+  const filePath = path.join(articles_dir, article_dir_name, "bestpart_article.mdx"); 
+
+  try {
+    await fs.access(filePath);
+    return true
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return false
+    } else {
+      console.error('Error checking file:', error);
+      return false
+    }
   }
 }
 
@@ -159,6 +188,8 @@ async function add_view(articleId) {
 module.exports = {
     get_unique_chips,
     get_all_ready_articles,
+    get_all_ready_portfolio_articles,
     create_article,
-    add_view
+    add_view,
+    check_if_best_article_exists
 };

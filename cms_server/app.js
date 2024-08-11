@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT;
 // const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
-const { get_unique_chips, get_all_ready_articles, create_article, add_view } = require('./utils/mongo_utils');
+const { get_unique_chips, get_all_ready_articles, create_article, get_all_ready_portfolio_articles, check_if_best_article_exists } = require('./utils/mongo_utils');
 const { get_article } = require('./utils/mongo_utils/get_article')
 const Cookies = require('js-cookie');
 const bcrypt = require('bcrypt');
@@ -63,6 +63,34 @@ app.get('/get_all_ready_articles', async (req, res) => {
   console.log(response)
 
   res.json(response);
+
+});
+
+app.get('/get_all_ready_portfolio_articles', async (req, res) => {
+
+  console.log("getting all portfolio articles marked ready")
+
+  var response = await get_all_ready_portfolio_articles()
+
+  for (let i = 0; i < response.data.length; i++) {
+    if (await check_if_best_article_exists(response.data[i].source)) {
+      response.data[i]["has_best_article"] = true
+    }
+  }
+
+  console.log(response.data)
+
+  if (response.error){
+    res.json(response);
+  }
+  else {
+    const updatedData = await Promise.all(response.data.map(async (article) => {
+      const hasBestArticle = await check_if_best_article_exists(article.source);
+      return { ...article._doc, has_best_article: hasBestArticle };
+    }));
+
+    res.json({error: "", data: updatedData});
+  }
 
 });
 
@@ -304,13 +332,14 @@ app.post('/secure/edit_chip', upload.single('image'), async (req, res) => {
 /**
  * Upload a new chip with a name, description and image
  */
-app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }]), async (req, res) => {
-  const { databaseID, title, desc, infoText, chips, source, views, publishDate, ready} = req.body;
+app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }, { name: 'best_mdx', maxCount: 1 }]), async (req, res) => {
+  const { databaseID, title, desc, infoText, chips, source, views, type, publishDate, ready, portfolioReady} = req.body;
   const imageFile = req.files['image'] ? req.files['image'][0] : undefined;
   const mdxFile = req.files['mdx'] ? req.files['mdx'][0] : undefined;
+  const bestpart_mdxFile = req.files['best_mdx'] ? req.files['best_mdx'][0] : undefined;
 
   console.log("\n\n\n\n\ncalled update articles")
-  console.log(databaseID, title, desc, infoText, chips, source, views, publishDate, ready)
+  console.log(databaseID, title, desc, infoText, chips, source, views, publishDate, ready, portfolioReady, type)
 
   const result = await validate_JWT(req.cookies.token)
 
@@ -324,8 +353,13 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
     const update_result = await updatedArticle(req.body)
 
     if (mdxFile) {
-      const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");
+      const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "articlwe.mdx");
       fs.writeFileSync(mdxPath, mdxFile.buffer);
+    }
+
+    if (bestpart_mdxFile) {
+      const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "bestpart_article.mdx");
+      fs.writeFileSync(mdxPath, bestpart_mdxFile.buffer);
     }
 
     if (imageFile) {
@@ -424,7 +458,6 @@ app.post('/secure/delete_chip', async (req, res) => {
     res.status(500).json({ message: 'Failed' });
   }
 })
-
 
 app.post('/secure/remove_chips', async (req, res) => {
   const { articles, chips_to_remove } = req.body;

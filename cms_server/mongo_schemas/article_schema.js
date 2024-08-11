@@ -10,6 +10,9 @@ const articleSchema = new mongoose.Schema({
     views: { type: Number, default: 0 },
     publishDate: { type: Date, default: Date.now },
     ready: {type: Boolean, default: false},
+    portfolioReady: {type: Boolean, default: false},
+    type: {type: String, default: "misc."},
+
 });
 
 module.exports = (conn) => conn.model('articles', articleSchema);

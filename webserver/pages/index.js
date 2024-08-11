@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 import MB_Button from '../components/MB_Button';
+import Link from 'next/link';
 
 export async function getStaticProps() {
   try {
@@ -142,7 +143,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
       <section>
 
 
-        <h1 className='mt-5  text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
+        <h1 className='mt-5 text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
 
         <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" />
 
@@ -150,31 +151,28 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
           <div
             style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/writing-desat.png)`,
+              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
             className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
             onClick={() => {
               setSelectedKeywords(["Creative Writing", "Short Story"]);
-              setPageTitle("Creative Writing")
+              setPageTitle("Technical Work")
               }}>
-            Creative Writing
+            Technical Work
           </div>
 
-          <div             
+          <Link     
             style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
+              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/writing-desat.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
             className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Significant Work", "Full Stack"]);
-              setPageTitle("Major Projects")
-            }}>
-            Major Projects
-          </div>
+            href={"/portfolio"}>
+            Curated Writing Portfolio
+          </Link>
 
           <div 
             style={{

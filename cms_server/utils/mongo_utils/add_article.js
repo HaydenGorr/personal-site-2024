@@ -20,7 +20,8 @@ async function add_article(source_folder){
             source: generateRandomString(8),
             views: 0,
             publishDate: new Date(),
-            ready: false
+            ready: false,
+            portfolioReady: false
         });
 
         const asd = await newArticle.save();
