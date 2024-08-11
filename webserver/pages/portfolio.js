@@ -15,14 +15,12 @@ export default function Portfolio({portfolio_articles, setBackgroundColour}) {
         <Layout>
             <div className="flex flex-col items-center pt-6 px-6">
                 <div className="prose md-3 mb-6">
-                    <h1>HAYDEN'S PORTFOLIO</h1>
+                    <h1>HAYDEN'S WRITING PORTFOLIO</h1>
                 </div>
 
-                <div className="">
+                <div className="mb-6">
                     Hi, I'm Hayden gorringe, an aspiring game writer. Born 1997.
                 </div>
-
-                {/* <LineBreak/></LineBreak> */}
 
                 <div className="flex mt-3 flex-col space-y-12 max-w-prose">
                     {portfolio_articles.map((item, index) => (
