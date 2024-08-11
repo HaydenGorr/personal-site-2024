@@ -124,7 +124,7 @@ export async function getStaticProps(context) {
     const wordCount = countWordsInMDX(mdxContent)
     const headers = getHeaders(mdxContent)
 
-    return { props: { mdxSource, title, type: "short story", publishDate, wordCount, headers, isBestPart:best_part }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
+    return { props: { mdxSource, title, type: type, publishDate, wordCount, headers, isBestPart:best_part }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {

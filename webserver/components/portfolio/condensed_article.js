@@ -62,7 +62,7 @@ export default function CondensedArticle({ name, desc, type, has_best_article, s
                         <p className=" font-semibold text-xl my-2">{name}</p>
                         <div className={getTypeColour(type) + " text-xs p-1 px-2 rounded-2xl"}>{getTypeTitle(type)}</div>
                     </div>
-                    <p className=" overflow-ellipsis line-clamp-4">{desc + desc + desc + desc + desc}</p>
+                    <p className=" overflow-ellipsis line-clamp-4">{desc}</p>
                 </div>
             </div>
 
