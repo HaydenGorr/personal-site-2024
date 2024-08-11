@@ -16,16 +16,16 @@ export default function CondensedArticle({ name, desc, type, has_best_article, s
     
     return (
 
-        <div className="Neo-Brutal-White p-3 ">
+        <div className="Neo-Brutal-White p-3 w-[65ch]">
 
-            <div className="flex w-[65ch]">
+            <div className="flex">
                 <Image className={"relative left-0"} width={50} height={50} src={getTypeImage(type)}></Image>
                 <div className="pl-3 w-full">
                     <div className="flex justify-between items-center">
-                        <p className=" font-semibold text-xl my-2">{name}</p>
-                        <div className={getTypeColour(type) + " text-xs p-1 px-2 rounded-2xl relative right-8"}>{getTypeTitle(type)}</div>
+                        <p className=" font-semibold text-xl my-2 pr-3">{name}</p>
+                        <div className={getTypeColour(type) + " text-xs p-1 px-2 rounded-2xl"}>{getTypeTitle(type)}</div>
                     </div>
-                    <p className=" overflow-ellipsis line-clamp-4">{desc}</p>
+                    <p className=" overflow-ellipsis line-clamp-4 ">{desc}</p>
                 </div>
             </div>
 
