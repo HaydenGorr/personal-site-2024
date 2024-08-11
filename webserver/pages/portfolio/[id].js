@@ -102,13 +102,17 @@ function getHeaders(text){
 
 export async function getStaticProps(context) {
     const { id } = context.params;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${id}`);
+    const best_part = id.charAt(id.length - 1) === '_'
+    const source_folder = id.slice(0, id.length - (best_part ? 1 : 0))
+    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${source_folder}/${best_part ? 'bestpart_' : ''}article.mdx`);
     const mdxContent = await res.text();
+
+    console.log(mdxContent)
     
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
-    const source_folder = id.match(/^[a-zA-Z0-9]+/)[0]
+    // const source_folder = id.match(/^[a-zA-Z0-9]+/)[0]
 
     const article_meta = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_article_meta?articlesrc=${source_folder}`);
 
@@ -132,6 +136,8 @@ export async function getStaticPaths() {
 
     try {
         const homePostsResponse = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_portfolio_articles`);
+
+        console.log("HEATER ", homePostsResponse)
     
         if (!homePostsResponse.ok) {
           console.error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);
@@ -145,28 +151,21 @@ export async function getStaticPaths() {
           console.error('Expected an array from the CMS response');
           throw new Error('Invalid format for home_posts response.');
         }
+
+        var paths = []
     
-        const paths = hprJSON.flatMap(article => {
+        for (const article of hprJSON) {
           if (!article.source) {
             console.warn('Article without a source detected.');
-            return [];
+            continue
           }
-    
-          const basePath = {
-            params: { id: [article.source.toString() + "/article.mdx"] },
-          };
-    
-          if (article.has_best_article === true) {
-            return [
-              basePath,
-              {
-                params: { id: [article.source.toString() + "/article.mdx"] },
-              }
-            ];
-          }
-    
-          return [basePath];
-        });
+
+          paths.push({
+            params: { id: article.source.toString() }
+          });
+
+        }
+
     
         return { paths, fallback: 'blocking' };
       } catch (error) {
