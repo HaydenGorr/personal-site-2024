@@ -3,7 +3,7 @@ import LineBreak from "../line_break";
 import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
 import router from "next/router";
 
-export default function CondensedArticle({ name, desc, type="", has_best_article, source }) {
+export default function CondensedArticle({ name, desc, type, has_best_article, source }) {
 
     
 
@@ -29,7 +29,7 @@ export default function CondensedArticle({ name, desc, type="", has_best_article
         else if (lower_type === "script") {
             return "/images/svgs/portfolio/script.svg"
         }
-        return "bg-gray-300"
+        return "/images/svgs/portfolio/script.svg"
     }
 
     const getTypeTitle = (type) => {

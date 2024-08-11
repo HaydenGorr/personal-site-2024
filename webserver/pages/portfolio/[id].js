@@ -18,7 +18,7 @@ const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
-export default function Article({mdxSource, title, chips, publishDate, wordCount, headers, setBackgroundColour, backgroundColour}) {
+export default function Article({mdxSource, title, type, publishDate, wordCount, headers, isBestPart, setBackgroundColour, backgroundColour}) {
   const components = {
       Chip,
       MB_Button,
@@ -44,19 +44,14 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
       <Layout stickyHeader={false} backgroundColour={backgroundColour}>
         <div className={`flex justify-center pt-3 py-6 px-3 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
           <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour) }}>
-            <h1 className={`mt-3 text-w`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
 
-            <div className="flex not-prose w-full justify-center">
-              <div className="flex flex-wrap justify-center space-x-3">
-                {
-                chips.map((chip_text, index) => (
-                  <div key={index} className="mt-3">
-                    <Chip chip_text={chip_text} backgroundColour={backgroundColour}/>
-                  </div>
-                ))
-                }
-              </div>
+            <div className="flex not-prose w-full justify-center my-6">
+              <Image width={50} height={50} src={"/images/svgs/portfolio/short_story.svg"}></Image>
             </div>
+
+            {isBestPart && <h1 className={`mt-3 text-w text-lg`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour)}} >The best part of</h1>}
+
+            <h1 className={`mt-0 text-w`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
                 
             {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center mt-8'>
               <div className='relative flex'>
@@ -123,13 +118,13 @@ export async function getStaticProps(context) {
 
     const Article_Meta_JSON = await article_meta.json();
 
-    const chips = Article_Meta_JSON.chips
+    const type = Article_Meta_JSON.type
     const title = Article_Meta_JSON.title
     const publishDate = Article_Meta_JSON.publishDate
     const wordCount = countWordsInMDX(mdxContent)
     const headers = getHeaders(mdxContent)
 
-    return { props: { mdxSource, title, chips, publishDate, wordCount, headers }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
+    return { props: { mdxSource, title, type: "short story", publishDate, wordCount, headers, isBestPart:best_part }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
 
 export async function getStaticPaths() {

@@ -22,6 +22,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
     const [publishDate, setPublishDate] = useState(new Date(home_post_obj.publishDate))
     const [ready, setReady] = useState(home_post_obj.ready)
     const [portfolioReady, setPortfolioReady] = useState(home_post_obj.portfolioReady)
+    const [portfolioType, setPortfolioType] = useState(home_post_obj.type)
     const [image, setImage] = useState(null)
     const [articleFile, setArticleFile] = useState(null)
     const [bestArticleFile, setBestArticleFile] = useState(null)
@@ -37,6 +38,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         setPublishDate(new Date(home_post_obj.publishDate))
         setReady(home_post_obj.ready)
         setPortfolioReady(home_post_obj.portfolioReady)
+        setPortfolioType(home_post_obj.type)
         setImage(null)
         setArticleFile(null)
         setBestArticleFile(null)
@@ -62,6 +64,10 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
 
     const updateViewsBox = (event) => {
         setViews(event.target.value);
+    };
+
+    const updateTypeBox = (event) => {
+        setPortfolioType(event.target.value);
     };
 
     // Add or remove chips from the article
@@ -115,6 +121,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
         });
         formData.append('source', source);
         formData.append('views', views);
+        formData.append('type', portfolioType);
         formData.append('publishDate', publishDate);
         formData.append('ready', ready);
         formData.append('image', image);
@@ -274,6 +281,16 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                             />         
                         </div>
 
+                        {portfolioReady && <div className="">
+                            type
+                            <input
+                                className="Neo-Brutal w-full p-3 text-wrap shadow-MB border-white border-2 focus:outline-none focus:rounded-none"
+                                type="text"
+                                value={portfolioType}
+                                onChange={updateTypeBox}
+                            />         
+                        </div>}
+
                         <div className="">
                             Publish Date
                             <DayPicker
@@ -283,6 +300,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                                 onSelect={setPublishDate}
                                 footer={"pick a day"}/>
                         </div>
+                        
 
                         <div className="">
                             <MB_Button text="delete article" btnAction={() => delete_article()}>

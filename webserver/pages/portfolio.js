@@ -54,7 +54,7 @@ export default function Portfolio({portfolio_articles}) {
 
                 <div className="flex mt-3 flex-col space-y-12">
                     {portfolio_articles.map((item, index) => (
-                        <CondensedArticle name={item.title} desc={item.desc} type={"short story"} has_best_article={item.has_best_article} source={item.source}></CondensedArticle>
+                        <CondensedArticle name={item.title} desc={item.desc} type={item.type} has_best_article={item.has_best_article} source={item.source}></CondensedArticle>
                     ))}
                 </div>
             </div>   

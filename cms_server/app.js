@@ -72,13 +72,14 @@ app.get('/get_all_ready_portfolio_articles', async (req, res) => {
 
   var response = await get_all_ready_portfolio_articles()
 
-  // for (let i = 0; i < response.data.length; i++) {
-  //   if (await check_if_best_article_exists(response.data[i].source)) {
-  //     response.data[i]["has_best_article"] = true
-  //   }
-  // }
+  for (let i = 0; i < response.data.length; i++) {
+    if (await check_if_best_article_exists(response.data[i].source)) {
+      response.data[i]["has_best_article"] = true
+    }
+  }
 
-  // Use Promise.all to handle all async operations concurrently
+  console.log(response.data)
+
   if (response.error){
     res.json(response);
   }
@@ -332,13 +333,13 @@ app.post('/secure/edit_chip', upload.single('image'), async (req, res) => {
  * Upload a new chip with a name, description and image
  */
 app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }, { name: 'best_mdx', maxCount: 1 }]), async (req, res) => {
-  const { databaseID, title, desc, infoText, chips, source, views, publishDate, ready, portfolioReady} = req.body;
+  const { databaseID, title, desc, infoText, chips, source, views, type, publishDate, ready, portfolioReady} = req.body;
   const imageFile = req.files['image'] ? req.files['image'][0] : undefined;
   const mdxFile = req.files['mdx'] ? req.files['mdx'][0] : undefined;
   const bestpart_mdxFile = req.files['best_mdx'] ? req.files['best_mdx'][0] : undefined;
 
   console.log("\n\n\n\n\ncalled update articles")
-  console.log(databaseID, title, desc, infoText, chips, source, views, publishDate, ready, portfolioReady)
+  console.log(databaseID, title, desc, infoText, chips, source, views, publishDate, ready, portfolioReady, type)
 
   const result = await validate_JWT(req.cookies.token)
 
@@ -457,7 +458,6 @@ app.post('/secure/delete_chip', async (req, res) => {
     res.status(500).json({ message: 'Failed' });
   }
 })
-
 
 app.post('/secure/remove_chips', async (req, res) => {
   const { articles, chips_to_remove } = req.body;
