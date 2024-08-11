@@ -2,47 +2,10 @@ import Image from "next/image";
 import LineBreak from "../line_break";
 import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
 import router from "next/router";
+import { getTypeColour, getTypeImage, getTypeTitle } from '../../utils/portfolio_utils';
+
 
 export default function CondensedArticle({ name, desc, type, has_best_article, source }) {
-
-    
-
-    const getTypeColour = (type) => {
-        let lower_type = type.toLowerCase().split(" ").join("_")
-
-        if (lower_type === "short_story") {
-            return "bg-blue-300"
-        }
-        else if (lower_type === "script") {
-            return "bg-orange-300"
-
-        }
-        return "bg-gray-300"
-    }
-
-    const getTypeImage = (type) => {
-        let lower_type = type.toLowerCase().split(" ").join("_")
-
-        if (lower_type === "short_story") {
-            return "/images/svgs/portfolio/short_story.svg"
-        }
-        else if (lower_type === "script") {
-            return "/images/svgs/portfolio/script.svg"
-        }
-        return "/images/svgs/portfolio/script.svg"
-    }
-
-    const getTypeTitle = (type) => {
-        let lower_type = type.toLowerCase().split(" ").join("_")
-
-        if (lower_type === "short_story") {
-            return "Short Story"
-        }
-        else if (lower_type === "script") {
-            return "Script"
-        }
-        return "Misc."
-    }
 
     const go_to_article = (title) => {
         if (title != "") router.push(`/portfolio/${title}`)
@@ -53,16 +16,16 @@ export default function CondensedArticle({ name, desc, type, has_best_article, s
     
     return (
 
-        <div className="Neo-Brutal-White p-3 max-w-prose">
+        <div className="Neo-Brutal-White p-3 ">
 
-            <div className="flex">
-                <Image width={50} height={50} src={getTypeImage(type)}></Image>
-                <div className="pl-3">
+            <div className="flex w-[65ch]">
+                <Image className={"relative left-0"} width={50} height={50} src={getTypeImage(type)}></Image>
+                <div className="pl-3 w-full">
                     <div className="flex justify-between items-center">
                         <p className=" font-semibold text-xl my-2">{name}</p>
-                        <div className={getTypeColour(type) + " text-xs p-1 px-2 rounded-2xl"}>{getTypeTitle(type)}</div>
+                        <div className={getTypeColour(type) + " text-xs p-1 px-2 rounded-2xl relative right-8"}>{getTypeTitle(type)}</div>
                     </div>
-                    <p className=" overflow-ellipsis line-clamp-4">{desc + desc + desc + desc + desc}</p>
+                    <p className=" overflow-ellipsis line-clamp-4">{desc}</p>
                 </div>
             </div>
 
