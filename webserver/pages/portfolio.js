@@ -4,12 +4,13 @@ import Image from "next/image";
 import LineBreak from "../components/line_break"
 import CondensedArticle from "../components/portfolio/condensed_article";
 import { useEffect } from "react";
+import VeryCondensedArticle from "../components/portfolio/very_condensed_article";
 
 export default function Portfolio({portfolio_articles, setBackgroundColour}) {
 
   useEffect(() => {
     setBackgroundColour("WhiteBackgroundColour")
-  }, []); 
+  }, [portfolio_articles]); 
 
     return (
         <Layout>
@@ -22,13 +23,12 @@ export default function Portfolio({portfolio_articles, setBackgroundColour}) {
                     Hi, I'm Hayden gorringe, an aspiring game writer. Born 1997.
                 </div>
 
-                <div className="flex mt-3 flex-col space-y-12 max-w-prose">
+                <div className="flex mt-3 flex-col max-w-prose mx-3 w-full space-y-6">
                     {portfolio_articles.map((item, index) => (
-                        <CondensedArticle name={item.title} desc={item.desc} type={item.type} has_best_article={item.has_best_article} source={item.source}></CondensedArticle>
+                        <CondensedArticle key={index} name={item.title} desc={item.desc} type={item.type} has_best_article={item.has_best_article} source={item.source}/>
                     ))}
                 </div>
-            </div>   
-                                                         
+            </div>                                   
         </Layout>
     );
 }

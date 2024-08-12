@@ -16,7 +16,7 @@ export default function CondensedArticle({ name, desc, type, has_best_article, s
     
     return (
 
-        <div className="Neo-Brutal-White p-3 w-[65ch]">
+        <div className="Neo-Brutal-White p-3 w-full">
 
             <div className="flex">
                 <Image className={"relative left-0"} width={50} height={50} src={getTypeImage(type)}></Image>
@@ -25,14 +25,13 @@ export default function CondensedArticle({ name, desc, type, has_best_article, s
                         <p className=" font-semibold text-xl my-2 pr-3">{name}</p>
                         <div className={getTypeColour(type) + " text-xs p-1 px-2 rounded-2xl"}>{getTypeTitle(type)}</div>
                     </div>
-                    <p className=" overflow-ellipsis line-clamp-4 ">{desc}</p>
+                    <p className=" overflow-ellipsis line-clamp-4"></p>
                 </div>
             </div>
 
             <LineBreak className={"my-5"}/>
 
-            {has_best_article && 
-            <div className="mt-3 mb-1 w-full flex flex-col items-center">
+            {has_best_article && <div className="mt-3 mb-1 w-full flex flex-col items-center">
                 <p className="text-sm">This piece may be a bit long, so you might want to read</p>
                 <div className="flex space-x-3 pt-3">
                     <button className={getTypeColour(type) + " text-sm font-semibold px-3 py-1 rounded-2xl flex space-x-2"} onClick={() => {go_to_article(source+"_")}}>
