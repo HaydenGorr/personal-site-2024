@@ -26,19 +26,28 @@ export default function VeryCondensedArticle({ name, desc, type, has_best_articl
             alt={`${type} icon`}
           />
           <div className="flex-grow min-w-0 flex items-center">
-            <p className="font-semibold text-lg truncate mr-3">
-                {name}
-            </p>
-            <div className="flex-shrink-0 flex space-x-2 ml-auto">
-                <button className={`${getTypeColour(type)} text-xs p-1 px-2 rounded-2xl whitespace-nowrap flex`}>
-                    <Image className="mr-1" width={20} height={20} src={getTypeImage("asd")}/>
-                    Full
+
+            <div className="font-semibold text-lg mr-3 mb-1">
+                <p className="font-semibold text-lg line-clamp-1">
+                    {name}
+                </p>
+                <p className="font-normal text-xs line-clamp-2">
+                    {desc}
+                </p>
+            </div>
+
+            <div className="flex-shrink-0 flex ml-auto flex-col space-y-4">
+                <button className={`${getTypeColour(type)} p-1 px-2 rounded-2xl whitespace-nowrap flex items-center justify-center`}>
+                    <Image className="mx-1" width={20} height={20} src={getTypeImage("asd")}/>
+                    <p className="mr-1 font-semibold text-xs">Full</p>
                 </button>
-                {has_best_article && <button onClick={() => go_to_article(type)} className={`${getTypeColour(type)} flex text-xs p-1 px-2 rounded-2xl whitespace-nowrap`}>
-                    <Image className="mr-1" width={20} height={20} src={"/images/svgs/star.svg"}/>
-                    Best Bit
+                {/* {has_best_article && <p className="flex justify-center m-0">or</p>} */}
+                {has_best_article && <button onClick={() => go_to_article(type)} className={`${getTypeColour(type)}  flex p-1 rounded-2xl whitespace-nowrap items-center justify-center`}>
+                    <Image className="mx-1" width={20} height={20} src={"/images/svgs/star.svg"}/>
+                    <p className="mr-2 font-semibold text-xs">Best Bit</p>
                 </button>}
             </div>
+            
           </div>
         </div>
     </div>

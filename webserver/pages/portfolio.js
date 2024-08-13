@@ -25,7 +25,7 @@ export default function Portfolio({portfolio_articles, setBackgroundColour}) {
 
                 <div className="flex mt-3 flex-col max-w-prose mx-3 w-full space-y-6">
                     {portfolio_articles.map((item, index) => (
-                        <CondensedArticle key={index} name={item.title} desc={item.desc} type={item.type} has_best_article={item.has_best_article} source={item.source}/>
+                        <VeryCondensedArticle key={index} name={item.title} desc={item.desc} type={item.type} has_best_article={item.has_best_article} source={item.source}/>
                     ))}
                 </div>
             </div>                                   
