@@ -8,7 +8,7 @@ import ImageWrapper from '../../components/image_wrapper';
 // import CustomLink from '../../components/custom_link';
 import dynamic from 'next/dynamic';
 import getDate from '../../utils/date_utils'
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import TableOfContentsButton from '../../components/table_of_contents_button';
 import ChangeStyle from '../../components/change_style'
 import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, updateThemeColor } from '../../utils/colour';
@@ -102,8 +102,6 @@ export async function getStaticProps(context) {
     const source_folder = id.slice(0, id.length - (best_part ? 1 : 0))
     const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${source_folder}/${best_part ? 'bestpart_' : ''}article.mdx`);
     const mdxContent = await res.text();
-
-    console.log(mdxContent)
     
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
@@ -132,8 +130,6 @@ export async function getStaticPaths() {
 
     try {
         const homePostsResponse = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_portfolio_articles`);
-
-        console.log("HEATER ", homePostsResponse)
     
         if (!homePostsResponse.ok) {
           console.error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);
