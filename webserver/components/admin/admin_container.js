@@ -10,7 +10,7 @@ import { DayPicker } from 'react-day-picker';
 import ClosableChip from "../closable_chip";
 import SuggestionTextBox from "../suggestion_text_box";
 
-export default function AdminContainer({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, all_chips, refreshArticlesCallback={}}) {
+export default function AdminContainer({ editButtonCallback, home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, all_chips, refreshArticlesCallback={}}) {
 
     const [databaseID, setID] = useState(home_post_obj._id)
     const [title, setTitle] = useState(home_post_obj.title)
@@ -180,6 +180,9 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                                 if (in_edit) {
                                     await commit_changes_to_server();
                                     await refreshArticlesCallback()
+                                }
+                                else {
+                                    editButtonCallback()
                                 }
                                 set_in_edit(!in_edit)
                             }}

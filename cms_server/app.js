@@ -431,9 +431,8 @@ app.post('/secure/delete_article', async (req, res) => {
 })
 
 app.post('/secure/delete_chip', async (req, res) => {
+  console.log("called delete chip")
   const { name } = req.body;
-
-  console.log("name: ", name)
 
   const result = await validate_JWT(req.cookies.token)
 
@@ -446,9 +445,9 @@ app.post('/secure/delete_chip', async (req, res) => {
      * Check that this tag doesn't already exist in the DB
      */
     const foundChips = await get_chip(name)
-
+    console.log(foundChips)
     const id = foundChips[0]._id
-
+    console.log(id)
     if (foundChips.length == 0) {
       console.log("did not find chips. Quitting")
       // If it already exists in the DB return early
