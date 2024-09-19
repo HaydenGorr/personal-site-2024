@@ -72,7 +72,7 @@ export default function Container({ chips=null, home_post_obj, btnAction = () =>
                             key={index}
                             chip_text={chip_text}
                             remove_keywords={selectedKeywords.includes(chip_text) ? remove_keyword_from_filer : add_keywords_to_filter}
-                            svg_path={`images/svgs/${selectedKeywords.includes(chip_text) ? "star" : "add"}.svg`}
+                            svg_path={selectedKeywords.includes(chip_text) ? `images/svgs/star.svg` : `images/svgs/star.svg`}
                         />
                     </div>
                 ))}

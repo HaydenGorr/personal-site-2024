@@ -166,7 +166,8 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                                 add_to_keywords={adjustChips}
                                 chipsText={all_chips}
                                 selectedChips_text={chips}
-                                defaultText={"add and remove chips"}/>
+                                defaultText={"add and remove chips"}
+                                page_title_callback={()=>{}}/>
                         </div>
                     </div>}
 

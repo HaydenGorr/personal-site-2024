@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function ClosableChip({chip_text, remove_keywords, index=0, svg_path="" }) {
     return (
-        <div className="flex cursor-pointer Neo-Brutal-White-Small pr-1" onClick={() => {remove_keywords(chip_text)}}>
+        <div className="flex cursor-pointer Neo-Brutal-White-Small px-1 overflow-hidden" onClick={() => {remove_keywords(chip_text)}}>
             <Chip chip_text={chip_text} index={index} disble_border={true}/>
             {svg_path != "" && <div className="my-auto mr-1">
                 <Image src={svg_path} width={15} height={15} ></Image>
