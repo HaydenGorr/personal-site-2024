@@ -120,7 +120,6 @@ export default function Admin({setBackgroundColour}) {
      * Populate the admin page with article containers
      */
     const get_articles = async () => {
-        setArticles([])
         // This gets all of the articles, even unpublished ones
         const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_articles`, {
             method:'GET',

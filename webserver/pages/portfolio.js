@@ -57,7 +57,7 @@ export default function Portfolio({portfolio_articles, setBackgroundColour}) {
                           />
                           <h1 className={"flex font-semibold text-lg p-1 px-4"} >{type}</h1>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-6">
                         {articles.map((item, index) => (
                           <VeryCondensedArticle key={index} name={item.title} desc={item.desc} type={item.type} has_best_article={item.has_best_article} source={item.source}/>
                           ))}

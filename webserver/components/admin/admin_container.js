@@ -177,7 +177,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                         <MB_Button
                             text= {in_edit ? "save" : "edit"}
                             btnAction={async () => { 
-                                if (in_edit == "save") {
+                                if (in_edit) {
                                     await commit_changes_to_server();
                                     await refreshArticlesCallback()
                                 }

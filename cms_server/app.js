@@ -357,23 +357,25 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
 
     if (mdxFile) {
       const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");
-      fs.writeFileSync(mdxPath, mdxFile.buffer);
+      await fs.writeFileSync(mdxPath, mdxFile.buffer);
     }
 
     if (bestpart_mdxFile) {
       const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "bestpart_article.mdx");
-      fs.writeFileSync(mdxPath, bestpart_mdxFile.buffer);
+      await fs.writeFileSync(mdxPath, bestpart_mdxFile.buffer);
     }
 
     if (imageFile) {
       const imagePath = path.join(DATA_DIR, "CMS", "articles", source, "container.png");
-      fs.writeFileSync(imagePath, imageFile.buffer);
+      await fs.writeFileSync(imagePath, imageFile.buffer);
     }
+
+    res.status(200).json({ message: 'Chip uploaded successfully' });
+
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'An error occurred during the operation' });
   }
-
 })
 
 app.get('/secure/add_unpublished_article', async (req, res) => {
