@@ -30,7 +30,7 @@ async function get_all_ready_articles(){
   const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
 
   try {
-    const articles = await Article(connection).find({ ready: true });
+    const articles = await Article(connection).find({ ready: true }).sort({ publishDate: -1 });
     return {"error": "", "data":articles}
   } catch (error) {
     return {"error": "Could not fetch Article data from DB", "data":[]}

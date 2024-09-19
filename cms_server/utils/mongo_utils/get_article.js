@@ -16,7 +16,7 @@ async function get_article(article_dir_name){
 async function get_all_articles(){
     const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
     try {
-        const articles = await Article(connection).find();
+        const articles = await Article(connection).find().sort({ publishDate: -1 });
         return articles
     } catch (error) {
         console.error('Error:', error);

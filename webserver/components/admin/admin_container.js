@@ -10,7 +10,7 @@ import { DayPicker } from 'react-day-picker';
 import ClosableChip from "../closable_chip";
 import SuggestionTextBox from "../suggestion_text_box";
 
-export default function AdminContainer({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, all_chips}) {
+export default function AdminContainer({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, all_chips, refreshArticlesCallback={}}) {
 
     const [databaseID, setID] = useState(home_post_obj._id)
     const [title, setTitle] = useState(home_post_obj.title)
@@ -28,7 +28,6 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
     const [bestArticleFile, setBestArticleFile] = useState(null)
 
     const reset = () => {
-        console.log(home_post_obj)
         setTitle(home_post_obj.title)
         setDesc(home_post_obj.desc)
         setInfoText(home_post_obj.infoText)
@@ -145,6 +144,8 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
             }
 
             await get_chips();
+
+            refreshCallback()
         } catch (error) {
             console.error('Error uploading chip', error);
         }
@@ -174,8 +175,11 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                     <div className="mt-3 self-center flex space-x-3">
                         <MB_Button
                             text= {in_edit ? "save" : "edit"}
-                            btnAction={() => { 
-                                if (in_edit) commit_changes_to_server()
+                            btnAction={async () => { 
+                                if (in_edit == "save") {
+                                    await commit_changes_to_server();
+                                    await refreshArticlesCallback()
+                                }
                                 set_in_edit(!in_edit)
                             }}
                         />
@@ -215,7 +219,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                                 id="image"
                                 accept=".png"
                                 onChange={(e) => setImage(e.target.files[0])}
-                                className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                className="Neo-Brutal w-full p-3 shadow-MB border-white border-2 focus:outline-none focus:rounded-none"
                             />      
                         </div>
 
@@ -223,10 +227,10 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                             Article file
                             <input
                                 type="file"
-                                id="image"
+                                id="file1"
                                 accept=".mdx"
-                                onChange={(e) => setBestArticleFile(e.target.files[0])}
-                                className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                onChange={(e) => setArticleFile(e.target.files[0])}
+                                className="Neo-Brutal w-full p-3 shadow-MB border-white border-2 focus:outline-none focus:rounded-none"
                             />      
                         </div>
 
@@ -234,10 +238,10 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                             Best bit?
                             <input
                                 type="file"
-                                id="image"
+                                id="file2"
                                 accept=".mdx"
-                                onChange={(e) => setArticleFile(e.target.files[0])}
-                                className="ml-6 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                onChange={(e) => setBestArticleFile(e.target.files[0])}
+                                className="Neo-Brutal w-full p-3 shadow-MB border-white border-2 focus:outline-none focus:rounded-none"
                             />      
                         </div>}
 
@@ -303,7 +307,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                         
 
                         <div className="">
-                            <MB_Button text="delete article" btnAction={() => delete_article()}>
+                            <MB_Button text="delete article" btnAction={async () => {await delete_article(); refreshArticlesCallback();}}>
 
                             </MB_Button>
                         </div>

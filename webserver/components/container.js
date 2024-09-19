@@ -2,9 +2,12 @@ import Image from "next/image";
 import ClosableChip from "./closable_chip";
 import { useRouter } from 'next/router'
 import { getDaysAgo } from '../utils/date_utils'
+import { useState, useEffect } from "react";
 
 export default function Container({ chips=null, home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, override = false }) {
     const router = useRouter();
+
+    const [hasImage, setHasImage] = useState(false);
 
     const go_to_article = (title) => {
         if (title != "") router.push(`/article/${title}`)
@@ -12,6 +15,23 @@ export default function Container({ chips=null, home_post_obj, btnAction = () =>
             router.push(`/missingArticle`)
         }
     }
+
+    useEffect(() => {
+
+        const checkImage = async () => {
+          const url = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`;
+    
+          try {
+            const response = await fetch(url);
+            setHasImage(response.status === 200);
+          } catch (error) {
+            setHasImage(true); // If the request errors then assume the image is there just in case it is
+          }
+        };
+    
+        checkImage();
+      }, [home_post_obj]);
+
 
     return (
         <div className={`${override ? "" : colour + "flex flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width"}`}>
@@ -23,14 +43,14 @@ export default function Container({ chips=null, home_post_obj, btnAction = () =>
                 
             </div>
 
-            <Image className="rounded-md overflow-hidden cursor-pointer"
+            {hasImage && <Image className="rounded-md overflow-hidden cursor-pointer"
                 src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`}
                 unoptimized={true}
                 alt=""
                 width={600}
                 height={128}
                 onClick={() => {go_to_article(home_post_obj.source)}}
-            />
+            />}
 
             <div className="flex mt-3 w-full">
                 <div className="flex mt-3 flex-col w-full">

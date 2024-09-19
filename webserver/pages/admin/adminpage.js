@@ -5,7 +5,6 @@ import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 import ClosableChip from "../../components/closable_chip";
 import LineBreak from '../../components/line_break'
 import MB_Button from "../../components/MB_Button";
-import InputBox from "../../components/inputBox";
 import Image from "next/image";
 
 export const config = {
@@ -14,7 +13,7 @@ export const config = {
     },
 };
 
-export default function Admin() {
+export default function Admin({setBackgroundColour}) {
 
     const [original_chip_edit_name, set_original_chip_edit_name] = useState("");
     const [chip_edit_name, set_chip_edit_name] = useState("");
@@ -30,6 +29,7 @@ export default function Admin() {
     const [image, setImage] = useState(null);
 
     useEffect(() => {
+        setBackgroundColour("WhiteBackgroundColour")
         get_articles();
         get_chips();
     }, []); 
@@ -42,7 +42,6 @@ export default function Admin() {
         set_chip_edit_desc("");
         set_chip_edit_image_url("");
         setImage(null);
-
     }
 
     /**
@@ -121,6 +120,7 @@ export default function Admin() {
      * Populate the admin page with article containers
      */
     const get_articles = async () => {
+        setArticles([])
         // This gets all of the articles, even unpublished ones
         const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_articles`, {
             method:'GET',
@@ -286,14 +286,14 @@ export default function Admin() {
                         ))}
                     </div>
                     
-                    <div className="mr-3 mt-3 flex justify-center"><MB_Button type={"submit"} text={'add chip'} btnAction={()=>set_create_chip()}/></div>
+                    <div className="mr-3 mt-3 flex justify-center"><MB_Button type={"submit"} text={'add chip'} btnAction={()=>{set_create_chip();}}/></div>
 
                 </div>
 
                 <LineBreak className="mb-16 mt-6"/>
 
                 <div className="mb-12">
-                    <MB_Button text="Create New Article" btnAction={() => add_unpublished_article()}/>
+                    <MB_Button text="Create New Article" btnAction={async () => {await add_unpublished_article(); get_articles();}}/>
                 </div>
 
                 <div className="">
@@ -301,11 +301,13 @@ export default function Admin() {
                         <Masonry gutter="0px">
                             {articles.length > 0 && articles.map((item, index) => (
                                 <AdminContainer
+                                    key={item.id}
                                     home_post_obj={item}
                                     add_keywords_to_filter={() => {}}
                                     remove_keyword_from_filer={() => {}}
                                     selectedKeywords={[]}
-                                    all_chips={chips.map((chip, index) => {return chip.name})}/>
+                                    all_chips={chips.map((chip, index) => {return chip.name})}
+                                    refreshArticlesCallback={async () => {await get_articles()}}/>
                             ))}
                         </Masonry>
                     </ResponsiveMasonry>

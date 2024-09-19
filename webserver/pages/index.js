@@ -32,9 +32,6 @@ export async function getStaticProps() {
     var unique_chips_DATA = unique_chips_JSON.data;
 
     const chips = unique_chips_DATA.map( (item, index) => {return item.name} )
-
-    // Sort by date
-    home_posts_DATA.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
     
     return {
       props: {

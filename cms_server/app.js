@@ -349,11 +349,14 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
 
   try {
 
+    if (mdxFile) console.log("got mdx")
+    if (bestpart_mdxFile) console.log("got best part mdx")
+
     // Update the article
     const update_result = await updatedArticle(req.body)
 
     if (mdxFile) {
-      const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "articlwe.mdx");
+      const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");
       fs.writeFileSync(mdxPath, mdxFile.buffer);
     }
 
