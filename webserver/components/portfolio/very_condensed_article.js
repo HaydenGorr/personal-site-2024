@@ -16,7 +16,7 @@ export default function VeryCondensedArticle({ name, desc, type, has_best_articl
     
     return (
 
-    <div className="sm:flex space-x-3">
+    <div className="sm:flex sm:space-x-3">
 
         <div className="Neo-Brutal-White py-3 px-5 w-full">
             <div className="flex items-center space-x-3">
@@ -34,7 +34,7 @@ export default function VeryCondensedArticle({ name, desc, type, has_best_articl
                     <p className="font-semibold text-lg line-clamp-1">
                         {name}
                     </p>
-                    <p className="font-normal text-xs line-clamp-2">
+                    <p className="font-normal text-xs line-clamp-4 sm:line-clamp-3">
                         {desc}
                     </p>
                 </div>
@@ -43,7 +43,7 @@ export default function VeryCondensedArticle({ name, desc, type, has_best_articl
         </div>
         
         <div className="flex sm:flex-col justify-center sm:space-y-2 mt-3 sm:mt-0 space-x-3 sm:space-x-0">
-            <div className={`flex items-center justify-center Neo-Brutal-White w-24 btn-primary active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked select-none cursor-pointers max-h-14 h-full`}
+            <div className={`flex items-center justify-center Neo-Brutal-White btn-primary active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked select-none cursor-pointers flex-grow sm:w-24 sm:max-h-14 h-full`}
             onClick={() => go_to_article(source)}>
                 <div className="flex">
                     <Image width={20} height={20} src={getTypeImage(type)}/>
@@ -51,7 +51,7 @@ export default function VeryCondensedArticle({ name, desc, type, has_best_articl
                 </div>
             </div>
 
-            {has_best_article && <div className="flex items-center justify-center Neo-Brutal-White w-24 dark:bg-yellow-200 btn-primary active:MB_clicked active:shadow-MB_clicked active:bg-yellow-300 select-none cursor-pointer"
+            {has_best_article && <div className="flex items-center justify-center Neo-Brutal-White dark:bg-yellow-200 btn-primary active:MB_clicked active:shadow-MB_clicked active:bg-yellow-300 flex-grow sm:w-24 select-none cursor-pointer"
                 onClick={() => go_to_article(source+"_")}>
                 <div className="flex">
                     <Image width={20} height={20} src={"/images/svgs/star.svg"}/>
