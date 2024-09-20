@@ -43,7 +43,7 @@ export default function Article({mdxSource, title, type, publishDate, wordCount,
 
   return (
       <Layout stickyHeader={false} backgroundColour={backgroundColour}>
-        <div className={`flex justify-center pt-3 py-6 px-3 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
+        <div className={`flex justify-center pt-3 py-6 px-6 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
           <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour) }}>
 
             <div className="flex not-prose w-full justify-center my-6">

@@ -34,7 +34,7 @@ export default function VeryCondensedArticle({ name, desc, type, has_best_articl
                     <p className="font-semibold text-lg line-clamp-1">
                         {name}
                     </p>
-                    <p className="font-normal text-xs line-clamp-4 sm:line-clamp-3">
+                    <p className="font-normal text-xs line-clamp-3 sm:line-clamp-2">
                         {desc}
                     </p>
                 </div>

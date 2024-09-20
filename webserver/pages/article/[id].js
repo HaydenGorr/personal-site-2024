@@ -42,7 +42,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
   return (
       <Layout stickyHeader={false} backgroundColour={backgroundColour}>
-        <div className={`flex justify-center pt-3 py-6 px-3 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
+        <div className={`flex justify-center pt-3 py-6 px-6 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
           <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour) }}>
             <h1 className={`mt-3 text-w`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
 
