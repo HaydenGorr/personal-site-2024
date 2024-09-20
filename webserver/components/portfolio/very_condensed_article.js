@@ -16,7 +16,7 @@ export default function VeryCondensedArticle({ name, desc, type, has_best_articl
     
     return (
 
-    <div className="flex space-x-3">
+    <div className="sm:flex space-x-3">
 
         <div className="Neo-Brutal-White py-3 px-5 w-full">
             <div className="flex items-center space-x-3">
@@ -42,7 +42,7 @@ export default function VeryCondensedArticle({ name, desc, type, has_best_articl
             </div>
         </div>
         
-        <div className="flex flex-col justify-center space-y-2">
+        <div className="flex sm:flex-col justify-center sm:space-y-2 mt-3 sm:mt-0 space-x-3 sm:space-x-0">
             <div className={`flex items-center justify-center Neo-Brutal-White w-24 btn-primary active:MB_clicked active:shadow-MB_clicked active:bg-MB_clicked select-none cursor-pointers max-h-14 h-full`}
             onClick={() => go_to_article(source)}>
                 <div className="flex">

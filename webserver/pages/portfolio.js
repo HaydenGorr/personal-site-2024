@@ -44,7 +44,7 @@ export default function Portfolio({portfolio_articles, setBackgroundColour}) {
                     Hey, I'm still buidling this page out, but right where this text is, will be my bio.
                 </div>
 
-                <div className="flex mt-3 flex-col max-w-prose mx-3 w-full space-y-12">
+                <div className="flex mt-3 flex-col max-w-prose mx-3 w-full space-y-12 mb-6">
                     {Object.entries(sortedArticles).map(([type, articles]) => (
                       <div>
                         <div className="flex mb-4 mt-2 items-center justify-center flex-col">
