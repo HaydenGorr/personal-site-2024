@@ -142,6 +142,11 @@ code {
   @apply cursor-default Neo-Brutal-White
 }
 
+.monoBackgroundColour {
+  background-color: #e8e7ea;
+  color: #121212;
+}
+
 .WhiteBackgroundColour {
   background-color: #fafafa;
   color: #121212;

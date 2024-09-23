@@ -14,6 +14,8 @@ module.exports = {
         sans: ['Roboto', 'sans-serif'],
         serif: ['Lora', 'serif'],
         dys: ['Lexend', 'dys'],
+        jetbrains: ['"JetBrains Mono"', 'monospace'],
+        karla: ['Karla', 'sans-serif'],
       },
       boxShadow: {
         'MB': '5px 5px 0 0 #000',

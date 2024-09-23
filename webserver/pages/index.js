@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
 import Container from '../components/container';
+import MiniContainer from '../components/mini_container';
 import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
@@ -124,7 +125,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
   };
 
   useEffect(() => {
-    setBackgroundColour("WhiteBackgroundColour")
+    setBackgroundColour("monoBackgroundColour")
   }, []); 
 
 
@@ -231,19 +232,33 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
           </div>
         </div>
 
-        <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
+        {/* <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
           <Masonry gutter="0px">
             {filteredPosts.map((item, index) => (
               <div className='my-3 flex justify-center mx-3'>
-                <Container
+              <Container
+                home_post_obj={item}
+                add_keywords_to_filter={add_to_keywords}
+                remove_keyword_from_filer={remove_keywords}
+                selectedKeywords={selectedKeywords}/>
+              </div>
+            ))}
+          </Masonry>
+        </ResponsiveMasonry> */}
+
+        <div className='mx-3 flex flex-col w-fit'>
+          {filteredPosts.map((item, index) => (
+            <div className='justify-center'>
+              <div className='h-px w-full bg-black'/>
+                <MiniContainer
                   home_post_obj={item}
                   add_keywords_to_filter={add_to_keywords}
                   remove_keyword_from_filer={remove_keywords}
                   selectedKeywords={selectedKeywords}/>
-              </div>
+            </div>
             ))}
-          </Masonry>
-        </ResponsiveMasonry>
+            <div className='h-px w-full bg-black'/>
+        </div>
 
         {filteredPosts.length == 0 && 
           <div className='flex justify-center items-center flex-col mt-10'>
