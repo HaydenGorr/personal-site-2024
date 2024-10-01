@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
 import Container from '../components/container';
+import NewContainer from '../components/newContainer';
 import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
@@ -11,6 +12,7 @@ import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 import MB_Button from '../components/MB_Button';
 import Link from 'next/link';
+import NewClosableChip from '../components/new_closable_chip'
 
 export async function getStaticProps() {
   try {
@@ -231,19 +233,28 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
           </div>
         </div>
 
-        <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
-          <Masonry gutter="0px">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredPosts.map((item, index) => (
-              <div className='my-3 flex justify-center mx-3'>
-                <Container
-                  home_post_obj={item}
-                  add_keywords_to_filter={add_to_keywords}
-                  remove_keyword_from_filer={remove_keywords}
-                  selectedKeywords={selectedKeywords}/>
+              <div className='m-3 flex flex-col items-center'>
+                  <NewContainer
+                    home_post_obj={item}
+                    add_keywords_to_filter={add_to_keywords}
+                    remove_keyword_from_filer={remove_keywords}
+                    selectedKeywords={selectedKeywords}/>
+
+                <div className={`flex flex-wrap mt-2 space-x-3 overflow-scroll w-full`}>
+                {item.chips.map((chip_text, index) => (
+                    <div className={`mt-2`}>
+                        <div className={`font-Josefin text-sm flex rounded-3xl border-4 border-secondary px-4 py-1 ${selectedKeywords.includes(chip_text) ? 'shadow-strong-drop bg-secondary2 text-secondary' : 'shadow-inner-strong bg-secondary'}`}>
+                          <Image className='mr-2 self-center' src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${chip_text.toLowerCase()}.svg`} width={20} height={20} ></Image>
+                          <div className=''>{chip_text}</div>
+                        </div>
+                    </div>
+                ))}
+                </div>
               </div>
             ))}
-          </Masonry>
-        </ResponsiveMasonry>
+          </div>
 
         {filteredPosts.length == 0 && 
           <div className='flex justify-center items-center flex-col mt-10'>

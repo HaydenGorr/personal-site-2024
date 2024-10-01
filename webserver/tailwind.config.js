@@ -10,15 +10,23 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'primary-blue': '#003049',
+        'secondary': '#F1F1F1',
+        'secondary2': '#669BBC'
+      },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
         serif: ['Lora', 'serif'],
         dys: ['Lexend', 'dys'],
+        Josefin : ['Josefin Sans', 'Josefin '],
       },
       boxShadow: {
         'MB': '5px 5px 0 0 #000',
         'MBs': '2px 2px 0 0 #000',
         'MB_clicked': '2px 2px 0 0 #000',
+        'inner-strong': 'inset 0 4px 6px rgba(0, 0, 0, 0.2)',
+        'strong-drop': '0 10px 10px rgba(0, 0, 0, 0.15)'
       },
       backgroundColor:{
         'MB_clicked': '#e2e2e2'
@@ -47,6 +55,7 @@ module.exports = {
     },
   },
   plugins: [
+    require('@headlessui/tailwindcss'),
     // Define a custom plugin for the MB_clicked position movement
     function({ addUtilities }) {
       addUtilities({

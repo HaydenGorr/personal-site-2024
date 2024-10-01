@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 import ClosableChip from "../closable_chip";
 import SuggestionTextBox from "../suggestion_text_box";
+import { Checkbox } from "@headlessui/react"
 
 export default function AdminContainer({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, all_chips, refreshArticlesCallback={}}) {
 
@@ -193,6 +194,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                     { in_edit && <div className="flex flex-col mt-3 space-y-2">
                         <AdminSetting title={"published"}>
                             <div className=""> 
+                                <Checkbox className="data-[checked]:bg-blue-500"></Checkbox>
                                 <input 
                                     type="checkbox"
                                     id="myCheckbox"
