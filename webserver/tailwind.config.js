@@ -105,6 +105,12 @@ module.exports = {
         'mdl': '1200px',
         'mds': '900px',
       },
+      margin:{
+        '-2': '-2rem',
+        '-4': '-4rem',
+        '-8': '-8rem',
+        '-16': '-16rem',
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {

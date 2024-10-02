@@ -44,7 +44,7 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
         setUnatchedChips(home_post_obj.chips.filter(chip_text => !selectedKeywords.includes(chip_text)))
     
         checkImage();
-      }, [home_post_obj]);
+      }, [home_post_obj, selectedKeywords]);
 
 
     return (
@@ -75,13 +75,14 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
                 </span>
 
                 <button
-                    className={`z-50 self-center rounded-xl w-fit px-6 py-1 text-center ${classes.textColor700} text-sm font-medium ${classes.bgColor200}`}
+                    className={`z-50 self-center rounded-xl w-fit px-6 text-center ${classes.textColor700} text-sm font-medium ${classes.bgColor200}`}
                     onClick={() => {go_to_article(home_post_obj.source)}}>
-                      READ
+                      <div className="my-1 mt-2">READ</div>
                 </button>
             </div>
-
-            <div className={`absolute inset-3 flex space-x-2`}>
+            
+            <div className={`absolute inset-3 flex space-x-2 overflow-hidden w-full h-fit`}
+              style={{maskImage: 'linear-gradient(to right, black, transparent)', WebkitMaskImage: 'linear-gradient(to right, black, transparent)'}}>
                 {matchedChips.map((chip_text, index) => (
                     <div>
                         {<div className={`h-6 w-6 rounded-full flex items-center justify-center shadow-strong-drop ${ classes.bgColor400 }`}>

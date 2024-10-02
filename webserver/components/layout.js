@@ -33,7 +33,7 @@ export default function Layout({ children, home, stickyHeader=true, setBackgroun
       {/** The modal for downloading my cv. hidden by default. Shown on a button click*/}
       <CVDownloadModal></CVDownloadModal>
 
-      <header className={`flex flex-col items-center default_colour ${ stickyHeader ? 'sticky' : ''} top-0 z-40 transition-colors duration-500 ${backgroundColour ? backgroundColour : ''}`}>
+      {/* <header className={`flex flex-col items-center default_colour ${ stickyHeader ? 'sticky' : ''} top-0 z-40 transition-colors duration-500 ${backgroundColour ? backgroundColour : ''}`}>
         
         <div className="flex md:justify-between w-full">
             {headerPtr==2 && <div className="my-auto ml-10 text-xl font-bold hideonmobile"><MB_Button text="login" given_href="/admin/login"></MB_Button></div>}
@@ -62,7 +62,7 @@ export default function Layout({ children, home, stickyHeader=true, setBackgroun
 
         <div className='bg-black w-lvw h-1'/>
         
-      </header>
+      </header> */}
 
       <main className='max-w-7xl mx-auto'>{children}</main>
 

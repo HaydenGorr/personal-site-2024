@@ -52,40 +52,62 @@ export default function SuggestionTextBox({aiSearching, filter_keywords, add_to_
     return (
         <div className="flex flex-col" ref={containerRef}>
             <div className="h-9 flex space-x-3">
-                <InputBox 
-                    onKeyPress={handleKeyPress}  // Call handleKeyPress directly
-                    onChange={onChange} 
-                    valueStorage={userText} 
-                    onFocus={() => setShowSuggestions(true)} 
-                    defaultText={defaultText}
-                />
+                <input
+                    className={`bg-dg-600 text-dg-50 h-full w-full px-3 focus:outline-none rounded-md shadow-strong-drop placeholder-dg-300 placeholder-italic placeholder-opacity-75`}
+                    type="text"
+                    value={userText} // Bind the input value to the component's state
+                    onChange={onChange} // Update the state every time the input changes
+                    onFocus={() => setShowSuggestions(true)}
+                    placeholder={"Type here"}
+                    onKeyPress={handleKeyPress}
+                />    
 
-                {showAISupportBox && (
-                    <MB_Button 
-                        text="send"
-                        lowercase={true}
-                        btnAction = {() => {filter_keywords(userText)}}/>
-                )}
+                <button
+                    className="bg-dg-100 px-2 rounded-md"
+                    lowercase={true}
+                    btnAction = {() => {filter_keywords(userText)}}>
+                    <Image 
+                        className=""
+                        src={`/images/search_icon.png`}
+                        width={25}
+                        height={25}/>
+                </button>
+
+                <button
+                    className="bg-dg-100 px-2 rounded-md"
+                    lowercase={true}
+                    btnAction = {() => {filter_keywords(userText)}}>
+                    <Image 
+                        className=""
+                        src={`/images/chat_icon.png`}
+                        width={25}
+                        height={25}/>
+                </button>
             </div>
-                <div className={`${showSuggestions  ? '' : 'invisible'} Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md`}>
-                    <ul>
-                        {!showAISupportBox && filteredChips.map((text, index) => (
-                            <div className={`flex pl-3 py-1.5 cursor-pointer hover:bg-neutral-200 ${shouldGreyout(text) ? "cursor-default text-neutral-300" : ''}`} onClick={() => {add_to_keywords(text); page_title_callback("Custom search")}}>
-                                <div className={`${shouldGreyout(text) ? "opacity-25" : ""} flex`}> {/* Adjust the opacity value as needed */}
-                                    <Image className="mr-3" src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${text.toLowerCase()}.svg`} width={25} height={25}/>
-                                </div>
-                                <li key={index}>{text}</li>
-                            </div>
-                        ))}
 
-                        {showAISupportBox && (
-                            <div className={`text-center p-3 font-medium ${aiSearching ? 'animate-pulse' : ''}`}>
-                                {aiSearching ? "searching" : `example: 'major ios projects'`}
-                            </div>
-                        )}
+            <div className="font-normal text-xs mt-1">
+                Describe what you want. This feature uses <span className="font-bold text-xs"> generative AI </span> to find content.
+            </div>
 
-                    </ul>
-                </div>
+            <div className={`${showSuggestions  ? '' : 'invisible'} Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md`}>
+                <ul>
+                    {!showAISupportBox && filteredChips.map((text, index) => (
+                        <div className={`flex pl-3 py-1.5 cursor-pointer hover:bg-neutral-200 ${shouldGreyout(text) ? "cursor-default text-neutral-300" : ''}`} onClick={() => {add_to_keywords(text); page_title_callback("Custom search")}}>
+                            <div className={`${shouldGreyout(text) ? "opacity-25" : ""} flex`}> {/* Adjust the opacity value as needed */}
+                                <Image className="mr-3" src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${text.toLowerCase()}.svg`} width={25} height={25}/>
+                            </div>
+                            <li key={index}>{text}</li>
+                        </div>
+                    ))}
+
+                    {showAISupportBox && (
+                        <div className={`text-center p-3 font-medium ${aiSearching ? 'animate-pulse' : ''}`}>
+                            {aiSearching ? "searching" : `example: 'major ios projects'`}
+                        </div>
+                    )}
+
+                </ul>
+            </div>
 
         </div>
     )

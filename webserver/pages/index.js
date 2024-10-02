@@ -139,14 +139,14 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
       <Head>
         <title>{"Hayden's Personal Site"}</title>
       </Head>
-      <section>
+      <section className='flex flex-col'>
 
 
-        <h1 className='mt-5 text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
+        {/* <h1 className='mt-5 text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1> */}
 
-        <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" />
+        {/* <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" /> */}
 
-        {selectedKeywords.length == 0 && <div className='flex space-x-4 justify-center mx-3'>
+        {/* {selectedKeywords.length == 0 && <div className='flex space-x-4 justify-center mx-3'>
 
           <div
             style={{
@@ -187,78 +187,111 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
             Photo Galleries
           </div>
           
-        </div>}
+        </div>} */}
 
-        {selectedKeywords.length > 0 && (
-          <div className="mx-3">
-            <div className=" h-px prose mx-auto" />
-            <div className="flex flex-wrap justify-center">
-              {/* <div>contains any</div> */}
-              {selectedKeywords.map((item, index) => (
-                <div className="mr-3 mt-3"> 
-                  <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} svg_path={"images/svgs/cancel.svg"} />
-                </div>
-              ))}
-            </div>
-            <div className='flex justify-center items-center mt-6'>
-              <div className='m3-1'>
-                {"match"}
-              </div>
+		{/** SECTION 1 */}
+		<div className='h-screen w-full flex flex-col items-center overflow-visible max-h-screen'>
 
-              <div className='mx-1 w-fit over'>
-                <ToggleButton text={"any"} lowercase="true" btnAction={() => {setMatchAnyChip(true)}} toggled={matchAnyChip==true}/>
-              </div>
-              <div className='mx-1'>
-                <ToggleButton text={"all"} lowercase="true" btnAction={() => {setMatchAnyChip(false)}} toggled={matchAnyChip==false}/>
-              </div>
+			<h1 className='mt-20 text-center font-extrabold text-5xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
 
-              <div className='ml-1'>
-                {"of the tags"}
-              </div>
-              
-            </div>
-          </div>
-        )}
+			{/* {selectedKeywords.length > 0 && ( <div className="mx-3">
+				<div className="h-px prose mx-auto" />
+				<div className="flex flex-wrap justify-center">
+				{selectedKeywords.map((item, index) => (
+					<div className="mr-3 mt-3"> 
+					<ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} svg_path={"images/svgs/cancel.svg"} />
+					</div>
+				))}
+				</div>
+				<div className='flex justify-center items-center mt-6'>
+				<div className='m3-1'>
+					{"match"}
+				</div>
 
-        <div className="w-100% mx-3">
-          <div className="mt-6 mb-3 h-10 max-w-prose mx-auto">
-            <SuggestionTextBox 
-              aiSearching={aiSearching}
-              filter_keywords={getTagsFromAI}
-              add_to_keywords={add_to_keywords}
-              chipsText={unique_chips}
-              selectedChips_text={selectedKeywords}
-              page_title_callback={(x) => setPageTitle(x)}
-              defaultText={"refine your search. Use \/ to search in natural language"}/>
-          </div>
+				<div className='mx-1 w-fit over'>
+					<ToggleButton text={"any"} lowercase="true" btnAction={() => {setMatchAnyChip(true)}} toggled={matchAnyChip==true}/>
+				</div>
+				<div className='mx-1'>
+					<ToggleButton text={"all"} lowercase="true" btnAction={() => {setMatchAnyChip(false)}} toggled={matchAnyChip==false}/>
+				</div>
+
+				<div className='ml-1'>
+					{"of the tags"}
+				</div>
+				
+				</div>
+			</div>
+			)} */}
+
+			<div className='w-full h-full flex flex-col items-center mb-36 justify-center'>
+				{/** THE TEXT INPUT COMPONENT WITH THE BUTTON COMPONENTS */}
+				<div className='w-full max-w-prose'>
+				<div className="mt-6 mb-3 h-10 mx-4">
+					<SuggestionTextBox 
+					aiSearching={aiSearching}
+					filter_keywords={getTagsFromAI}
+					add_to_keywords={add_to_keywords}
+					chipsText={unique_chips}
+					selectedChips_text={selectedKeywords}
+					page_title_callback={(x) => setPageTitle(x)}
+					defaultText={""}/>
+				</div>			
+				</div>
+			</div>
+
+    </div>
+
+    {/** SECTION 2 */}
+	<div className='relative flex flex-col -mt-4'>
+
+
+    {selectedKeywords.length > 0 && (
+      <div className="sticky top-2 z-50 -mt-2 w-full">
+        <div className="flex space-x-4 justify-center ">
+          {selectedKeywords.map((item, index) => (
+            <NewClosableChip
+              key={index}
+              chip_text={item}
+              remove_keywords={remove_keywords}
+              svg_path={"images/svgs/cancel.svg"}
+            />
+          ))}
         </div>
+      </div>
+    )}
 
-          <div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4">
-            {filteredPosts.map((item, index) => (
-              <div className='m-3 flex flex-col items-center'>
-                  <NewContainer
-                    incolour={"dpi"}
-                    home_post_obj={item}
-                    add_keywords_to_filter={add_to_keywords}
-                    remove_keyword_from_filer={remove_keywords}
-                    selectedKeywords={selectedKeywords}/>
-              </div>
-            ))}
-          </div>
 
-        {filteredPosts.length == 0 && 
-          <div className='flex justify-center items-center flex-col mt-10'>
-            {'I\'ve got nothing for you :\('}
-              <Image
-                src="/images/empty.gif"
-                alt="Description of GIF"
-                width={500}
-                height={300}
-                className="your-tailwind-classes"
-              />
-          </div>
-        }
-
+    {/** THE ARTICLE CONTAINERS */}
+    <div className={`flex w-full justify-center ${ selectedKeywords.length > 0 ? '-translate-y-8' : '-translate-y-7' } mt-10`}>
+		<div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4 max-w-fit">
+			{filteredPosts.map((item, index) => (
+			<div className='m-3 flex flex-col items-center'>
+				<NewContainer
+					incolour={"dpi"}
+					home_post_obj={item}
+					add_keywords_to_filter={add_to_keywords}
+					remove_keyword_from_filer={remove_keywords}
+					selectedKeywords={selectedKeywords}/>
+			</div>
+			))}
+		</div>
+	</div>
+		
+	{/** IF THERE ARE NO ARTICLES THEN THIS GIF PLAYS */}
+	{filteredPosts.length == 0 && 
+	<div className='flex justify-center items-center flex-col mt-10'>
+		{'I\'ve got nothing for you :\('}
+		<Image
+			src="/images/empty.gif"
+			alt="Description of GIF"
+			width={500}
+			height={300}
+			className="your-tailwind-classes"
+		/>
+	</div>
+	}
+		
+	</div>
 
       </section>
     </Layout>

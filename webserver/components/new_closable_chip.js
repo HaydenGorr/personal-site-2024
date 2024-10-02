@@ -3,11 +3,20 @@ import Image from "next/image";
 
 export default function NewClosableChip({chip_text, remove_keywords, index=0, svg_path="" }) {
     return (
-        <div className="flex cursor-pointer overflow-hidden rounded-3xl shadow-inner" onClick={() => {remove_keywords(chip_text)}}>
-            <Chip chip_text={chip_text} index={index} disble_border={true}/>
-            {svg_path != "" && <div className="my-auto mr-1">
-                <Image src={svg_path} width={15} height={15} ></Image>
-            </div>}
+        <div
+        key={index} 
+        className={`bg-gray-200 px-4 py-2 rounded-3xl font-medium text-xs max-h-8 h-8`}
+        onClick={() => add_keywords_to_filter(chip_text)}>
+            <div className="flex self-center items-center">
+                <Image 
+                className="mr-2"
+                src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${chip_text.toLowerCase()}.svg`}
+                width={20}
+                height={20}/>
+
+                <p className="flex text-center leading-none m-0 mt-0.5">{chip_text}</p>
+            </div>
+            
         </div>
     )
 }
