@@ -233,7 +233,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
           </div>
         </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4">
             {filteredPosts.map((item, index) => (
               <div className='m-3 flex flex-col items-center'>
                   <NewContainer
@@ -242,17 +242,6 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
                     add_keywords_to_filter={add_to_keywords}
                     remove_keyword_from_filer={remove_keywords}
                     selectedKeywords={selectedKeywords}/>
-
-                {/* <div className={`flex flex-wrap mt-2 space-x-3 overflow-scroll w-full`}>
-                {item.chips.map((chip_text, index) => (
-                    <div className={`mt-2`}>
-                        <div className={`font-Josefin text-sm flex rounded-3xl border-4 border-secondary px-4 py-1 ${selectedKeywords.includes(chip_text) ? 'shadow-strong-drop bg-secondary2 text-secondary' : 'shadow-inner-strong bg-secondary'}`}>
-                          <Image className='mr-2 self-center' src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${chip_text.toLowerCase()}.svg`} width={20} height={20} ></Image>
-                          <div className=''>{chip_text}</div>
-                        </div>
-                    </div>
-                ))}
-                </div> */}
               </div>
             ))}
           </div>

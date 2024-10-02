@@ -74,10 +74,6 @@ module.exports = {
         'dr-800': '#982A1C',
         'dr-900': '#7E291E',
         'dr-950': '#45110A',
-
-
-
-
       },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
@@ -99,11 +95,15 @@ module.exports = {
         '128': '30rem',
       },
       backgroundImage:{
-        'dg-radial-gradient': 'radial-gradient(rgb(5, 165, 118), rgb(0, 0, 0, 0))',
-        'dy-radial-gradient': 'radial-gradient(rgb(159, 94, 31), rgb(0, 0, 0, 0))',
-        'dr-radial-gradient': 'radial-gradient(rgb(185, 47, 29), rgb(0, 0, 0, 0))',
-        'dpu-radial-gradient': 'radial-gradient(rgb(99, 84, 119)X, rgb(0, 0, 0, 0))',
-        'dpi-radial-gradient': 'radial-gradient(rgb(226, 103, 137), rgb(0, 0, 0, 0))',
+        'dg-radial-gradient': 'radial-gradient(rgb(3, 80, 62), rgb(0, 0, 0, 0))',
+        'dy-radial-gradient': 'radial-gradient(rgb(130, 74, 29), rgb(0, 0, 0, 0))',
+        'dr-radial-gradient': 'radial-gradient(rgb(152, 42, 28), rgb(0, 0, 0, 0))',
+        'dpu-radial-gradient': 'radial-gradient(rgb(83, 69, 98), rgb(0, 0, 0, 0))',
+        'dpi-radial-gradient': 'radial-gradient(rgb(206, 105, 136), rgb(0, 0, 0, 0))',
+      },
+      screens: {
+        'mdl': '1200px',
+        'mds': '900px',
       },
       typography: (theme) => ({
         DEFAULT: {
