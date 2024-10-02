@@ -3,12 +3,11 @@ import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
 import MB_Button from "./MB_Button";
 
-export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_keywords, chipsText, selectedChips_text, defaultText, page_title_callback}) {
+export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_keywords, chipsText, selectedChips_text, setUserText, userText, page_title_callback, SendMessageToAI}) {
 
     const containerRef = useRef(null); // Ref for the container
     const [filteredChips, setFilteredChips] = useState(chipsText);
     const [showSuggestions, setShowSuggestions] = useState(false)
-    const [userText, setUserText] = useState("")
     const [showAISupportBox, setShowAISupportBox] = useState(false)
 
     const onChange = (e) => {
@@ -76,7 +75,7 @@ export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_ke
                 <button
                     className="bg-dg-100 px-2 rounded-md"
                     lowercase={true}
-                    onClick = {() => {getTagsFromAI(userText)}}>
+                    onClick = {() => {SendMessageToAI(userText)}}>
                     <Image 
                         className=""
                         src={`/images/chat_icon.png`}
@@ -89,7 +88,7 @@ export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_ke
                 Describe what you want. This feature uses <span className="font-bold text-xs"> generative AI </span> to find content.
             </div>
 
-            <div className={`${showSuggestions  ? '' : 'invisible'} Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md`}>
+            {filteredChips && <div className={`${showSuggestions  ? '' : 'invisible'} Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md`}>
                 <ul>
                     {!showAISupportBox && filteredChips.map((text, index) => (
                         <div className={`flex pl-3 py-1.5 cursor-pointer hover:bg-neutral-200 ${shouldGreyout(text) ? "cursor-default text-neutral-300" : ''}`} onClick={() => {add_to_keywords(text); page_title_callback("Custom search")}}>
@@ -107,7 +106,7 @@ export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_ke
                     )}
 
                 </ul>
-            </div>
+            </div>}
 
         </div>
     )

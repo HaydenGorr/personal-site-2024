@@ -13,6 +13,7 @@ import assert from 'assert';
 import MB_Button from '../components/MB_Button';
 import Link from 'next/link';
 import NewClosableChip from '../components/new_closable_chip'
+import AiResponseChatbox from '../components/ai_response_chatbox'
 
 export async function getStaticProps() {
   try {
@@ -62,9 +63,8 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
   const [matchAnyChip, setMatchAnyChip] = useState(true);
   const [aiSearching, setAISearching] = useState(false)
   const [pageTitle, setPageTitle] = useState("ALL ENTRIES")
-  const [isSticky, setIsSticky] = useState(false);
-  const stickyRef = useRef(null);
-  const sentinelRef = useRef(null);
+  const [userText, setUserText] = useState("")
+  const [responseText, setResponseText] = useState("");
 
   const add_to_keywords = (inText) => {
 
@@ -129,26 +129,26 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
   };
 
+  const SendMessageToAI = async () => {
+	if(userText == "") {
+		setDisplayError(true)
+		return
+	};
+
+	// const userMessage = inputValue
+	// const messagesBackup = chatMessages
+
+	// // Store and clear use input
+	// setChatMessages([...chatMessages, {incoming: false, text: userMessage}])
+	// setInputValue('')
+
+	// Get response from ai
+	const answer = await get_response({ai: "CQ", message: userText})
+	setResponseText(answer)
+}
+
   useEffect(() => {
     setBackgroundColour("WhiteBackgroundColour")
-
-	const observer = new IntersectionObserver(
-		([entry]) => {
-		  // When the element is not fully visible, it's sticky
-		  setIsSticky(entry.intersectionRatio < 1);
-		},
-		{ threshold: [1] } // Trigger when 100% of the element is visible
-	  );
-  
-	  if (sentinelRef.current) {
-		observer.observe(sentinelRef.current);
-	  }
-	
-	  return () => {
-		if (sentinelRef.current) {
-		  observer.unobserve(sentinelRef.current);
-		}
-	  };
   }, []); 
 
 
@@ -169,18 +169,24 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 			<h1 className='mt-20 text-center font-extrabold text-5xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
 
 			<div className='w-full h-full flex flex-col items-center mb-36 justify-center'>
+				
+				{responseText != "" && <AiResponseChatbox textToDisplay={responseText}/>}
+
 				{/** THE TEXT INPUT COMPONENT WITH THE BUTTON COMPONENTS */}
 				<div className='w-full max-w-prose'>
-				<div className="mt-6 mb-3 h-10 mx-4 ">
-					<SuggestionTextBox 
-					aiSearching={aiSearching}
-					getTagsFromAI={getTagsFromAI}
-					add_to_keywords={add_to_keywords}
-					chipsText={unique_chips}
-					selectedChips_text={selectedKeywords}
-					page_title_callback={(x) => setPageTitle(x)}
-					defaultText={""}/>
-				</div>			
+					<div className="mt-6 mb-3 h-10 mx-4 ">
+						<SuggestionTextBox 
+						aiSearching={aiSearching}
+						getTagsFromAI={getTagsFromAI}
+						add_to_keywords={add_to_keywords}
+						chipsText={unique_chips}
+						selectedChips_text={selectedKeywords}
+						page_title_callback={(x) => setPageTitle(x)}
+						defaultText={""}
+						SendMessageToAI={SendMessageToAI}
+						userText={userText}
+						setUserText={setUserText}/>
+					</div>			
 				</div>
 			</div>
 
@@ -189,16 +195,13 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
     {/** SECTION 2 */}
 	<div className='relative flex flex-col -mt-4'>
 
-	{/** This is needed to make the transformations of the chips when they become sticky */}
-	<div ref={sentinelRef}></div>
-
     {selectedKeywords.length > 0 && (
-      <div className={`z-20 sticky top-1 z-50 -mt-2 w-full ${isSticky ? 'scale-75' : 'scale-100'}`} ref={stickyRef}>
-        <div className={`flex space-x-4 ${isSticky ? 'justify-start' : 'justify-center'}`}>
+      <div className={`z-20 sticky top-1 z-50 -mt-2 w-full`}>
+        <div className={`flex space-x-4`}>
           {selectedKeywords.map((item, index) => (
             <NewClosableChip
               key={index}
-              chip_text={!isSticky ? item : ""}
+              chip_text={item}
               remove_keywords={remove_keywords}
               svg_path={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${item.toLowerCase()}.svg`}
             >
