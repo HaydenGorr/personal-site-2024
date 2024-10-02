@@ -237,12 +237,13 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
             {filteredPosts.map((item, index) => (
               <div className='m-3 flex flex-col items-center'>
                   <NewContainer
+                    incolour={"dpi"}
                     home_post_obj={item}
                     add_keywords_to_filter={add_to_keywords}
                     remove_keyword_from_filer={remove_keywords}
                     selectedKeywords={selectedKeywords}/>
 
-                <div className={`flex flex-wrap mt-2 space-x-3 overflow-scroll w-full`}>
+                {/* <div className={`flex flex-wrap mt-2 space-x-3 overflow-scroll w-full`}>
                 {item.chips.map((chip_text, index) => (
                     <div className={`mt-2`}>
                         <div className={`font-Josefin text-sm flex rounded-3xl border-4 border-secondary px-4 py-1 ${selectedKeywords.includes(chip_text) ? 'shadow-strong-drop bg-secondary2 text-secondary' : 'shadow-inner-strong bg-secondary'}`}>
@@ -251,7 +252,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
                         </div>
                     </div>
                 ))}
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
