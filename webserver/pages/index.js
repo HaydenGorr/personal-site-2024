@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Layout from '../components/layout';
 import Container from '../components/container';
 import NewContainer from '../components/newContainer';
-import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
+import { useState, useEffect, useRef } from 'react'; // Import useState and useEffect if not already imported
 import ClosableChip from '../components/closable_chip';
 import SuggestionTextBox from '../components/suggestion_text_box';
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
@@ -62,6 +62,9 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
   const [matchAnyChip, setMatchAnyChip] = useState(true);
   const [aiSearching, setAISearching] = useState(false)
   const [pageTitle, setPageTitle] = useState("ALL ENTRIES")
+  const [isSticky, setIsSticky] = useState(false);
+  const stickyRef = useRef(null);
+  const sentinelRef = useRef(null);
 
   const add_to_keywords = (inText) => {
 
@@ -128,6 +131,24 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
   useEffect(() => {
     setBackgroundColour("WhiteBackgroundColour")
+
+	const observer = new IntersectionObserver(
+		([entry]) => {
+		  // When the element is not fully visible, it's sticky
+		  setIsSticky(entry.intersectionRatio < 1);
+		},
+		{ threshold: [1] } // Trigger when 100% of the element is visible
+	  );
+  
+	  if (sentinelRef.current) {
+		observer.observe(sentinelRef.current);
+	  }
+	
+	  return () => {
+		if (sentinelRef.current) {
+		  observer.unobserve(sentinelRef.current);
+		}
+	  };
   }, []); 
 
 
@@ -142,92 +163,15 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
       </Head>
       <section className='flex flex-col'>
 
-
-        {/* <h1 className='mt-5 text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1> */}
-
-        {/* <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" /> */}
-
-        {/* {selectedKeywords.length == 0 && <div className='flex space-x-4 justify-center mx-3'>
-
-          <div
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Creative Writing", "Short Story"]);
-              setPageTitle("Technical Work")
-              }}>
-            Technical Work
-          </div>
-
-          <Link     
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/writing-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            href={"/portfolio"}>
-            Curated Writing Portfolio
-          </Link>
-
-          <div 
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/photos-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Photography", "Gallery"]);
-              setPageTitle("Photo Galleries")
-            }}>
-            Photo Galleries
-          </div>
-          
-        </div>} */}
-
 		{/** SECTION 1 */}
 		<div className='h-screen w-full flex flex-col items-center overflow-visible max-h-screen'>
 
 			<h1 className='mt-20 text-center font-extrabold text-5xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
 
-			{/* {selectedKeywords.length > 0 && ( <div className="mx-3">
-				<div className="h-px prose mx-auto" />
-				<div className="flex flex-wrap justify-center">
-				{selectedKeywords.map((item, index) => (
-					<div className="mr-3 mt-3"> 
-					<ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} svg_path={"images/svgs/cancel.svg"} />
-					</div>
-				))}
-				</div>
-				<div className='flex justify-center items-center mt-6'>
-				<div className='m3-1'>
-					{"match"}
-				</div>
-
-				<div className='mx-1 w-fit over'>
-					<ToggleButton text={"any"} lowercase="true" btnAction={() => {setMatchAnyChip(true)}} toggled={matchAnyChip==true}/>
-				</div>
-				<div className='mx-1'>
-					<ToggleButton text={"all"} lowercase="true" btnAction={() => {setMatchAnyChip(false)}} toggled={matchAnyChip==false}/>
-				</div>
-
-				<div className='ml-1'>
-					{"of the tags"}
-				</div>
-				
-				</div>
-			</div>
-			)} */}
-
 			<div className='w-full h-full flex flex-col items-center mb-36 justify-center'>
 				{/** THE TEXT INPUT COMPONENT WITH THE BUTTON COMPONENTS */}
 				<div className='w-full max-w-prose'>
-				<div className="mt-6 mb-3 h-10 mx-4">
+				<div className="mt-6 mb-3 h-10 mx-4 ">
 					<SuggestionTextBox 
 					aiSearching={aiSearching}
 					getTagsFromAI={getTagsFromAI}
@@ -245,22 +189,29 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
     {/** SECTION 2 */}
 	<div className='relative flex flex-col -mt-4'>
 
+	{/** This is needed to make the transformations of the chips when they become sticky */}
+	<div ref={sentinelRef}></div>
 
     {selectedKeywords.length > 0 && (
-      <div className="sticky top-2 z-50 -mt-2 w-full">
-        <div className="flex space-x-4 justify-center ">
+      <div className={`z-20 sticky top-1 z-50 -mt-2 w-full ${isSticky ? 'scale-75' : 'scale-100'}`} ref={stickyRef}>
+        <div className={`flex space-x-4 ${isSticky ? 'justify-start' : 'justify-center'}`}>
           {selectedKeywords.map((item, index) => (
             <NewClosableChip
               key={index}
-              chip_text={item}
+              chip_text={!isSticky ? item : ""}
               remove_keywords={remove_keywords}
-              svg_path={"images/svgs/cancel.svg"}
-            />
+              svg_path={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${item.toLowerCase()}.svg`}
+            >
+				<Image 
+				className="ml-2"
+				src={"images/svgs/cancel.svg"}
+				width={20}
+				height={20}/>
+			</NewClosableChip>
           ))}
         </div>
       </div>
     )}
-
 
     {/** THE ARTICLE CONTAINERS */}
     <div className={`flex w-full justify-center ${ selectedKeywords.length > 0 ? '-translate-y-8' : '-translate-y-7' } mt-10`}>
