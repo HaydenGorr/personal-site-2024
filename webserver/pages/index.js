@@ -92,7 +92,8 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
   }
 
   const getTagsFromAI = async (userMSG) => {
-    if (!userMSG.startsWith('/')) return
+
+    // if (!userMSG.startsWith('/')) return
 
     setAISearching(true)
 
@@ -115,7 +116,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
   
       setSelectedKeywords(matched_tags);
-      setMatchAnyChip(jp.filter_type == "any")
+    //   setMatchAnyChip(jp.filter_type == "any")
     }
     catch (e) {
       console.log(e)
@@ -229,7 +230,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 				<div className="mt-6 mb-3 h-10 mx-4">
 					<SuggestionTextBox 
 					aiSearching={aiSearching}
-					filter_keywords={getTagsFromAI}
+					getTagsFromAI={getTagsFromAI}
 					add_to_keywords={add_to_keywords}
 					chipsText={unique_chips}
 					selectedChips_text={selectedKeywords}

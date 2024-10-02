@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
 import MB_Button from "./MB_Button";
 
-export default function SuggestionTextBox({aiSearching, filter_keywords, add_to_keywords, chipsText, selectedChips_text, defaultText, page_title_callback}) {
+export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_keywords, chipsText, selectedChips_text, defaultText, page_title_callback}) {
 
     const containerRef = useRef(null); // Ref for the container
     const [filteredChips, setFilteredChips] = useState(chipsText);
@@ -65,7 +65,7 @@ export default function SuggestionTextBox({aiSearching, filter_keywords, add_to_
                 <button
                     className="bg-dg-100 px-2 rounded-md"
                     lowercase={true}
-                    btnAction = {() => {filter_keywords(userText)}}>
+                    onClick = {() => {getTagsFromAI(userText)}}>
                     <Image 
                         className=""
                         src={`/images/search_icon.png`}
@@ -76,7 +76,7 @@ export default function SuggestionTextBox({aiSearching, filter_keywords, add_to_
                 <button
                     className="bg-dg-100 px-2 rounded-md"
                     lowercase={true}
-                    btnAction = {() => {filter_keywords(userText)}}>
+                    onClick = {() => {getTagsFromAI(userText)}}>
                     <Image 
                         className=""
                         src={`/images/chat_icon.png`}
