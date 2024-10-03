@@ -75,6 +75,19 @@ module.exports = {
         'dr-900': '#7E291E',
         'dr-950': '#45110A',
       },
+      backgroundSize: {
+        'pixelated': '6.25% 6.25%',
+      },
+      keyframes: {
+        'move-bg': {
+          '0%': { 'background-position': '0 0' },
+          '100%': { 'background-position': '0 100%' },
+        },
+      },
+      animation: {
+        'gradient-move': 'move-gradient 15s ease infinite',
+        'move-bg': 'move-bg 10s linear infinite',
+      },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
         serif: ['Lora', 'serif'],
