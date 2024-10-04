@@ -8,6 +8,7 @@ import { get_response } from '../utils/ai_talk';
 import assert from 'assert';
 import NewClosableChip from '../components/new_closable_chip'
 import AiResponseChatbox from '../components/ai_response_chatbox'
+import BottomTextBox from '../components/bottom_text_box';
 
 export async function getStaticProps() {
   try {
@@ -60,6 +61,9 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
   const [userText, setUserText] = useState("")
   const [responseText, setResponseText] = useState("");
   const [aiResponseLoading, setAiResponseLoading] = useState("");
+
+  const [bottomSearchBox, setBottomSearchBox] = useState(false);
+  const bottomSearchBoxRef = useRef(null);
 
 	const add_to_keywords = (inText) => {
 
@@ -139,6 +143,25 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
 	useEffect(() => {
 		setBackgroundColour("DarkGreyBackgroundColour")
+
+		const bottomSearchBoxObserver = new IntersectionObserver(
+			([entry]) => {
+				setBottomSearchBox(entry.isIntersecting)
+			},
+			{ threshold: 0 }
+		);
+
+		if (bottomSearchBoxRef.current) {
+			bottomSearchBoxObserver.observe(bottomSearchBoxRef.current);
+		}
+
+		return () => {
+			if (bottomSearchBoxRef.current) {
+				bottomSearchBoxObserver.unobserve(bottomSearchBoxRef.current);
+			}
+		};
+
+		
 	}, []); 
 
 
@@ -157,7 +180,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 			<div className={`h-screen w-full flex flex-col items-center overflow-visible max-h-screen px-4`}>
 
 				<div className='mt-20 text-center '>
-					<h1 className='font-extrabold text-5xl text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "My Blog" }</h1>
+					<h1 className='font-extrabold text-5xl text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "Hayden's Portfolio" }</h1>
 					<p className='font-normal text-sm mt-4 max-w-96 text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "This site contains reviews of code projects, short stories, non-fiction articles and more, all created by me, Hayden" }</p>
 				</div>
 
@@ -167,7 +190,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
 					{/** THE TEXT INPUT COMPONENT WITH THE BUTTON COMPONENTS */}
 					<div className='w-full max-w-prose'>
-						<div className="mt-6 mb-3 h-10 ">
+						<div className="mt-6 mb-3 h-10 " ref={bottomSearchBoxRef}>
 							<SuggestionTextBox 
 							aiSearching={aiSearching}
 							getTagsFromAI={getTagsFromAI}
@@ -179,56 +202,75 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 							SendMessageToAI={SendMessageToAI}
 							userText={userText}
 							setUserText={setUserText}/>
-						</div>			
+						</div>	
 					</div>
-			</div>
+					
+					<div className='relative z-50 flex justify-center'>
+						<div className={`max-w-prose fixed mb-8 bottom-0 w-full px-4 transition-all duration-500 ${!bottomSearchBox ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-32'}`}>
+						<BottomTextBox 
+							aiSearching={aiSearching}
+							getTagsFromAI={getTagsFromAI}
+							add_to_keywords={add_to_keywords}
+							chipsText={unique_chips}
+							selectedChips_text={selectedKeywords}
+							page_title_callback={(x) => setPageTitle(x)}
+							defaultText={""}
+							SendMessageToAI={SendMessageToAI}
+							userText={userText}
+							setUserText={setUserText}
+						/>
+						</div>
+					</div>
+
+
+				</div>
 
 			</div>
 
 			{/** SECTION 2 */}
-		<div className='relative flex flex-col -mt-8'>
+			<div className='relative flex flex-col -translate-y-24'>
 
-			<div className='w-full flex flex-col items-center'>
-				<p className='text-xs text-neutral-100 opacity-95'>psst... content down here</p>
-				<div className='h-2 w-2 rounded-full bg-dg-400 mt-4'/>
+				<div className='w-full flex flex-col items-center mb-2'>
+					<p className='text-xs text-neutral-100 opacity-95'>psst... content down here</p>
+					<div className='h-2 w-2 rounded-full bg-dg-400 mt-4'/>
+				</div>
+
+				{/* {selectedKeywords.length > 0 && (
+					<div className={`z-20 sticky top-1 z-50 -mt-2 w-full`}>
+						<div className={`flex space-x-4`}>
+						{selectedKeywords.map((item, index) => (
+							<NewClosableChip
+							key={index}
+							chip_text={item}
+							remove_keywords={remove_keywords}
+							svg_path={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${item.toLowerCase()}.svg`}
+							>
+								<Image 
+								className="ml-2"
+								src={"images/svgs/cancel.svg"}
+								width={20}
+								height={20}/>
+							</NewClosableChip>
+						))}
+						</div>
+					</div>
+				)} */}
+
+				{/** THE ARTICLE CONTAINERS */}
+				<div className={`flex w-full justify-center`}>
+					<div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4 max-w-fit">
+						{filteredPosts.map((item, index) => (
+						<div className='m-3 flex flex-col items-center'>
+							<NewContainer
+							incolour={"dpi"}
+							home_post_obj={item}
+							add_keywords_to_filter={add_to_keywords}
+							remove_keyword_from_filer={remove_keywords}
+							selectedKeywords={selectedKeywords}/>
+						</div>
+						))}
+					</div>
 			</div>
-
-			{selectedKeywords.length > 0 && (
-				<div className={`z-20 sticky top-1 z-50 -mt-2 w-full`}>
-					<div className={`flex space-x-4`}>
-					{selectedKeywords.map((item, index) => (
-						<NewClosableChip
-						key={index}
-						chip_text={item}
-						remove_keywords={remove_keywords}
-						svg_path={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${item.toLowerCase()}.svg`}
-						>
-							<Image 
-							className="ml-2"
-							src={"images/svgs/cancel.svg"}
-							width={20}
-							height={20}/>
-						</NewClosableChip>
-					))}
-					</div>
-				</div>
-			)}
-
-			{/** THE ARTICLE CONTAINERS */}
-			<div className={`flex w-full justify-center ${ selectedKeywords.length > 0 ? '-translate-y-8' : '-translate-y-7' } mt-10`}>
-				<div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4 max-w-fit">
-					{filteredPosts.map((item, index) => (
-					<div className='m-3 flex flex-col items-center'>
-						<NewContainer
-						incolour={"dpi"}
-						home_post_obj={item}
-						add_keywords_to_filter={add_to_keywords}
-						remove_keyword_from_filer={remove_keywords}
-						selectedKeywords={selectedKeywords}/>
-					</div>
-					))}
-				</div>
-		</div>
 			
 			{/** IF THERE ARE NO ARTICLES THEN THIS GIF PLAYS */}
 			{filteredPosts.length == 0 && 

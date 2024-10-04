@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import '../styles/global.css';
 import { useEffect, useState } from 'react';
+import Blob from '../components/blob'
 
 export default function MyApp({ Component, pageProps }) {
 
@@ -28,6 +29,7 @@ export default function MyApp({ Component, pageProps }) {
           <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet"></link>
         </Head>
         <div className={`${backgroundColour} h-full min-h-screen transition-colors ease-in-out duration-500 font-Josefin`}>
+          {/* <Blob /> */} {/** Thought wrongly that this would be a cool background effect */}
           <Component {...pageProps} setBackgroundColour={setBackgroundColour} backgroundColour={backgroundColour}/>
         </div>
       </>

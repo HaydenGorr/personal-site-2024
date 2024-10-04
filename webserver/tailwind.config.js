@@ -75,6 +75,9 @@ module.exports = {
         'dr-900': '#7E291E',
         'dr-950': '#45110A',
       },
+      transitionDuration: {
+        '3000': '3000ms'
+      },
       backgroundSize: {
         'pixelated': '6.25% 6.25%',
       },
