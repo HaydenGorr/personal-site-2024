@@ -2,8 +2,9 @@ import InputBox from "./inputBox"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
 import MB_Button from "./MB_Button";
+import { ThreeDots  } from 'react-loading-icons'
 
-export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_keywords, chipsText, selectedChips_text, setUserText, userText, page_title_callback, SendMessageToAI}) {
+export default function SuggestionTextBox({messageQueryingAI, tagSearchingAI, getTagsFromAI, add_to_keywords, chipsText, selectedChips_text, setUserText, userText, page_title_callback, SendMessageToAI, topChildren, bottomChildren}) {
 
     const containerRef = useRef(null); // Ref for the container
     const [filteredChips, setFilteredChips] = useState(chipsText);
@@ -50,6 +51,7 @@ export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_ke
 
     return (
         <div className="flex flex-col" ref={containerRef}>
+            {topChildren}
             <div className="h-9 flex space-x-3">
                 <input
                     className={`bg-dg-600 text-dg-50 h-full w-full px-3 focus:outline-none rounded-md shadow-strong-drop placeholder-dg-300 placeholder-italic placeholder-opacity-75`}
@@ -60,27 +62,30 @@ export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_ke
                     placeholder={"Type here"}
                     onKeyPress={handleKeyPress}
                 />    
-
                 <button
-                    className="bg-dg-100 px-2 rounded-md"
+                    className={`px-2 rounded-md w-9 ${ tagSearchingAI ? 'bg-dy-100' : 'bg-dg-100'}`}
                     lowercase={true}
                     onClick = {() => {getTagsFromAI(userText)}}>
-                    <Image 
+                    {!tagSearchingAI && <Image 
                         className=""
                         src={`/images/search_icon.png`}
                         width={25}
-                        height={25}/>
+                        height={25}/>}
+                    { tagSearchingAI && <ThreeDots style={{width:"1rem"}} fill="#D9A227" speed={.75}/>}
+
                 </button>
 
                 <button
-                    className="bg-dg-100 px-2 rounded-md"
+                    className={`px-2 rounded-md w-9 ${ tagSearchingAI ? 'bg-dy-100' : 'bg-dg-100'}`}
                     lowercase={true}
                     onClick = {() => {SendMessageToAI(userText)}}>
-                    <Image 
-                        className=""
+                    { !messageQueryingAI && <Image 
+                        className="mt-0.5"
                         src={`/images/chat_icon.png`}
                         width={25}
-                        height={25}/>
+                        height={25}/>}
+
+                    { messageQueryingAI && <ThreeDots style={{width:"1rem"}} fill="#D9A227" speed={.75}/>}
                 </button>
             </div>
 
@@ -88,26 +93,7 @@ export default function SuggestionTextBox({aiSearching, getTagsFromAI, add_to_ke
                 Describe what you want. This feature uses <span className="font-bold text-xs"> generative AI </span> to find content.
             </div>
 
-            {<div className={`${showSuggestions  ? '' : 'invisible'} Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md`}>
-                <ul>
-                    {!showAISupportBox && filteredChips.map((text, index) => (
-                        <div className={`flex pl-3 py-1.5 cursor-pointer hover:bg-neutral-200 ${shouldGreyout(text) ? "cursor-default text-neutral-300" : ''}`} onClick={() => {add_to_keywords(text); page_title_callback("Custom search")}}>
-                            <div className={`${shouldGreyout(text) ? "opacity-25" : ""} flex`}> {/* Adjust the opacity value as needed */}
-                                <Image className="mr-3" src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/TAG_SVGS/${text.toLowerCase()}.svg`} width={25} height={25}/>
-                            </div>
-                            <li key={index}>{text}</li>
-                        </div>
-                    ))}
-
-                    {showAISupportBox && (
-                        <div className={`text-center p-3 font-medium ${aiSearching ? 'animate-pulse' : ''}`}>
-                            {aiSearching ? "searching" : `example: 'major ios projects'`}
-                        </div>
-                    )}
-
-                </ul>
-            </div>}
-
+            {bottomChildren}
         </div>
     )
 }

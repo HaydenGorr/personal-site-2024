@@ -56,11 +56,12 @@ export async function getStaticProps() {
 export default function Home({home_posts, unique_chips, setBackgroundColour, backgroundColour}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [matchAnyChip, setMatchAnyChip] = useState(true);
-  const [aiSearching, setAISearching] = useState(false)
+  const [tagSearchingAI, setTagSearchingAI] = useState(false)
+  const [messageQueryingAI, setMessageQueryingAI] = useState(false)
   const [pageTitle, setPageTitle] = useState("ALL ENTRIES")
   const [userText, setUserText] = useState("")
   const [responseText, setResponseText] = useState("");
-  const [aiResponseLoading, setAiResponseLoading] = useState("");
+  const [userTextBackup, setUserTextBackup] = useState(userText)
 
   const [bottomSearchBox, setBottomSearchBox] = useState(false);
   const bottomSearchBoxRef = useRef(null);
@@ -97,7 +98,8 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
 		// if (!userMSG.startsWith('/')) return
 
-		setAISearching(true)
+		setTagSearchingAI(true)
+		setUserText("")
 
 		const response = await get_response({ ai: "TF", message: userMSG });
 
@@ -124,7 +126,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 		console.log(e)
 		}
 
-		setAISearching(false)
+		setTagSearchingAI(false)
 
 	};
 
@@ -134,12 +136,19 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 		return
 	};
 
-	setAiResponseLoading("true")
+	setMessageQueryingAI(true)
+	setUserText("")
 
-		// Get response from ai
-		const answer = await get_response({ai: "CQ", message: userText})
-		setResponseText(answer)
+	// Get response from ai
+	const answer = await get_response({ai: "CQ", message: userText})
+	setResponseText(answer)
+
+	setMessageQueryingAI(false)
 	};
+
+	useEffect(() => {
+        if (userText!="") setUserTextBackup(userText)
+    }, [userText]);
 
 	useEffect(() => {
 		setBackgroundColour("DarkGreyBackgroundColour")
@@ -186,13 +195,14 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
 				<div className='w-full h-full flex flex-col items-center mb-36 justify-center'>
 					
-					<AiResponseChatbox textToDisplay={responseText} loading={"aiResponseLoading"}/>
+					<AiResponseChatbox largeBox={true} textToDisplay={responseText} loading={"aiResponseLoading"}/>
 
 					{/** THE TEXT INPUT COMPONENT WITH THE BUTTON COMPONENTS */}
 					<div className='w-full max-w-prose'>
 						<div className="mt-6 mb-3 h-10 " ref={bottomSearchBoxRef}>
 							<SuggestionTextBox 
-							aiSearching={aiSearching}
+							messageQueryingAI={messageQueryingAI}
+							tagSearchingAI={tagSearchingAI}
 							getTagsFromAI={getTagsFromAI}
 							add_to_keywords={add_to_keywords}
 							chipsText={unique_chips}
@@ -201,24 +211,27 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 							defaultText={""}
 							SendMessageToAI={SendMessageToAI}
 							userText={userText}
-							setUserText={setUserText}/>
+							setUserText={setUserText} />
 						</div>	
 					</div>
 					
 					<div className='relative z-50 flex justify-center'>
 						<div className={`max-w-prose fixed mb-8 bottom-0 w-full px-4 transition-all duration-500 ${!bottomSearchBox ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-32'}`}>
-						<BottomTextBox 
-							aiSearching={aiSearching}
-							getTagsFromAI={getTagsFromAI}
-							add_to_keywords={add_to_keywords}
-							chipsText={unique_chips}
-							selectedChips_text={selectedKeywords}
-							page_title_callback={(x) => setPageTitle(x)}
-							defaultText={""}
-							SendMessageToAI={SendMessageToAI}
-							userText={userText}
-							setUserText={setUserText}
-						/>
+							{responseText && <div className='mb-4'>
+								<AiResponseChatbox textToDisplay={responseText} loading={"aiResponseLoading"}/>
+							</div>}
+							<SuggestionTextBox 
+								messageQueryingAI={messageQueryingAI}
+								tagSearchingAI={tagSearchingAI}
+								getTagsFromAI={getTagsFromAI}
+								add_to_keywords={add_to_keywords}
+								chipsText={unique_chips}
+								selectedChips_text={selectedKeywords}
+								page_title_callback={(x) => setPageTitle(x)}
+								defaultText={""}
+								SendMessageToAI={SendMessageToAI}
+								userText={userText}
+								setUserText={setUserText}/>
 						</div>
 					</div>
 

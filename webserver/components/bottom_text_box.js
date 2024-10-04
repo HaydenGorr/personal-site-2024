@@ -52,7 +52,7 @@ export default function BottomTextBox({aiSearching, getTagsFromAI, add_to_keywor
         <div className="flex flex-col" ref={containerRef}>
 
             
-            {<div className={`${showSuggestions  ? '' : 'invisible'} Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md`}>
+            {/* {<div className={`${showSuggestions  ? '' : 'invisible'} Neo-Brutal-White z-10 mt-1 max-h-96 overflow-y-auto h-auto overflow-x-hidden shadow-MB border-2 rounded-md`}>
                 <ul>
                     {!showAISupportBox && filteredChips.map((text, index) => (
                         <div className={`flex pl-3 py-1.5 cursor-pointer hover:bg-neutral-200 ${shouldGreyout(text) ? "cursor-default text-neutral-300" : ''}`} onClick={() => {add_to_keywords(text); page_title_callback("Custom search")}}>
@@ -70,7 +70,7 @@ export default function BottomTextBox({aiSearching, getTagsFromAI, add_to_keywor
                     )}
 
                 </ul>
-            </div>}
+            </div>} */}
 
             <div className="h-9 flex space-x-3">
                 <input

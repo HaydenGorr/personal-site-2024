@@ -147,7 +147,7 @@ const colourClasses = {
       bgRadialGradient: 'bg-dpi-radial-gradient',
       textColor700: 'text-dpi-700',
       bgColor200: 'bg-dpi-200',
-      bgColor400: 'bg-dpi-400',
+      bgColor400: 'bg-dpi-700', // Made this 700, because 400 was too light for the text in my testing
       bgColor100: 'bg-dpi-100',
     },
   };
