@@ -54,7 +54,7 @@ export default function AiChat(  {
             set_ai_response_error_message(result.data)
         }
         else {
-            callback_add_chips_to_filter(result.data)
+            callback_add_chips_to_filter(result.data["viable_tags"])
         }
     }
 

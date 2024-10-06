@@ -50,6 +50,8 @@ export const send_tag_query_to_ai = async (user_message, querying_ai_callback=()
         return {error: true, data: "That's strange - Claude gave us a bunch of gibberish"}
     }
 
+    console.log(parsed)
+
     return {error: false, data: parsed}
     
 };

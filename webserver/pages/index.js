@@ -89,10 +89,10 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
 	const filter_posts_out = () => {
 		if (matchAnyChip) {
-		return home_posts.filter(post => selectedKeywords.some(keyword => post.chips.includes(keyword)))
+			return home_posts.filter(post => selectedKeywords.some(keyword => post.chips.includes(keyword)))
 		}
 		else {
-		return home_posts.filter(post => selectedKeywords.every(keyword => post.chips.includes(keyword)))
+			return home_posts.filter(post => selectedKeywords.every(keyword => post.chips.includes(keyword)))
 		}
 	}
 
