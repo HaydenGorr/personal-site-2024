@@ -5,7 +5,7 @@ import Blob from '../components/blob'
 
 export default function MyApp({ Component, pageProps }) {
 
-  const [backgroundColour, setBackgroundColour] = useState('WhiteBackgroundColour');
+  const [backgroundColour, setBackgroundColour] = useState('DarkGreyBackgroundColour');
 
   useEffect(() => {
     const handleTabClose = (event) => {

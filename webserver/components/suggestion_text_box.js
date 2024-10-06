@@ -4,50 +4,18 @@ import Image from "next/image";
 import MB_Button from "./MB_Button";
 import { ThreeDots  } from 'react-loading-icons'
 
-export default function SuggestionTextBox({messageQueryingAI, tagSearchingAI, getTagsFromAI, add_to_keywords, chipsText, selectedChips_text, setUserText, userText, page_title_callback, SendMessageToAI, topChildren, bottomChildren}) {
+export default function SuggestionTextBox({messageQueryingAI, tagSearchingAI, getTagsFromAI, chipsText, setUserText, userText, SendMessageToAI, topChildren, bottomChildren}) {
 
     const containerRef = useRef(null); // Ref for the container
-    const [filteredChips, setFilteredChips] = useState(chipsText);
-    const [showSuggestions, setShowSuggestions] = useState(false)
-    const [showAISupportBox, setShowAISupportBox] = useState(false)
 
     const onChange = (e) => {
         const usermsg = e.target.value
 
-        if (usermsg.startsWith("/")) {
-            setShowAISupportBox(true)
-        }
-        else {
-            setShowAISupportBox(false)
-        }
-
         setUserText(usermsg);
 
-        const newFilter = chipsText.filter( chipText => chipText.toLowerCase().includes(usermsg.toLowerCase()))
-        setFilteredChips(newFilter)
+        // const newFilter = chipsText.filter( chipText => chipText.toLowerCase().includes(usermsg.toLowerCase()))
+        // setFilteredChips(newFilter)
     }
-
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            filter_keywords(userText);
-        }
-    };
-
-    const shouldGreyout = (text) => {
-        return selectedChips_text.includes(text)
-    }
-    
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (containerRef.current && !containerRef.current.contains(event.target)) {
-                setShowSuggestions(false);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [containerRef]);
 
     return (
         <div className="flex flex-col" ref={containerRef}>
@@ -58,12 +26,10 @@ export default function SuggestionTextBox({messageQueryingAI, tagSearchingAI, ge
                     type="text"
                     value={userText} // Bind the input value to the component's state
                     onChange={onChange} // Update the state every time the input changes
-                    onFocus={() => setShowSuggestions(true)}
                     placeholder={"Type here"}
-                    onKeyPress={handleKeyPress}
                 />    
                 <button
-                    className={`px-2 rounded-md w-9 ${ tagSearchingAI ? 'bg-dy-100' : 'bg-dg-100'}`}
+                    className={`px-2 rounded-md w-9 ${ tagSearchingAI ? 'bg-dy-200' : 'bg-dg-200'}`}
                     lowercase={true}
                     onClick = {() => {getTagsFromAI(userText)}}>
                     {!tagSearchingAI && <Image 
@@ -71,12 +37,12 @@ export default function SuggestionTextBox({messageQueryingAI, tagSearchingAI, ge
                         src={`/images/search_icon.png`}
                         width={25}
                         height={25}/>}
-                    { tagSearchingAI && <ThreeDots style={{width:"1rem"}} fill="#D9A227" speed={.75}/>}
+                    { tagSearchingAI && <ThreeDots style={{width:"1rem"}} fill="#C07F1F" speed={.75}/>}
 
                 </button>
 
                 <button
-                    className={`px-2 rounded-md w-9 ${ tagSearchingAI ? 'bg-dy-100' : 'bg-dg-100'}`}
+                    className={`px-2 rounded-md w-9 ${ messageQueryingAI ? 'bg-dy-200' : 'bg-dg-200'}`}
                     lowercase={true}
                     onClick = {() => {SendMessageToAI(userText)}}>
                     { !messageQueryingAI && <Image 
@@ -85,7 +51,7 @@ export default function SuggestionTextBox({messageQueryingAI, tagSearchingAI, ge
                         width={25}
                         height={25}/>}
 
-                    { messageQueryingAI && <ThreeDots style={{width:"1rem"}} fill="#D9A227" speed={.75}/>}
+                    { messageQueryingAI && <ThreeDots style={{width:"1rem"}} fill="#C07F1F" speed={.75}/>}
                 </button>
             </div>
 
