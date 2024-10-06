@@ -10,6 +10,7 @@ import { DayPicker } from 'react-day-picker';
 import ClosableChip from "../closable_chip";
 import SuggestionTextBox from "../suggestion_text_box";
 import { Checkbox } from "@headlessui/react"
+import OldSuggestionTextBox from "../old_suggestion_text_box";
 
 export default function AdminContainer({ home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, all_chips, refreshArticlesCallback={}}) {
 
@@ -161,7 +162,7 @@ export default function AdminContainer({ home_post_obj, btnAction = () => {}, co
                 
                    {in_edit && <div className="w-100%">
                         <div className="mt-6 mb-3 h-10 max-w-prose mx-auto">
-                            <SuggestionTextBox 
+                            <OldSuggestionTextBox 
                                 aiSearching={false}
                                 filter_keywords={() => {}}
                                 add_to_keywords={adjustChips}

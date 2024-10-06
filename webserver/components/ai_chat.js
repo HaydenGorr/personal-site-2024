@@ -6,9 +6,10 @@ import { send_tag_query_to_ai, send_chat_message_to_ai } from "../utils/ai_talk"
 export default function AiChat(  {
     topChild,
     bottomChild,
-    callback_add_chips_to_filter,
+    recursive_filtering,
     all_chips,
-    landing_page_mode=false
+    landing_page_mode=false,
+    set_filter_name
 } ) {
     
     const [user_input_text_backup, set_user_input_text_backup] = useState("") // what the user types into the text input
@@ -54,7 +55,9 @@ export default function AiChat(  {
             set_ai_response_error_message(result.data)
         }
         else {
-            callback_add_chips_to_filter(result.data["viable_tags"])
+            console.log("check", result.data)
+            recursive_filtering(result.data.logical_filter)
+            set_filter_name(result.data.name)
         }
     }
 

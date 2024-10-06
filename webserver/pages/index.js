@@ -64,6 +64,8 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
   const [responseText, setResponseText] = useState("");
   const [userTextBackup, setUserTextBackup] = useState(userText)
   const [minimiseResponseBox, setMinimiseResponseBox] = useState(false)
+  const [filterPosts, setFilterPosts] = useState(home_posts)
+  const [filter_name, set_filter_name] = useState("all content")
 
   const [bottomSearchBox, setBottomSearchBox] = useState(false);
   const bottomSearchBoxRef = useRef(null);
@@ -87,19 +89,48 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 		setSelectedKeywords(selectedKeywords.filter(keyword => keyword !== inText));
 	}
 
-	const filter_posts_out = () => {
-		if (matchAnyChip) {
-			return home_posts.filter(post => selectedKeywords.some(keyword => post.chips.includes(keyword)))
-		}
-		else {
-			return home_posts.filter(post => selectedKeywords.every(keyword => post.chips.includes(keyword)))
-		}
+	const filter_Posts = (filter) => {
+		const qweqwe = recursive_filtering(home_posts, home_posts, filter)
+		console.log("gogogogogogog", qweqwe)
+		setFilterPosts(qweqwe)
 	}
 
 
 	useEffect(() => {
         if (userText!="") setUserTextBackup(userText)
     }, [userText]);
+
+
+	const recursive_filtering = (parent_source, silbing_source, filter, or=false) => {
+		if (filter.length == 0) return
+	
+		const next_item_in_filter = filter[0]
+		
+		// Then it's an OR
+		if (Array.isArray(next_item_in_filter)){
+			let result = recursive_filtering(parent_source, silbing_source, next_item_in_filter, true)
+			return result
+		}
+		// Then it's an AND
+		else if (typeof next_item_in_filter === 'string'){
+			let a1= []
+			a1 = silbing_source.filter(post => post.chips.includes(next_item_in_filter))
+			let result = recursive_filtering(a1, silbing_source, filter.slice(1,filter.length))
+	
+			if (!result) return a1
+	
+			let a2 = []
+			if (or){
+				a2 = a1.filter(item => result.includes(item));
+			}
+			else {
+				a2 = [...new Set([...a1, ...result])];
+			}
+	
+			return a2
+		}
+	
+	}
 
 	useEffect(() => {
 		setBackgroundColour("DarkGreyBackgroundColour")
@@ -125,9 +156,9 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 	}, []); 
 
 
-	// Assuming selectedKeywords is meant to be an array
-	const filteredPosts = selectedKeywords.length > 0
-	? filter_posts_out() : home_posts;
+	// // Assuming selectedKeywords is meant to be an array
+	// const filteredPosts = selectedKeywords.length > 0
+	// ? filter_posts_out() : home_posts;
 
 	return (
 		<Layout backgroundColour={backgroundColour}>
@@ -140,15 +171,16 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 			<div className={`h-screen w-full flex flex-col items-center overflow-visible max-h-screen px-4 pb-32`}>
 
 				<div className='md:mt-20 mt-8 text-center mx-8 flex flex-col items-center'>
-					<h1 className='font-extrabold text-5xl text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "Hayden's Portfolio" }</h1>
+					<h1 className='font-extrabold text-5xl text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : filter_name }</h1>
 					<p className='font-normal text-sm my-4 max-w-96 text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "This site contains reviews of code projects, short stories, non-fiction articles and more, all created by me, Hayden" }</p>
 				</div>
 
 				<div className='flex justify-center items-end h-full w-full' ref={bottomSearchBoxRef}>
 					<div className={bottomSearchBox ? 'max-w-prose w-full flex items-end' : 'px-4 max-w-prose w-full z-50 fixed -bottom-60 transition-all duration-500 opacity-100 -translate-y-60 mb-4'}>
 						<AiChat
+							set_filter_name={set_filter_name}
 							landing_page_mode={bottomSearchBox}
-							callback_add_chips_to_filter={add_chip_to_filter}
+							recursive_filtering={filter_Posts}
 							all_chips={unique_chips}/>
 					</div>
 				</div>
@@ -191,7 +223,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 				{/** THE ARTICLE CONTAINERS */}
 				<div className={`flex w-full justify-center`}>
 					<div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4 max-w-fit">
-						{filteredPosts.map((item, index) => (
+						{filterPosts.map((item, index) => (
 						<div className='m-3 flex flex-col items-center'>
 							<NewContainer
 							incolour={"dpi"}
@@ -205,7 +237,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 			</div>
 			
 			{/** IF THERE ARE NO ARTICLES THEN THIS GIF PLAYS */}
-			{filteredPosts.length == 0 && 
+			{filterPosts.length == 0 && 
 			<div className='flex justify-center items-center flex-col mt-10'>
 				{'I\'ve got nothing for you :\('}
 				<Image

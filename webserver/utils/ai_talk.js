@@ -38,6 +38,8 @@ export const send_tag_query_to_ai = async (user_message, querying_ai_callback=()
     // Get response from ai
     const answer = await get_response({ai: "TF", message: user_message})
 
+    console.log(answer)
+
     querying_ai_callback(false)
 
     if (answer.error) return answer
@@ -46,11 +48,9 @@ export const send_tag_query_to_ai = async (user_message, querying_ai_callback=()
     const parsed = JSON.parse(answer.data);
 
     // Check the generated response has the attributes we need
-    if (!('viable_tags' in parsed) || !('filter_type' in parsed)){
+    if (!('logical_filter' in parsed) || !('name' in parsed)){
         return {error: true, data: "That's strange - Claude gave us a bunch of gibberish"}
     }
-
-    console.log(parsed)
 
     return {error: false, data: parsed}
     
