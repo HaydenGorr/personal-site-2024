@@ -132,9 +132,6 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 
 			{/** SECTION 1 */}
 			<div className={`h-screen w-full flex flex-col items-center overflow-visible max-h-screen px-4 pb-32`}>
-
-
-
 				<div className='md:mt-20 mt-8 text-center mx-8 flex flex-col items-center'>
 					<h1 className='font-extrabold text-5xl text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "Hayden's portfolio" }</h1>
 					<p className='font-normal text-sm my-4 max-w-96 text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "This site contains reviews of code projects, short stories, non-fiction articles and more, all created by me, Hayden" }</p>

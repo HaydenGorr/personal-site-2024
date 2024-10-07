@@ -43,8 +43,8 @@ const getTextColour = (backgroundColour) => {
   if (backgroundColour === 'WhiteBackgroundColour') return "rgb(38, 38, 38)"
   else if (backgroundColour === 'CreamBackgroundColour')  return "rgb(38, 38, 38)"
   else if (backgroundColour === 'GreyBackgroundColour')  return "rgb(230, 230, 230)"
-  else if (backgroundColour === 'DarkGreyBackgroundColour') return "rgb(210, 210, 210)"
-  else return "rgb(38, 38, 38)"
+  else if (backgroundColour === 'DarkGreyBackgroundColour') return "rgb(242, 242, 242)"
+  else return "rgb(18, 18, 18)"
 }
 
 

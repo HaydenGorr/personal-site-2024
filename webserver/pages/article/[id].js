@@ -25,10 +25,12 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
       Image,
       ImageWrapper,
       // a: CustomLink
-      a: ({ href, children }) => <CustomLink href={href} children={children} backgroundColour={backgroundColour} />
+      a: ({ href, children }) => <CustomLink href={href} children={children} backgroundColour={backgroundColour} />,
+      p: (props) => <p {...props} style={{ color: getTextColour(backgroundColour) }} />,
+      strong: (props) => <strong {...props} style={{ color: getTextColour(backgroundColour) }} />,
   };
 
-  const [fontUsed, setFontUsed] = useState("font-sans");
+  const [fontUsed, setFontUsed] = useState("font-Josefin");
   const containerRef = useRef(null);
 
   const scrollToText = (text) => {
@@ -42,33 +44,24 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
   return (
       <Layout stickyHeader={false} backgroundColour={backgroundColour}>
-        <div className={`flex justify-center pt-3 py-6 px-6 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
-          <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour) }}>
-            <h1 className={`mt-3 text-w`} style={{'--tw-prose-headings' : getSecondaryColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
-
-            <div className="flex not-prose w-full justify-center">
-              <div className="flex flex-wrap justify-center space-x-3">
-                {
-                chips.map((chip_text, index) => (
-                  <div key={index} className="mt-3">
-                    <Chip chip_text={chip_text} backgroundColour={backgroundColour}/>
-                  </div>
-                ))
-                }
-              </div>
-            </div>
+        <div className={`flex justify-center p-6 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
+          <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getTextColour(backgroundColour), color: getTextColour(backgroundColour) }}>
+            <h1 className={`md:mt-4 mt-8 mb-4 font-extrabold text-5xl text-neutral-100`}
+              	style={{'--tw-prose-headings' : getTextColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
                 
-            {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center mt-8'>
-              <div className='relative flex'>
-                {/* <Image className='m-0' src={'/images/svgs/stopwatch.svg'} width={20} height={20} /> */}
-                <p className='text-xs align-middle self-center ml-1 pb-0.5'>{`${wordCount} words | ${Math.floor(wordCount/200)} min read`}</p>
-              </div>
+            {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center space-x-2 mb-8'>
+				<div className='relative flex bg-dg-800 rounded-md h-fit'>
+					<p className='text-xs align-middle self-center m-2 text-dg-200'>{`${wordCount} words`}</p>
+				</div>
+				<div className='relative flex bg-dpi-800 rounded-md h-fit'>
+					<p className='text-xs align-middle self-center m-2 text-dpi-200'>{Math.floor(wordCount/200) + "min to read"}</p>
+				</div>
             </div>}
 
             <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`} style={{color: getTirtaryColour(backgroundColour)}}/>
             
             <div ref={containerRef} className={`${getTextColour(backgroundColour)}`}>
-              <MDXRemote {...mdxSource} components={components} />
+              	<MDXRemote {...mdxSource} components={components} />
             </div>
 
             <div className="flex justify-center position">by Hayden</div>
