@@ -1,0 +1,48 @@
+{
+    "dg": {
+      "textColor200": "text-dg-200",
+      "fromColor700": "from-dg-700",
+      "bgRadialGradient": "bg-dg-radial-gradient",
+      "textColor700": "text-dg-700",
+      "bgColor200": "bg-dg-200",
+      "bgColor400": "bg-dg-400",
+      "bgColor100": "bg-dg-100"
+    },
+    "dy": {
+      "textColor200": "text-dy-200",
+      "fromColor700": "from-dy-700",
+      "bgRadialGradient": "bg-dy-radial-gradient",
+      "textColor700": "text-dy-700",
+      "bgColor200": "bg-dy-200",
+      "bgColor400": "bg-dy-400",
+      "bgColor100": "bg-dy-100"
+    },
+    "dr": {
+      "textColor200": "text-dr-200",
+      "fromColor700": "from-dr-700",
+      "bgRadialGradient": "bg-dr-radial-gradient",
+      "textColor700": "text-dr-700",
+      "bgColor200": "bg-dr-200",
+      "bgColor400": "bg-dr-400",
+      "bgColor100": "bg-dr-100"
+    },
+    "dpu": {
+      "textColor200": "text-dpu-200",
+      "fromColor700": "from-dpu-700",
+      "bgRadialGradient": "bg-dpu-radial-gradient",
+      "textColor700": "text-dpu-700",
+      "bgColor200": "bg-dpu-200",
+      "bgColor400": "bg-dpu-400",
+      "bgColor100": "bg-dpu-100"
+    },
+    "dpi": {
+      "textColor200": "text-dpi-200",
+      "fromColor700": "from-dpi-700",
+      "bgRadialGradient": "bg-dpi-radial-gradient",
+      "textColor700": "text-dpi-700",
+      "bgColor200": "bg-dpi-200",
+      "bgColor400": "bg-dpi-700",
+      "bgColor100": "bg-dpi-100"
+    }
+  }
+  

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SuggestionTextBox from "./suggestion_text_box";
 import AiResponseChatbox from "./ai_response_chatbox";
 import { send_tag_query_to_ai, send_chat_message_to_ai } from "../utils/ai_talk";
+const recommended_searches = require('../utils/suggested_searches.json')
 
 export default function AiChat(  {
     topChild,
@@ -9,7 +10,8 @@ export default function AiChat(  {
     recursive_filtering,
     all_chips,
     landing_page_mode=false,
-    set_filter_name
+    set_filter_name,
+    show_suggestions
 } ) {
     
     const [user_input_text_backup, set_user_input_text_backup] = useState("") // what the user types into the text input
@@ -47,8 +49,10 @@ export default function AiChat(  {
         
     }, [currenty_querying_tags, currenty_querying_chat]); 
 
-    const handle_tag_request = async () => {
-        const result = await send_tag_query_to_ai(user_input_text, set_currenty_querying_tags)
+    const handle_tag_request = async (overrideText=null) => {
+        console.log("OT", overrideText)
+        const result = await send_tag_query_to_ai(overrideText || user_input_text, set_currenty_querying_tags)
+        console.log("frfrfrf", result)
         if (result.error){
             // Handle error
             set_ai_response_error(true)
@@ -99,6 +103,18 @@ export default function AiChat(  {
                 SendMessageToAI={handle_message_request}
                 userText={user_input_text}
                 setUserText={set_user_input_text}/>
+
+            {show_suggestions && <div className='translate-y-5 w-full flex h-full flex-nowrap space-x-4 overflow-x-auto' style={{
+                maskImage: 'linear-gradient(to left, transparent 0%, black 10%)',
+                WebkitMaskImage: 'linear-gradient(to left, transparent 0%, black 10%)'
+                }}>
+            {recommended_searches.map((item, index) =>(
+                <button key={index} className='bg-zinc-900 rounded-full text-sm text-zinc-400 px-4 py-1 overflow-visible relative flex-shrink-0 -translate-y-0.5'
+                onClick={() => {handle_tag_request(item); }}>
+                    {item}
+                </button>
+            ))}
+            </div>}
 
             {bottomChild}
 

@@ -3,10 +3,12 @@ import ClosableChip from "./closable_chip";
 import { useRouter } from 'next/router'
 import { getDaysAgo } from '../utils/date_utils'
 import { useState, useEffect } from "react";
+import hash_colour_picker from "../utils/hash_colour_picker";
 
-const selectMainColour = () => {
+const selectMainColour = (hashable_string) => {
     const colourList = ['dg', 'dy', 'dr', 'dpu', 'dpi']
-    const randomIndex = Math.floor(Math.random() * colourList.length);
+    const randomIndex = Math.floor(hash_colour_picker(hashable_string));
+    // const randomIndex = Math.floor(Math.random() * colourList.length);
     return colourList[randomIndex]
 }
 
@@ -18,7 +20,7 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
     const [matchedChips, setMatchedChips] = useState([]);
     const [unmatchedChips, setUnatchedChips] = useState([]);
 
-    const classes = colourClasses[selectMainColour()] || {};
+    const classes = colourClasses[selectMainColour(home_post_obj.desc)] || {};
 
     const go_to_article = (title) => {
         if (title != "") router.push(`/article/${title}`)
@@ -28,6 +30,8 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
     }
 
     useEffect(() => {
+
+
 
         const checkImage = async () => {
           const url = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`;
@@ -80,8 +84,10 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
                       <div className="my-1 mt-2">READ</div>
                 </button>
             </div>
+
+            <p className="absolute left-0 top-4 ml-4 text-xs">{getDaysAgo(home_post_obj.publishDate)}</p>
             
-            <div className={`absolute inset-3 flex space-x-2 overflow-hidden w-full h-fit`}
+            {/* <div className={`absolute inset-3 flex space-x-2 overflow-hidden w-full h-fit`}
               style={{maskImage: 'linear-gradient(to right, black, transparent)', WebkitMaskImage: 'linear-gradient(to right, black, transparent)'}}>
                 {matchedChips.map((chip_text, index) => (
                     <div>
@@ -98,7 +104,7 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
                         </div>
                     </div>
                 ))}
-                </div>
+            </div> */}
         </div>
     )
 
