@@ -13,6 +13,7 @@ import TableOfContentsButton from '../../components/table_of_contents_button';
 import ChangeStyle from '../../components/change_style'
 import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, updateThemeColor } from '../../utils/colour';
 import LineBreak from '../../components/line_break';
+import NewChangeStyle from '../../components/new_change_style';
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
@@ -71,7 +72,8 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
         <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3'>
           {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>}
-          <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} />
+          {/* <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} /> */}
+		  <NewChangeStyle setFontUsed={setFontUsed}></NewChangeStyle>
         </div>
 
 
