@@ -1,16 +1,12 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
-import Container from '../components/container';
-import { useState, useEffect } from 'react'; // Import useState and useEffect if not already imported
-import ClosableChip from '../components/closable_chip';
-import SuggestionTextBox from '../components/suggestion_text_box';
-import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
-import ToggleButton from '../components/toggle_button';
+import NewContainer from '../components/newContainer';
+import { useState, useEffect, useRef, memo } from 'react'; // Import useState and useEffect if not already imported
 import Image from 'next/image';
-import { get_response } from '../utils/ai_talk';
-import assert from 'assert';
-import MB_Button from '../components/MB_Button';
-import Link from 'next/link';
+import NewClosableChip from '../components/new_closable_chip'
+import AiChat from '../components/ai_chat';
+import recursive_filtering from '../utils/content_filtering'
+const recommended_searches = require('../utils/suggested_searches.json')
 
 export async function getStaticProps() {
   try {
@@ -18,14 +14,14 @@ export async function getStaticProps() {
     const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_unique_chips`);
 
     if (!home_posts_response.ok || !unique_chips_response.ok) {
-      throw new Error('Failed to connect to cms');
+      	throw new Error('Failed to connect to cms');
     }
 
     const home_posts_JSON = await home_posts_response.json();
     const unique_chips_JSON = await unique_chips_response.json();
 
     if (home_posts_JSON.error != "" || unique_chips_JSON.error != ""){
-      throw new Error(home_posts_JSON.error + " " + unique_chips_JSON.error);
+      	throw new Error(home_posts_JSON.error + " " + unique_chips_JSON.error);
     }
 
     var home_posts_DATA = home_posts_JSON.data;
@@ -34,232 +30,174 @@ export async function getStaticProps() {
     const chips = unique_chips_DATA.map( (item, index) => {return item.name} )
     
     return {
-      props: {
-        home_posts: home_posts_DATA,
-        unique_chips: chips
-      },
-      revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS),
+		props: {
+			home_posts: home_posts_DATA,
+			unique_chips: chips
+		},
+      	revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS),
     };
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return {
-      props: {
-        home_posts: [],
-        unique_chips: []
-      },
-      // We revalidate every 10 seconds if there'a a failure. A failure is likely due to CMS being down.
-      // When it's up getStaticProps will not fail, and the other revalidate above will apply
-      revalidate: 10,
-    };
-  }
+  	} catch (error) {
+		console.error('Error fetching data:', error);
+		return {
+			props: {
+				home_posts: [],
+				unique_chips: []
+			},
+			// We revalidate every 10 seconds if there'a a failure. A failure is likely due to CMS being down.
+			// When it's up getStaticProps will not fail, and the other revalidate above will apply
+			revalidate: 10,
+		};
+  	}
 
 }
 
 export default function Home({home_posts, unique_chips, setBackgroundColour, backgroundColour}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
-  const [matchAnyChip, setMatchAnyChip] = useState(true);
-  const [aiSearching, setAISearching] = useState(false)
   const [pageTitle, setPageTitle] = useState("ALL ENTRIES")
+  const [userText, setUserText] = useState("")
+  const [userTextBackup, setUserTextBackup] = useState(userText)
+  const [filterPosts, setFilterPosts] = useState(home_posts)
+  const [filter_name, set_filter_name] = useState("all content")
 
-  const add_to_keywords = (inText) => {
+  const [bottomSearchBox, setBottomSearchBox] = useState(false);
+  const bottomSearchBoxRef = useRef(null);
 
-    // Check if inText is not an array and make it an array 
-    if (!Array.isArray(inText)) {
-      var array = [inText];
-    }
-    else { var array = inText; }
+	const add_chip_to_filter = (inText) => {
 
-    array.forEach(kw => {
-      if (!selectedKeywords.includes(kw)) {
-        setSelectedKeywords(prevKeywords => [...prevKeywords, kw]);
-      }
-    });
-  };
+		// Check if inText is not an array and make it an array 
+		if (!Array.isArray(inText)) {
+			var array = [inText];
+		}
+		else { var array = inText; }
 
-  const remove_keywords = (inText) => {
-    setSelectedKeywords(selectedKeywords.filter(keyword => keyword !== inText));
-  }
+		array.forEach(kw => {
+		if (!selectedKeywords.includes(kw)) {
+			setSelectedKeywords(prevKeywords => [...prevKeywords, kw]);
+		}
+		});
+	};
 
-  const filter_posts_out = () => {
-    if (matchAnyChip) {
-      return home_posts.filter(post => selectedKeywords.some(keyword => post.chips.includes(keyword)))
-    }
-    else {
-      return home_posts.filter(post => selectedKeywords.every(keyword => post.chips.includes(keyword)))
-    }
-  }
+	const remove_keywords = (inText) => {
+		setSelectedKeywords(selectedKeywords.filter(keyword => keyword !== inText));
+	}
 
-  const getTagsFromAI = async (userMSG) => {
-    if (!userMSG.startsWith('/')) return
-
-    setAISearching(true)
-
-    const response = await get_response({ ai: "TF", message: userMSG });
-
-    try {
-      let jp = JSON.parse(response);
-
-      assert(!!jp.viable_tags, "viable_tags is not defined in the response")
-      assert(!!jp.filter_type, "filter_type is not defined in the response")
-
-      let matched_tags = []
-
-      jp.viable_tags.map((item, index) => {
-        unique_chips.map((citem, cindex) => {
-          if (matched_tags.includes(citem)) return;
-          citem.toLowerCase() == item.toLowerCase() ? matched_tags.push(citem) : null;
-        })
-      })
-
-  
-      setSelectedKeywords(matched_tags);
-      setMatchAnyChip(jp.filter_type == "any")
-    }
-    catch (e) {
-      console.log(e)
-    }
-
-    setAISearching(false)
-
-  };
-
-  useEffect(() => {
-    setBackgroundColour("WhiteBackgroundColour")
-  }, []); 
+	const filter_Posts = (filter) => {
+		const qweqwe = recursive_filtering(home_posts, home_posts, filter)
+		console.log("qweqwe", qweqwe)
+		setFilterPosts(qweqwe)
+	}
 
 
-  // Assuming selectedKeywords is meant to be an array
-  const filteredPosts = selectedKeywords.length > 0
-  ? filter_posts_out() : home_posts;
-
-  return (
-    <Layout backgroundColour={backgroundColour}>
-      <Head>
-        <title>{"Hayden's Personal Site"}</title>
-      </Head>
-      <section>
+	useEffect(() => {
+        if (userText!="") setUserTextBackup(userText)
+    }, [userText]);
 
 
-        <h1 className='mt-5 text-center font-extrabold text-4xl'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "ALL ENTRIES" }</h1>
+	useEffect(() => {
+		setBackgroundColour("DarkGreyBackgroundColour")
 
-        <div className="bg-gray-300 h-px my-4 prose mx-auto mx-3" />
+		const bottomSearchBoxObserver = new IntersectionObserver(
+			([entry]) => {
+				setBottomSearchBox(entry.isIntersecting)
+			},
+			{ threshold: 0 }
+		);
 
-        {selectedKeywords.length == 0 && <div className='flex space-x-4 justify-center mx-3'>
+		if (bottomSearchBoxRef.current) {
+			bottomSearchBoxObserver.observe(bottomSearchBoxRef.current);
+		}
 
-          <div
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/tech-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Creative Writing", "Short Story"]);
-              setPageTitle("Technical Work")
-              }}>
-            Technical Work
-          </div>
+		return () => {
+			if (bottomSearchBoxRef.current) {
+				bottomSearchBoxObserver.unobserve(bottomSearchBoxRef.current);
+			}
+		};
 
-          <Link     
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/writing-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            href={"/portfolio"}>
-            Curated Writing Portfolio
-          </Link>
+		
+	}, []);
 
-          <div 
-            style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/image/photos-desat.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-            className={`p-4 text-wrap flex font-medium cursor-pointer Neo-Brutal-White bg-slate-800 text-center`}
-            onClick={() => {
-              setSelectedKeywords(["Photography", "Gallery"]);
-              setPageTitle("Photo Galleries")
-            }}>
-            Photo Galleries
-          </div>
-          
-        </div>}
+	return (
+		<Layout backgroundColour={backgroundColour}>
+		<Head>
+			<title>{"Hayden's Personal Site"}</title>
+		</Head>
+		<section className='flex flex-col'>
 
-        {selectedKeywords.length > 0 && (
-          <div className="mx-3">
-            <div className=" h-px prose mx-auto" />
-            <div className="flex flex-wrap justify-center">
-              {/* <div>contains any</div> */}
-              {selectedKeywords.map((item, index) => (
-                <div className="mr-3 mt-3"> 
-                  <ClosableChip key={index} chip_text={item} remove_keywords={remove_keywords} svg_path={"images/svgs/cancel.svg"} />
-                </div>
-              ))}
-            </div>
-            <div className='flex justify-center items-center mt-6'>
-              <div className='m3-1'>
-                {"match"}
-              </div>
+			{filter_name != "all content" && <div className='flex justify-center z-50 mt-4 fixed w-full'>
+				<div className='bg-dr-600 px-4 rounded-full flex items-center'>
+					<Image className='h-3 w-3 mr-2 cursor-pointer' src="/images/error_new.png" width={10} height={10} onClick={() => {setFilterPosts(home_posts); set_filter_name("all content")}}></Image>
+					<span className='translate-y-0.5'>{filter_name}</span>
+				</div>
+			</div>}
 
-              <div className='mx-1 w-fit over'>
-                <ToggleButton text={"any"} lowercase="true" btnAction={() => {setMatchAnyChip(true)}} toggled={matchAnyChip==true}/>
-              </div>
-              <div className='mx-1'>
-                <ToggleButton text={"all"} lowercase="true" btnAction={() => {setMatchAnyChip(false)}} toggled={matchAnyChip==false}/>
-              </div>
-
-              <div className='ml-1'>
-                {"of the tags"}
-              </div>
-              
-            </div>
-          </div>
-        )}
-
-        <div className="w-100% mx-3">
-          <div className="mt-6 mb-3 h-10 max-w-prose mx-auto">
-            <SuggestionTextBox 
-              aiSearching={aiSearching}
-              filter_keywords={getTagsFromAI}
-              add_to_keywords={add_to_keywords}
-              chipsText={unique_chips}
-              selectedChips_text={selectedKeywords}
-              page_title_callback={(x) => setPageTitle(x)}
-              defaultText={"refine your search. Use \/ to search in natural language"}/>
-          </div>
-        </div>
-
-        <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
-          <Masonry gutter="0px">
-            {filteredPosts.map((item, index) => (
-              <div className='my-3 flex justify-center mx-3'>
-                <Container
-                  home_post_obj={item}
-                  add_keywords_to_filter={add_to_keywords}
-                  remove_keyword_from_filer={remove_keywords}
-                  selectedKeywords={selectedKeywords}/>
-              </div>
-            ))}
-          </Masonry>
-        </ResponsiveMasonry>
-
-        {filteredPosts.length == 0 && 
-          <div className='flex justify-center items-center flex-col mt-10'>
-            {'I\'ve got nothing for you :\('}
-              <Image
-                src="/images/empty.gif"
-                alt="Description of GIF"
-                width={500}
-                height={300}
-                className="your-tailwind-classes"
-              />
-          </div>
-        }
+			{/** SECTION 1 */}
+			<div className={`h-screen w-full flex flex-col items-center overflow-visible max-h-screen px-4 pb-32`}>
 
 
-      </section>
+
+				<div className='md:mt-20 mt-8 text-center mx-8 flex flex-col items-center'>
+					<h1 className='font-extrabold text-5xl text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "Hayden's portfolio" }</h1>
+					<p className='font-normal text-sm my-4 max-w-96 text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "This site contains reviews of code projects, short stories, non-fiction articles and more, all created by me, Hayden" }</p>
+				</div>
+
+				<div className='flex justify-end items-center flex-col h-full w-full max-w-prose' ref={bottomSearchBoxRef}>
+					<div className={bottomSearchBox ? 'flex-col flex max-w-prose w-full items-end md:translate-y-10' : 'px-4 max-w-prose w-full z-50 fixed -bottom-60 transition-all duration-500 opacity-100 -translate-y-60 mb-4'}>
+						<AiChat
+							show_suggestions={bottomSearchBox}
+							set_filter_name={set_filter_name}
+							landing_page_mode={bottomSearchBox}
+							recursive_filtering={filter_Posts}
+							all_chips={unique_chips}/>
+
+					</div>
+
+				</div>
+
+				<div className='h-0 md:h-full'/>
+
+			</div>
+
+			{/** SECTION 2 */}
+			<div className='relative flex flex-col -translate-y-24'>
+
+				<div className='w-full flex flex-col items-center mb-2'>
+					<p className='text-xs text-neutral-100 opacity-95'>psst... content down here</p>
+					<div className='h-2 w-2 rounded-full bg-dg-400 mt-4'/>
+				</div>
+
+				{/** THE ARTICLE CONTAINERS */}
+				{filterPosts.length > 0 && <div className={`flex w-full justify-center`}>
+					<div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4 max-w-fit">
+						{filterPosts.map((item, index) => (
+						<div className='m-3 flex flex-col items-center'>
+							<NewContainer
+							incolour={"dpi"}
+							home_post_obj={item}
+							add_keywords_to_filter={add_chip_to_filter}
+							remove_keyword_from_filer={remove_keywords}
+							selectedKeywords={selectedKeywords}/>
+						</div>
+						))}
+					</div>
+				</div>}
+			
+			{/** IF THERE ARE NO ARTICLES THEN THIS GIF PLAYS */}
+			{filterPosts.length == 0 && 
+			<div className='flex justify-center items-center flex-col mt-10'>
+				{'I\'ve got nothing for you :\('}
+				<Image
+				src="/images/empty.gif"
+				alt="Description of GIF"
+				width={500}
+				height={300}
+				className="rounded-md shadow-strong-drop"
+				/>
+			</div>
+			}
+			
+		</div>
+
+	</section>
     </Layout>
   );
 }

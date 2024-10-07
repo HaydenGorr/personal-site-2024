@@ -38,6 +38,4 @@ const getTypeTitle = (type) => {
   
   
   
-  
-  
   module.exports = { getTypeColour, getTypeImage, getTypeTitle };

@@ -165,3 +165,19 @@ code {
 .transition-background {
   transition: background-color 0.5s ease; /* Adjust the duration and easing as needed */
 }
+
+@layer utilities {
+  .diamond-gradient {
+    background-image: repeating-conic-gradient(
+      from 45deg,
+      var(--tw-gradient-from) 0deg 25deg,
+      var(--tw-gradient-to) 25deg 50deg
+    );
+  }
+}
+
+@layer utilities {
+  .pixelated {
+    background-size: 50px 50px;
+  }
+}
