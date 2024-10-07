@@ -123,7 +123,7 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 		</Head>
 		<section className='flex flex-col'>
 
-			{filter_name != "all content" && <div className='flex justify-center z-50 mt-4 fixed w-full'>
+		{filter_name != "all content" && <div className='flex justify-center items-center z-50 mt-4 fixed w-full max-w-7xl'>
 				<div className='bg-dr-600 px-4 rounded-full flex items-center'>
 					<Image className='h-3 w-3 mr-2 cursor-pointer' src="/images/error_new.png" width={10} height={10} onClick={() => {setFilterPosts(home_posts); set_filter_name("all content")}}></Image>
 					<span className='translate-y-0.5'>{filter_name}</span>
