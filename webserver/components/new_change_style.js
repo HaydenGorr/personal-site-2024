@@ -42,6 +42,8 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
 
             <div className={"cursor-pointer z-10 bg-zinc-300 flex items-center px-4 rounded-md"} onClick={() => {setButtonPressed(!buttonPressed);}}>
                 <Image className='' src={'/images/svgs/colour_icon.svg'} width={25} height={25}></Image>
+
+                <div className=""></div>
             </div>
 
             <div className={`${buttonPressed ? '' : 'z-9 opacity-0 pointer-events-none'} flex transition-all duration-300 overflow-hidden`}>
