@@ -60,7 +60,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 
             <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`} style={{color: getTirtaryColour(backgroundColour)}}/>
             
-            <div ref={containerRef} className={`${getTextColour(backgroundColour)}`}>
+            <div ref={containerRef} className={`leading-8 ${getTextColour(backgroundColour)}`}>
               	<MDXRemote {...mdxSource} components={components} />
             </div>
 
