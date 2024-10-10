@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const articleSchema = new mongoose.Schema({
     title: { type: String, required: true },
     desc: { type: String, required: true },
+    category: {type: String, required: false},
     infoText: { type: String, required: true },
     chips: { type: [String], default: [] },
     source: { type: String, required: true },

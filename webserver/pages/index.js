@@ -28,11 +28,22 @@ export async function getStaticProps() {
     var unique_chips_DATA = unique_chips_JSON.data;
 
     const chips = unique_chips_DATA.map( (item, index) => {return item.name} )
+
+	var organised_content = {}
+
+	home_posts_DATA.forEach(function(post) {
+		var category = post.category || '';
+		if (!organised_content[category]) {
+			organised_content[category] = [];
+		}
+		organised_content[category].push(post);
+	});
     
     return {
 		props: {
 			home_posts: home_posts_DATA,
-			unique_chips: chips
+			unique_chips: chips,
+			organised_content: organised_content
 		},
       	revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS),
     };
@@ -41,7 +52,8 @@ export async function getStaticProps() {
 		return {
 			props: {
 				home_posts: [],
-				unique_chips: []
+				unique_chips: [],
+				organised_content: {}
 			},
 			// We revalidate every 10 seconds if there'a a failure. A failure is likely due to CMS being down.
 			// When it's up getStaticProps will not fail, and the other revalidate above will apply
@@ -51,13 +63,15 @@ export async function getStaticProps() {
 
 }
 
-export default function Home({home_posts, unique_chips, setBackgroundColour, backgroundColour}) {
+export default function Home({home_posts, unique_chips, organised_content, setBackgroundColour, backgroundColour}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [pageTitle, setPageTitle] = useState("ALL ENTRIES")
   const [userText, setUserText] = useState("")
   const [userTextBackup, setUserTextBackup] = useState(userText)
   const [filterPosts, setFilterPosts] = useState(home_posts)
   const [filter_name, set_filter_name] = useState("all content")
+  const [sort_by, set_sort_by] = useState("date")
+  const [sort_by_clicked, set_sort_by_clicked] = useState(false)
 
   const [bottomSearchBox, setBottomSearchBox] = useState(false);
   const bottomSearchBoxRef = useRef(null);
@@ -123,12 +137,13 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 		</Head>
 		<section className='flex flex-col'>
 
-		{filter_name != "all content" && <div className='flex justify-center items-center z-50 mt-4 fixed w-full max-w-7xl'>
+			{filter_name != "all content" && <div className='flex justify-center items-center z-50 mt-4 fixed w-full max-w-7xl'>
 				<div className='bg-dr-600 px-4 rounded-full flex items-center'>
 					<Image className='h-3 w-3 mr-2 cursor-pointer' src="/images/error_new.png" width={10} height={10} onClick={() => {setFilterPosts(home_posts); set_filter_name("all content")}}></Image>
 					<span className='translate-y-0.5'>{filter_name}</span>
 				</div>
 			</div>}
+
 
 			{/** SECTION 1 */}
 			<div className={`h-screen w-full flex flex-col items-center overflow-visible max-h-screen px-4 pb-32`}>
@@ -155,15 +170,20 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 			</div>
 
 			{/** SECTION 2 */}
-			<div className='relative flex flex-col -translate-y-24'>
+			<div className='relative flex flex-col -translate-y-32'>
 
-				<div className='w-full flex flex-col items-center mb-2'>
+				<div className='w-full flex flex-col items-center mb-4'>
 					<p className='text-xs text-neutral-100 opacity-95'>psst... content down here</p>
-					<div className='h-2 w-2 rounded-full bg-dg-400 mt-4'/>
+
+					<div className='mt-2 bg-dg-300 p-1 rounded-md space-x-2 text-xs h-10 flex justify-center'>
+						<button className={`bg-dg-700 py-1 px-2 rounded-full ${sort_by=="category" ? 'bg-dy-500 text-dy-300 border-dashed border-2 border-dy-900' : ''}`} onClick={() => set_sort_by("category")}>category</button>
+						<button className={`bg-dg-700 py-1 px-2 rounded-full ${sort_by=="date" ? 'bg-dy-500 text-dy-300 border-dashed border-2 border-dy-900' : ''}`} onClick={() => set_sort_by("date")}>date</button>
+					</div>
+
 				</div>
 
 				{/** THE ARTICLE CONTAINERS */}
-				{filterPosts.length > 0 && <div className={`flex w-full justify-center`}>
+				{filterPosts.length > 0 && <div className={`flex w-full justify-center ${sort_by == "date" ? '' : 'hidden'}`}>
 					<div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4 max-w-fit">
 						{filterPosts.map((item, index) => (
 						<div className='m-3 flex flex-col items-center'>
@@ -177,6 +197,33 @@ export default function Home({home_posts, unique_chips, setBackgroundColour, bac
 						))}
 					</div>
 				</div>}
+				
+				{filterPosts.length > 0 && <div className={`flex w-full justify-center ${sort_by == "category" ? '' : 'hidden'}`}>
+					<div className="w-full">
+						{Object.entries(organised_content).map(([key, value]) => (
+							<div className='mt-8'>
+								<div className='w-full flex justify-center px-4'>
+									<h3 className='w-full text-center max-w-prose text-lg font-semibold'>{key || "uncategoriesd"}</h3>
+								</div>
+								
+								<div className='flex overflow-x-scroll '>
+									{value.map((item, index) => (
+									<div className='m-3 flex items-center'>
+										<NewContainer
+										incolour={"dpi"}
+										home_post_obj={item}
+										add_keywords_to_filter={add_chip_to_filter}
+										remove_keyword_from_filer={remove_keywords}
+										selectedKeywords={selectedKeywords}/>
+									</div>
+									))}
+								</div>
+							</div>
+
+						))}
+					</div>
+				</div>}
+				
 			
 			{/** IF THERE ARE NO ARTICLES THEN THIS GIF PLAYS */}
 			{filterPosts.length == 0 && 

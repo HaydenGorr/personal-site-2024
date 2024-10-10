@@ -27,8 +27,9 @@ const { updatedArticle } = require('./utils/mongo_utils/update_article')
 const { add_article } = require('./utils/mongo_utils/add_article')
 const { deleteArticle } = require('./utils/mongo_utils/delete_article')
 const { edit_chip } = require('./utils/mongo_utils/edit_chip')
-const { deleteChip } = require('./utils/mongo_utils/delete_chip')
-
+const { deleteChip } = require('./utils/mongo_utils/delete_chip');
+const { get_all_categories } = require('./utils/mongo_utils/get_categories');
+const { add_category } = require('./utils/mongo_utils/add_category')
 
 // app.use(cors());
 app.use(express.json());
@@ -231,6 +232,21 @@ app.get('/secure/get_all_articles', async (req, res) => {
   res.json(articles);
 })
 
+app.get('/secure/get_all_categories', async (req, res) => {
+
+  const result = await validate_JWT(req.cookies.token)
+
+  if (!result.success) {
+    return res.status(result.errorcode).json({ error: result.message });
+  }
+  
+  // Grab and return the articles
+  const categories = await get_all_categories()
+  console.log(categories)
+
+  res.json(categories);
+})
+
 /**
  * Upload a new chip with a name, description and image
  */
@@ -299,8 +315,6 @@ app.post('/secure/edit_chip', upload.single('image'), async (req, res) => {
     return res.status(500).json({ message: 'An error occurred while uploading the image' });
   }
 
-  console.log("asd ", image)
-
   if (image){
     // Generate the path where we'll write the svg
     const imagePath = path.join(svg_dir, name+".svg");
@@ -333,13 +347,13 @@ app.post('/secure/edit_chip', upload.single('image'), async (req, res) => {
  * Upload a new chip with a name, description and image
  */
 app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }, { name: 'best_mdx', maxCount: 1 }]), async (req, res) => {
-  const { databaseID, title, desc, infoText, chips, source, views, type, publishDate, ready, portfolioReady} = req.body;
+  const { databaseID, title, desc, category, infoText, chips, source, views, type, publishDate, ready, portfolioReady} = req.body;
   const imageFile = req.files['image'] ? req.files['image'][0] : undefined;
   const mdxFile = req.files['mdx'] ? req.files['mdx'][0] : undefined;
   const bestpart_mdxFile = req.files['best_mdx'] ? req.files['best_mdx'][0] : undefined;
 
   console.log("\n\n\n\n\ncalled update articles")
-  console.log(databaseID, title, desc, infoText, chips, source, views, publishDate, ready, portfolioReady, type)
+  console.log(databaseID, title, desc, category, infoText, chips, source, views, publishDate, ready, portfolioReady, type)
 
   const result = await validate_JWT(req.cookies.token)
 
@@ -354,6 +368,8 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
 
     // Update the article
     const update_result = await updatedArticle(req.body)
+
+    const update_result2 = await add_category(category)
 
     if (mdxFile) {
       const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");

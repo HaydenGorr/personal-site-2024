@@ -21,6 +21,7 @@ export default function Admin({setBackgroundColour}) {
     const [chip_edit_image_url, set_chip_edit_image_url] = useState("");
     const [articles, setArticles] = useState([]);
     const [chips, setChips] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     /**
      * FOR UPLOADING CHIPS
@@ -32,6 +33,7 @@ export default function Admin({setBackgroundColour}) {
         setBackgroundColour("WhiteBackgroundColour")
         get_articles();
         get_chips();
+        get_categories();
     }, []); 
 
     const close_modal_and_reset_vars = () => {
@@ -144,6 +146,29 @@ export default function Admin({setBackgroundColour}) {
             const data = await res.json();
             if (data.error) {}
             setChips(data.data);
+        } else {
+            console.error('Error:', res.statusText);
+        }
+    };
+
+    /**
+     * Populate the admin page with all of the chips
+     */
+    const get_categories = async () => {
+        console.log("lonesome get_categories")
+        const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_categories`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+        if (res.ok) {
+            console.log("response is OKAY");
+            const data = await res.json();
+
+            const cleaned_data = data.map(obj => obj.name);
+            
+            console.log("lonesome ", cleaned_data)
+
+            setCategories(cleaned_data || []);
         } else {
             console.error('Error:', res.statusText);
         }
@@ -300,6 +325,12 @@ export default function Admin({setBackgroundColour}) {
                         <Masonry gutter="0px">
                             {articles.length > 0 && articles.map((item, index) => (
                                 <AdminContainer
+                                    categories={categories}
+                                    refresh_categories={()=>{
+                                        get_articles();
+                                        get_chips();
+                                        get_categories();
+                                    }}
                                     key={item.id}
                                     home_post_obj={item}
                                     add_keywords_to_filter={() => {}}
