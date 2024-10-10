@@ -7,7 +7,7 @@ import hash_colour_picker from "../utils/hash_colour_picker";
 
 const selectMainColour = (hashable_string) => {
     const colourList = ['dg', 'dy', 'dr', 'dpu', 'dpi']
-    const randomIndex = Math.floor(hash_colour_picker(hashable_string));
+    const randomIndex = Math.abs(Math.floor(hash_colour_picker(hashable_string)));
     // const randomIndex = Math.floor(Math.random() * colourList.length);
     return colourList[randomIndex]
 }
