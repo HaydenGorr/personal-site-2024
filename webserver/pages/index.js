@@ -98,6 +98,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 
 	const filter_Posts = (filter) => {
 		const qweqwe = recursive_filtering(home_posts, home_posts, filter)
+
 		console.log("qweqwe", qweqwe)
 		setFilterPosts(qweqwe)
 		let organised_content = {}
@@ -148,8 +149,8 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 		<section className='flex flex-col'>
 
 			{filter_name != "all content" && <div className='flex justify-center items-center z-50 mt-4 fixed w-full max-w-7xl'>
-				<div className='bg-dr-600 px-4 rounded-full flex items-center'>
-					<Image className='h-3 w-3 mr-2 cursor-pointer' src="/images/error_new.png" width={10} height={10} onClick={() => {setFilterPosts(home_posts); set_filter_name("all content")}}></Image>
+				<div className='bg-dr-600 px-4 rounded-full flex items-center mx-4'>
+					<Image className='h-3 w-3 mr-2 cursor-pointer' src="/images/error_new.png" width={10} height={10} onClick={() => {setFilterPosts(home_posts); set_categorised_content(organised_content); set_filter_name("all content")}}></Image>
 					<span className='translate-y-0.5'>{filter_name}</span>
 				</div>
 			</div>}
