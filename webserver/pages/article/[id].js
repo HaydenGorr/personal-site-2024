@@ -27,7 +27,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
       ImageWrapper,
       // a: CustomLink
       a: ({ href, children }) => <CustomLink href={href} children={children} backgroundColour={backgroundColour} />,
-      p: (props) => <p {...props} style={{ color: getTextColour(backgroundColour) }} />,
+      p: (props) => <p {...props} style={{ color: getTextColour(backgroundColour), textAlign: 'left' }} />,
       strong: (props) => <strong {...props} style={{ color: getTextColour(backgroundColour) }} />,
   };
 
@@ -71,9 +71,9 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
         </div>
 
         <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3'>
-          {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>}
+          {/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
           {/* <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} /> */}
-		  <NewChangeStyle setFontUsed={setFontUsed}></NewChangeStyle>
+		  {/* <NewChangeStyle setFontUsed={setFontUsed}></NewChangeStyle> */}
         </div>
 
 
