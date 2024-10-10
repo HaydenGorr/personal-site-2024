@@ -72,6 +72,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
   const [filter_name, set_filter_name] = useState("all content")
   const [sort_by, set_sort_by] = useState("date")
   const [sort_by_clicked, set_sort_by_clicked] = useState(false)
+  const [categorised_content, set_categorised_content] = useState(organised_content)
 
   const [bottomSearchBox, setBottomSearchBox] = useState(false);
   const bottomSearchBoxRef = useRef(null);
@@ -99,6 +100,15 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 		const qweqwe = recursive_filtering(home_posts, home_posts, filter)
 		console.log("qweqwe", qweqwe)
 		setFilterPosts(qweqwe)
+		let organised_content = {}
+		qweqwe.forEach(function(post) {
+			var category = post.category || '';
+			if (!organised_content[category]) {
+				organised_content[category] = [];
+			}
+			organised_content[category].push(post);
+		});
+		set_categorised_content(organised_content)
 	}
 
 
@@ -200,7 +210,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 				
 				{filterPosts.length > 0 && <div className={`flex w-full justify-center ${sort_by == "category" ? '' : 'hidden'}`}>
 					<div className="w-full">
-						{Object.entries(organised_content).map(([key, value]) => (
+						{Object.entries(categorised_content).map(([key, value]) => (
 							<div className='mt-8'>
 								<div className='w-full flex justify-center px-4'>
 									<h3 className='w-full text-center max-w-prose text-lg font-semibold'>{key || "uncategoriesd"}</h3>
