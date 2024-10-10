@@ -162,7 +162,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 					<p className='font-normal text-sm my-4 max-w-96 text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "This site contains reviews of code projects, short stories, non-fiction articles and more, all created by me, Hayden" }</p>
 				</div>
 
-				<div className='flex justify-end items-center flex-col h-full w-full max-w-prose' ref={bottomSearchBoxRef}>
+				<div className='flex justify-end items-center flex-col h-full w-full max-w-prose mb-10' ref={bottomSearchBoxRef}>
 					<div className={bottomSearchBox ? 'flex-col flex max-w-prose w-full items-end md:translate-y-10' : 'px-4 max-w-prose w-full z-50 fixed -bottom-60 transition-all duration-500 opacity-100 -translate-y-60 mb-4'}>
 						<AiChat
 							show_suggestions={bottomSearchBox}
