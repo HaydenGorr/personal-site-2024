@@ -50,7 +50,7 @@ app.post('/api/CQ', async (req, res) => {
 
     try {
         const response = await anthropic.messages.create({
-            model: "claude-3-sonnet-20240229",
+            model: "claude-3-5-sonnet-20240620",
             max_tokens: 500,
             temperature: 0,
             system: getSystemPrompt({whichPrompt:"CQ", articles_for_consumption:article_text_for_AI_consumption.join(' ------ NEW ARTICLE -----')}),
