@@ -5,7 +5,6 @@ import Chip from '../../components/chip';
 import MB_Button from '../../components/MB_Button';
 import Image from 'next/image';
 import ImageWrapper from '../../components/image_wrapper';
-// import CustomLink from '../../components/custom_link';
 import dynamic from 'next/dynamic';
 import getDate from '../../utils/date_utils'
 import { useRef, useState } from 'react';
@@ -25,6 +24,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
       MB_Button,
       Image,
       ImageWrapper,
+      pre: (props) => <pre {...props} style={{ backgroundColor: "#383838" }} />,
       // a: CustomLink
       a: ({ href, children }) => <CustomLink href={href} children={children} backgroundColour={backgroundColour} />,
       p: (props) => <p {...props} style={{ color: getTextColour(backgroundColour), textAlign: 'left' }} />,
@@ -73,7 +73,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
         <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3'>
           {/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
           {/* <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} /> */}
-		  {/* <NewChangeStyle setFontUsed={setFontUsed}></NewChangeStyle> */}
+		      {/* <NewChangeStyle setFontUsed={setFontUsed}></NewChangeStyle> */}
         </div>
 
 

@@ -33,6 +33,7 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
 
     useEffect(() => {
       const random_number = Math.floor(Math.random() * 5)
+      console.log(random_number)
 
       setRandomColor(colourClasses[random_number])
 

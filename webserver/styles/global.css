@@ -75,11 +75,11 @@ img {
 }
 
 p > img {
-  @apply rounded-md Neo-Brutal-White
+  @apply rounded-md bg-zinc-700
 }
 
 pre {
-  @apply rounded-md Neo-Brutal-White
+  @apply rounded-md 
 }
 
 .Neo-Brutal-No-Colour {
