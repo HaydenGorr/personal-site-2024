@@ -1,26 +1,13 @@
 import Image from "next/image";
-import ClosableChip from "./closable_chip";
 import { useRouter } from 'next/router'
 import { getDaysAgo } from '../utils/date_utils'
 import { useState, useEffect } from "react";
-import hash_colour_picker from "../utils/hash_colour_picker";
 
-const selectMainColour = (hashable_string) => {
-    const colourList = ['dg', 'dy', 'dr', 'dpu', 'dpi']
-    const randomIndex = Math.abs(Math.floor(hash_colour_picker(hashable_string)));
-    // const randomIndex = Math.floor(Math.random() * colourList.length);
-    return colourList[randomIndex]
-}
-
-export default function NewContainer({ chips=null, home_post_obj, btnAction = () => {}, colour="bg-transparent", add_keywords_to_filter, selectedKeywords, remove_keyword_from_filer, override = false }) {
+export default function NewContainer({ home_post_obj, colour="bg-transparent", selectedKeywords}) {
     const router = useRouter();
 
     const [hasImage, setHasImage] = useState(false);
-
-    const [matchedChips, setMatchedChips] = useState([]);
-    const [unmatchedChips, setUnatchedChips] = useState([]);
-
-    const classes = colourClasses[selectMainColour(home_post_obj.desc)] || {};
+    const [randomColor, setRandomColor] = useState('');
 
     const go_to_article = (title) => {
         if (title != "") router.push(`/article/${title}`)
@@ -30,29 +17,30 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
     }
 
     useEffect(() => {
+      const checkImage = async () => {
+        const url = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`;
+  
+        try {
+          const response = await fetch(url);
+          setHasImage(response.status === 200);
+        } catch (error) {
+          setHasImage(true); // If the request errors then assume the image is there just in case it is
+        }
+      };
+  
+      checkImage();
+    }, [home_post_obj, selectedKeywords]);
 
+    useEffect(() => {
+      const random_number = Math.floor(Math.random() * 5)
 
+      setRandomColor(colourClasses[random_number])
 
-        const checkImage = async () => {
-          const url = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`;
-    
-          try {
-            const response = await fetch(url);
-            setHasImage(response.status === 200);
-          } catch (error) {
-            setHasImage(true); // If the request errors then assume the image is there just in case it is
-          }
-        };
-
-        setMatchedChips(home_post_obj.chips.filter(chip_text => selectedKeywords.includes(chip_text)))
-        setUnatchedChips(home_post_obj.chips.filter(chip_text => !selectedKeywords.includes(chip_text)))
-    
-        checkImage();
-      }, [home_post_obj, selectedKeywords]);
+    }, []);
 
 
     return (
-        <div className={`relative font-Josefin ${classes.textColor200}`}>
+        <div className={`relative font-Josefin ${randomColor.textColor200}`}>
             <div className="relative rounded-2xl overflow-hidden w-80 h-128">
                 {hasImage && (<Image
                     src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`}
@@ -62,9 +50,9 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
                     onClick={() => { go_to_article(home_post_obj.source) }}
                 />)}
                 {/** Gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-95 ${classes.fromColor700}`} />
+                <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-95 ${randomColor.fromColor700}`} />
                 <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-30 from-black`} />
-                <div className={`absolute inset-0 ${classes.bgRadialGradient} opacity-75`}/>
+                <div className={`absolute inset-0 ${randomColor.bgRadialGradient} opacity-75`}/>
             </div>
 
             <div className="absolute inset-0 flex-col flex space-y-4 justify-center my-8 px-4">
@@ -79,7 +67,7 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
                 </span>
 
                 <button
-                    className={`z-50 self-center rounded-xl w-fit px-6 text-center ${classes.textColor700} text-sm font-medium ${classes.bgColor200}`}
+                    className={`z-50 self-center rounded-xl w-fit px-6 text-center ${randomColor.textColor700} text-sm font-medium ${randomColor.bgColor200}`}
                     onClick={() => {go_to_article(home_post_obj.source)}}>
                       <div className="my-1 mt-2">READ</div>
                 </button>
@@ -110,8 +98,8 @@ export default function NewContainer({ chips=null, home_post_obj, btnAction = ()
 
 }
 
-const colourClasses = {
-    dg: {
+const colourClasses = [
+    {
       textColor200: 'text-dg-200',
       fromColor700: 'from-dg-700',
       bgRadialGradient: 'bg-dg-radial-gradient',
@@ -120,7 +108,7 @@ const colourClasses = {
       bgColor400: 'bg-dg-400',
       bgColor100: 'bg-dg-100',
     },
-    dy: {
+    {
       textColor200: 'text-dy-200',
       fromColor700: 'from-dy-700',
       bgRadialGradient: 'bg-dy-radial-gradient',
@@ -129,7 +117,7 @@ const colourClasses = {
       bgColor400: 'bg-dy-400',
       bgColor100: 'bg-dy-100',
     },
-    dr: {
+    {
       textColor200: 'text-dr-200',
       fromColor700: 'from-dr-700',
       bgRadialGradient: 'bg-dr-radial-gradient',
@@ -138,7 +126,7 @@ const colourClasses = {
       bgColor400: 'bg-dr-400',
       bgColor100: 'bg-dr-100',
     },
-    dpu: {
+    {
       textColor200: 'text-dpu-200',
       fromColor700: 'from-dpu-700',
       bgRadialGradient: 'bg-dpu-radial-gradient',
@@ -147,7 +135,7 @@ const colourClasses = {
       bgColor400: 'bg-dpu-400',
       bgColor100: 'bg-dpu-100',
     },
-    dpi: {
+    {
       textColor200: 'text-dpi-200',
       fromColor700: 'from-dpi-700',
       bgRadialGradient: 'bg-dpi-radial-gradient',
@@ -156,5 +144,5 @@ const colourClasses = {
       bgColor400: 'bg-dpi-700', // Made this 700, because 400 was too light for the text in my testing
       bgColor100: 'bg-dpi-100',
     },
-  };
+  ];
   

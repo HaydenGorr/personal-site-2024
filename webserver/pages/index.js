@@ -98,8 +98,6 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 
 	const filter_Posts = (filter) => {
 		const qweqwe = recursive_filtering(home_posts, home_posts, filter)
-
-		console.log("qweqwe", qweqwe)
 		setFilterPosts(qweqwe)
 		let organised_content = {}
 		qweqwe.forEach(function(post) {
@@ -197,7 +195,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 				{filterPosts.length > 0 && <div className={`flex w-full justify-center ${sort_by == "date" ? '' : 'hidden'}`}>
 					<div className="grid grid-cols-1 mds:grid-cols-2 mdl:grid-cols-3 gap-4 max-w-fit">
 						{filterPosts.map((item, index) => (
-						<div className='m-3 flex flex-col items-center'>
+						<div key={index} className='m-3 flex flex-col items-center'>
 							<NewContainer
 							incolour={"dpi"}
 							home_post_obj={item}
@@ -219,7 +217,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 								
 								<div className='flex overflow-x-scroll '>
 									{value.map((item, index) => (
-									<div className='m-3 flex items-center'>
+									<div key={index} className='m-3 flex items-center' >
 										<NewContainer
 										incolour={"dpi"}
 										home_post_obj={item}
