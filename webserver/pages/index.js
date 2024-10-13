@@ -165,7 +165,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 				<div  ref={bottomSearchBoxRef} className='w-full h-full flex justify-center'>
 					<div className={
 						bottomSearchBox ? `fixed -bottom-60 z-50 -translate-y-64 transition-transform duration-500 max-w-prose px-4 w-full`
-										: `AIChat-container h-full w-full max-w-prose justify-center flex items-end pb-56 md:pb-0 px-4` }>
+										: `AIChat-container h-full w-full max-w-prose justify-center flex items-end pb-40 md:pb-0 px-4` }>
 						<AiChat
 							show_suggestions={bottomSearchBox}
 							set_filter_name={set_filter_name}
