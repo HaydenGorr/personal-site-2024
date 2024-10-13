@@ -30,7 +30,7 @@ export const get_response = async ({ai, message}) => {
 
 export const send_tag_query_to_ai = async (user_message, querying_ai_callback=()=>{} ) => {
     if(user_message == "") {
-        return
+        return {error: true, data: "No user input given"}
     };
 
     querying_ai_callback(true)

@@ -121,7 +121,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 
 		const bottomSearchBoxObserver = new IntersectionObserver(
 			([entry]) => {
-				setBottomSearchBox(entry.isIntersecting)
+				setBottomSearchBox(!entry.isIntersecting)
 			},
 			{ threshold: 0 }
 		);
@@ -155,23 +155,22 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 
 
 			{/** SECTION 1 */}
-			<div className={`h-screen w-full flex flex-col items-center overflow-visible max-h-screen px-4 pb-32`}>
-				<div className='md:mt-20 mt-8 text-center mx-8 flex flex-col items-center'>
-					<h1 className='font-extrabold text-5xl text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "Hayden's portfolio" }</h1>
-					<p className='font-normal text-sm my-4 max-w-96 text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "This site contains reviews of code projects, short stories, non-fiction articles and more, all created by me, Hayden" }</p>
+			<div className={`section-1 h-screen w-full flex flex-col items-center overflow-visible max-h-screen`}>
+				
+				<div className='header-container md:mt-20 mt-8 text-center mx-8 flex flex-col items-center'>
+					<h1 className='header font-extrabold text-5xl text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "Hayden's portfolio" }</h1>
+					<p className='description font-normal text-sm my-4 max-w-96 text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "This site contains reviews of code projects, short stories, non-fiction articles and more, all created by me, Hayden" }</p>
 				</div>
 
-				<div className='flex justify-end items-center flex-col h-full w-full max-w-prose mb-10' ref={bottomSearchBoxRef}>
-					<div className={bottomSearchBox ? 'flex-col flex max-w-prose w-full items-end md:translate-y-10' : 'px-4 max-w-prose w-full z-50 fixed -bottom-60 transition-all duration-500 opacity-100 -translate-y-60 mb-4'}>
-						<AiChat
-							show_suggestions={bottomSearchBox}
-							set_filter_name={set_filter_name}
-							landing_page_mode={bottomSearchBox}
-							recursive_filtering={filter_Posts}
-							all_chips={unique_chips}/>
-
-					</div>
-
+				<div className={
+					bottomSearchBox ? `AIChat-container h-full w-full max-w-prose justify-center flex items-end px-4 mb-40`
+									: `fixed bottom-10 h-full z-50` } ref={bottomSearchBoxRef}>
+					<AiChat
+						show_suggestions={bottomSearchBox}
+						set_filter_name={set_filter_name}
+						landing_page_mode={!bottomSearchBox} // '!' because he search box not at the bottom means we're on the landing page
+						recursive_filtering={filter_Posts}
+						all_chips={unique_chips}/>
 				</div>
 
 				<div className='h-0 md:h-full'/>

@@ -55,8 +55,8 @@ export default function SuggestionTextBox({messageQueryingAI, tagSearchingAI, ge
                 </button>
             </div>
 
-            <div className="font-normal text-xs mt-1">
-            <span className="font-bold text-xs">Describe</span> what you want or <span className="font-bold text-xs">ask</span> a question. This feature uses generative AI to find content.
+            <div className="font-normal text-xs mt-2">
+                <span className="font-bold text-xs">Describe</span> what you want or <span className="font-bold text-xs">ask</span> a question. This feature uses generative AI to find content.
             </div>
 
             {bottomChildren}

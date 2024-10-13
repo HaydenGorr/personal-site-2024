@@ -5,13 +5,11 @@ import { send_tag_query_to_ai, send_chat_message_to_ai } from "../utils/ai_talk"
 const recommended_searches = require('../utils/suggested_searches.json')
 
 export default function AiChat(  {
-    topChild,
-    bottomChild,
+    show_suggestions,
     recursive_filtering,
     all_chips,
     landing_page_mode=false,
     set_filter_name,
-    show_suggestions
 } ) {
     
     const [user_input_text_backup, set_user_input_text_backup] = useState("") // what the user types into the text input
@@ -50,9 +48,7 @@ export default function AiChat(  {
     }, [currenty_querying_tags, currenty_querying_chat]); 
 
     const handle_tag_request = async (overrideText=null) => {
-        console.log("OT", overrideText)
         const result = await send_tag_query_to_ai(overrideText || user_input_text, set_currenty_querying_tags)
-        console.log("frfrfrf", result)
         if (result.error){
             // Handle error
             set_ai_response_error(true)
@@ -80,18 +76,20 @@ export default function AiChat(  {
     }
 
     return (
-        <div className={`w-full h-full flex justify-end flex-col`}>
+        <div className={`flex flex-col w-full`}>
 
-            {topChild}
-
-            {(landing_page_mode || ai_chat_response) &&
-            <div className='mb-4 mt-4 h-full flex justify-end flex-col'>
-                {ai_chat_response && <div className={`flex justify-end space-x-2 translate-y-3 z-50 ${(landing_page_mode || ai_chat_response) ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
-                    <button disabled={ai_chat_response==""} className={`${minimise_ai_response_box ? 'bg-dg-200' : 'bg-dy-200'} rounded-md text-xs h-2`} onClick={() => {set_minimise_ai_response_box(!minimise_ai_response_box)}}><div className={`${minimise_ai_response_box ? 'bg-dg-800 h-1 w-0.5 ' : 'bg-dy-800 h-0.5 w-1'} mx-4`}/></button>
-                    <button disabled={ai_chat_response==""} className='bg-dr-200 rounded-md text-xs h-2' onClick={() => {set_minimise_ai_response_box(false); set_ai_chat_response("")}}><div className='bg-dr-800 h-1 w-1 mx-4 rounded-full'/></button>
+            {(landing_page_mode || ai_chat_response) && <div className='mb-4 h-full'>
+                {ai_chat_response && <div className="flex justify-end space-x-1.5 translate-y-3">
+                    <button disabled={ai_chat_response==""} className={`${minimise_ai_response_box ? 'bg-dg-200' : 'bg-dy-200'} rounded-md text-xs h-2`} onClick={() => {set_minimise_ai_response_box(!minimise_ai_response_box)}}>
+                        <div className={`${minimise_ai_response_box ? 'bg-dg-800 h-1 w-0.5 ' : 'bg-dy-800 h-0.5 w-1'} mx-4`}/>
+                    </button>
+                    <button disabled={ai_chat_response==""} className='bg-dr-200 rounded-md text-xs h-2' onClick={() => {set_minimise_ai_response_box(false); set_ai_chat_response("")}}>
+                        <div className='bg-dr-800 h-1 w-1 mx-4 rounded-full'/>
+                    </button>
                 </div>}
                 <AiResponseChatbox ai_response_error={ai_response_error} largeBox={landing_page_mode} textToDisplay={ai_chat_response} minimiseResponseBox={minimise_ai_response_box}/>
             </div>}
+
 
             <SuggestionTextBox 
                 messageQueryingAI={currenty_querying_chat}
@@ -104,19 +102,18 @@ export default function AiChat(  {
                 userText={user_input_text}
                 setUserText={set_user_input_text}/>
 
-            {show_suggestions && <div className='translate-y-5 w-full flex h-full flex-nowrap space-x-4 overflow-x-auto' style={{
+            <div className='w-full flex h-6 flex-nowrap space-x-4 overflow-x-auto mt-6' style={{
                 maskImage: 'linear-gradient(to left, transparent 0%, black 10%)',
                 WebkitMaskImage: 'linear-gradient(to left, transparent 0%, black 10%)'
-                }}>
-            {recommended_searches.map((item, index) =>(
-                <button key={index} className='bg-zinc-900 rounded-full text-sm text-zinc-400 px-4 py-1 overflow-visible relative flex-shrink-0 -translate-y-0.5'
-                onClick={() => {handle_tag_request(item); }}>
-                    {item}
+            }}>
+                {recommended_searches.map((item, index) =>(<button 
+                    key={index}
+                    className='bg-zinc-900 rounded-full text-sm text-zinc-400 px-4 overflow-visible relative flex-shrink-0'
+                    onClick={() => {handle_tag_request(item); }}>
+                        {item}
                 </button>
-            ))}
-            </div>}
-
-            {bottomChild}
+                ))}
+            </div>
 
         </div>
     );
