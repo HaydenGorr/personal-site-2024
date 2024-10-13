@@ -162,15 +162,17 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 					<p className='description font-normal text-sm my-4 max-w-96 text-neutral-100'>{ selectedKeywords.length > 0 ? pageTitle.toUpperCase() : "This site contains reviews of code projects, short stories, non-fiction articles and more, all created by me, Hayden" }</p>
 				</div>
 
-				<div className={
-					bottomSearchBox ? `AIChat-container h-full w-full max-w-prose justify-center flex items-end px-4 mb-40`
-									: `fixed bottom-10 h-full z-50` } ref={bottomSearchBoxRef}>
-					<AiChat
-						show_suggestions={bottomSearchBox}
-						set_filter_name={set_filter_name}
-						landing_page_mode={!bottomSearchBox} // '!' because he search box not at the bottom means we're on the landing page
-						recursive_filtering={filter_Posts}
-						all_chips={unique_chips}/>
+				<div  ref={bottomSearchBoxRef} className='w-full h-full flex justify-center'>
+					<div className={
+						bottomSearchBox ? `fixed -bottom-60 z-50 -translate-y-64 transition-transform duration-500 max-w-prose px-4 w-full`
+										: `AIChat-container h-full w-full max-w-prose justify-center flex items-end pb-40 md:pb-0 px-4` }>
+						<AiChat
+							show_suggestions={bottomSearchBox}
+							set_filter_name={set_filter_name}
+							landing_page_mode={!bottomSearchBox} // '!' because he search box not at the bottom means we're on the landing page
+							recursive_filtering={filter_Posts}
+							all_chips={unique_chips}/>
+					</div>
 				</div>
 
 				<div className='h-0 md:h-full'/>
@@ -178,7 +180,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 			</div>
 
 			{/** SECTION 2 */}
-			<div className='relative flex flex-col -translate-y-32'>
+			<div className='section-2 relative flex flex-col -translate-y-32'>
 
 				<div className='w-full flex flex-col items-center mb-4'>
 					<p className='text-xs text-neutral-100 opacity-95'>psst... content down here</p>

@@ -78,7 +78,7 @@ export default function AiChat(  {
     return (
         <div className={`flex flex-col w-full`}>
 
-            {(landing_page_mode || ai_chat_response) && <div className='mb-4 h-full'>
+            {(landing_page_mode || ai_chat_response) && <div className={`mb-4 h-full`}>
                 {ai_chat_response && <div className="flex justify-end space-x-1.5 translate-y-3">
                     <button disabled={ai_chat_response==""} className={`${minimise_ai_response_box ? 'bg-dg-200' : 'bg-dy-200'} rounded-md text-xs h-2`} onClick={() => {set_minimise_ai_response_box(!minimise_ai_response_box)}}>
                         <div className={`${minimise_ai_response_box ? 'bg-dg-800 h-1 w-0.5 ' : 'bg-dy-800 h-0.5 w-1'} mx-4`}/>
@@ -87,7 +87,7 @@ export default function AiChat(  {
                         <div className='bg-dr-800 h-1 w-1 mx-4 rounded-full'/>
                     </button>
                 </div>}
-                <AiResponseChatbox ai_response_error={ai_response_error} largeBox={landing_page_mode} textToDisplay={ai_chat_response} minimiseResponseBox={minimise_ai_response_box}/>
+                <AiResponseChatbox ai_response_error={ai_response_error} largeBox={landing_page_mode} textToDisplay={ai_chat_response} minimiseResponseBox={minimise_ai_response_box} bottomAligned={show_suggestions}/>
             </div>}
 
 
@@ -102,7 +102,7 @@ export default function AiChat(  {
                 userText={user_input_text}
                 setUserText={set_user_input_text}/>
 
-            <div className='w-full flex h-6 flex-nowrap space-x-4 overflow-x-auto mt-6' style={{
+            {!show_suggestions && <div className='w-full flex h-6 flex-nowrap space-x-4 overflow-x-auto mt-6' style={{
                 maskImage: 'linear-gradient(to left, transparent 0%, black 10%)',
                 WebkitMaskImage: 'linear-gradient(to left, transparent 0%, black 10%)'
             }}>
@@ -113,7 +113,7 @@ export default function AiChat(  {
                         {item}
                 </button>
                 ))}
-            </div>
+            </div>}
 
         </div>
     );
