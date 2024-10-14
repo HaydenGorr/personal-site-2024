@@ -187,7 +187,7 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
                     <div className="flex flex-col">
                         <div className="flex justify-between">
                             {background_colour_array.map((CSScolour, index) => {
-                                return <div key={index} className={`h-5 w-12 rounded-md ${CSScolour} cursor-pointer`} onClick={() => {change_background_style_callback(CSScolour)}}/>
+                                return <div key={index} className={`h-10 w-10 rounded-md ${CSScolour} cursor-pointer`} onClick={() => {change_background_style_callback(CSScolour)}}/>
                             })}
                         </div>
                     </div>
