@@ -56,10 +56,10 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
             {/** Button */}
             <div 
                 className={
-                    `z-10 rounded-md flex items-center px-2 bg-dg-400 transition-all ease-in-out relative
+                    `z-10 rounded-md flex items-center px-2 bg-dg-400 transition-all ease-in-out relative duration-500
                     ${buttonPressed ? '' : 'cursor-pointer'} 
-                    ${scrollAway ? 'h-2 opacity-30 duration-500 ' : 'duration-200 h-9 opacity-100'} 
-                    ${buttonPressed ? 'w-full h-28' : 'w-[calc(8rem + 0.5rem + 1.5rem)]'}`
+                    ${scrollAway ? 'h-2 opacity-30 duration-500 ' : 'duration-500 h-9 opacity-100'} 
+                    ${buttonPressed ? 'w-full h-28' : 'w-40'}`
                 }
                 onClick={() => {
                         if (buttonPressed) return;
@@ -67,7 +67,7 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
                         else { setButtonPressed(!buttonPressed); handleHide();}
                     }}>
 
-                {!hide && <div className={`flex transition-opacity w-full ${scrollAway || buttonPressed ? 'opacity-0 duration-200' : 'opacity-100 duration-500'}`}>
+                {/* {!hide && <div className={`flex transition-opacity w-full ${scrollAway || buttonPressed ? 'opacity-0 duration-200' : 'opacity-100 duration-500'}`}>
                     <div className={`h-6 w-6 rounded-md transition-colors duration-500 mr-2 ${Cookies.get('backgroundColour') || "DarkGreyBackgroundColour"}`}/> 
                     <div className={`${Cookies.get('user_font') || "font-Josefin"}`}>typeface</div>
                 </div>}
@@ -87,7 +87,7 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
                             })}
                         </div>
                     </div>
-                </div>}
+                </div>} */}
                 
             </div>
                         
