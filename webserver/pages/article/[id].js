@@ -7,78 +7,101 @@ import Image from 'next/image';
 import ImageWrapper from '../../components/image_wrapper';
 import dynamic from 'next/dynamic';
 import getDate from '../../utils/date_utils'
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import TableOfContentsButton from '../../components/table_of_contents_button';
 import ChangeStyle from '../../components/change_style'
 import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, updateThemeColor } from '../../utils/colour';
 import LineBreak from '../../components/line_break';
 import NewChangeStyle from '../../components/new_change_style';
+import Cookies from 'js-cookie'
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
 });
 
 export default function Article({mdxSource, title, chips, publishDate, wordCount, headers, setBackgroundColour, backgroundColour}) {
-  const components = {
-      Chip,
-      MB_Button,
-      Image,
-      ImageWrapper,
-      pre: (props) => <pre {...props} style={{ backgroundColor: "#383838" }} />,
-      // a: CustomLink
-      a: ({ href, children }) => <CustomLink href={href} children={children} backgroundColour={backgroundColour} />,
-      p: (props) => <p {...props} style={{ color: getTextColour(backgroundColour), textAlign: 'left' }} />,
-      strong: (props) => <strong {...props} style={{ color: getTextColour(backgroundColour) }} />,
-  };
+	const components = {
+		Chip,
+		MB_Button,
+		Image,
+		ImageWrapper,
+		pre: (props) => <pre {...props} style={{ backgroundColor: "#383838" }} />,
+		// a: CustomLink
+		a: ({ href, children }) => <CustomLink href={href} children={children} backgroundColour={backgroundColour} />,
+		p: (props) => <p {...props} style={{ color: getTextColour(backgroundColour), textAlign: 'left' }} />,
+		strong: (props) => <strong {...props} style={{ color: getTextColour(backgroundColour) }} />,
+	};
 
-  const [fontUsed, setFontUsed] = useState("font-Josefin");
-  const containerRef = useRef(null);
+	const [opened_customise_menu, set_opened_customise_menu] = useState(false);
+	const [fontUsed, setFontUsed] = useState("font-Josefin");
+	const containerRef = useRef(null);
 
-  const scrollToText = (text) => {
-    const elements = Array.from(containerRef.current.querySelectorAll('h2, h3, h4, h5, h6'))
-      .find(el => el.textContent.includes(text));
-    
-    if (elements) {
-      elements.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+	const scrollToText = (text) => {
+		const elements = Array.from(containerRef.current.querySelectorAll('h2, h3, h4, h5, h6'))
+			.find(el => el.textContent.includes(text));
+		
+		if (elements) {
+			elements.scrollIntoView({ behavior: 'smooth' });
+		}
+	};
 
-  return (
-      <Layout stickyHeader={false} backgroundColour={backgroundColour}>
-        <div className={`flex justify-center p-6 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
-          <div className={`prose max-w-prose text`} style={{'--tw-prose-headings' : getTextColour(backgroundColour), color: getTextColour(backgroundColour) }}>
-            <h1 className={`md:mt-4 mt-8 mb-4 font-extrabold text-5xl text-neutral-100`}
-              	style={{'--tw-prose-headings' : getTextColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
-                
-            {(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center space-x-2 mb-8'>
-				<div className='relative flex bg-dg-800 rounded-md h-fit'>
-					<p className='text-xs align-middle self-center m-2 text-dg-200'>{`${wordCount} words`}</p>
+	useEffect(() => {
+		const user_backgorund_preference = Cookies.get('backgroundColour')
+		const user_font_preference = Cookies.get('user_font')
+		
+		if (user_backgorund_preference === undefined){
+			Cookies.set('backgroundColour', "DarkGreyBackgroundColour")
+		}
+		if (user_font_preference === undefined){
+			Cookies.set('user_font', "font-Josefin")
+		}
+		setBackgroundColour(user_backgorund_preference || "DarkGreyBackgroundColour")
+	}, []);
+
+	return (
+		<Layout stickyHeader={false} backgroundColour={backgroundColour}>
+			<div className={`flex justify-center p-6 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
+				<div className={`prose max-w-prose text flex flex-col items-center transition-all duration-500`} style={{'--tw-prose-headings' : getTextColour(backgroundColour), color: getTextColour(backgroundColour) }}>
+					<h1 className={`md:mt-4 mt-8 mb-6 font-extrabold text-5xl text-neutral-100`}
+						style={{'--tw-prose-headings' : getTextColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
+						
+					{(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center space-x-2 mb-8'>
+						{/** Word count */}
+						<div className='relative flex bg-dg-800 rounded-md h-fit'>
+							<p className='text-xs align-middle self-center m-2 text-dg-200'>{`${wordCount} words`}</p>
+						</div>
+						{/** Hold long to read */}
+						<div className='relative flex bg-dpi-800 rounded-md h-fit'>
+							<p className='text-xs align-middle self-center m-2 text-dpi-200'>{Math.floor(wordCount/200) + " min to read"}</p>
+						</div>
+					</div>}
+
+					<hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`} style={{color: getTirtaryColour(backgroundColour)}}/>
+					
+					<div ref={containerRef} className={`leading-8 ${getTextColour(backgroundColour)}`}>
+						<MDXRemote {...mdxSource} components={components} />
+					</div>
+
+					<div className="flex justify-center position">by Hayden</div>
+					<p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
 				</div>
-				<div className='relative flex bg-dpi-800 rounded-md h-fit'>
-					<p className='text-xs align-middle self-center m-2 text-dpi-200'>{Math.floor(wordCount/200) + "min to read"}</p>
+				<div className='misc-button-container fixed bottom-4 w-full flex justify-center'>
+					<div className='w-full max-w-[calc(50rem)]'>
+						<NewChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour}></NewChangeStyle>
+					</div>
+						
 				</div>
-            </div>}
+			</div>
 
-            <hr className={`${(wordCount != undefined && wordCount > 0) ? 'mt-0' : ''}`} style={{color: getTirtaryColour(backgroundColour)}}/>
-            
-            <div ref={containerRef} className={`leading-8 ${getTextColour(backgroundColour)}`}>
-              	<MDXRemote {...mdxSource} components={components} />
-            </div>
-
-            <div className="flex justify-center position">by Hayden</div>
-            <p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
-          </div>
-        </div>
-
-        <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3'>
-          {/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
-          {/* <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} /> */}
-		      {/* <NewChangeStyle setFontUsed={setFontUsed}></NewChangeStyle> */}
-        </div>
+			{/* <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3 w-full'> */}
+			{/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
+			{/* <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} /> */}
+				{/* <NewChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour}></NewChangeStyle> */}
+			{/* </div> */}
 
 
-      </Layout>
-  );
+		</Layout>
+	);
 }
 
 function getHeaders(text){

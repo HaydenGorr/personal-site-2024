@@ -2,12 +2,16 @@ import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
 import MB_Button from "./MB_Button";
 import { getPrimaryColour, getSecondaryColour, getTextColour, updateThemeColor } from '../utils/colour';
+import Cookies from 'js-cookie'
 
 export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
 
     const [scrollAway, setScrollAway] = useState(false);
+    const [hide, setHide] = useState(false);
     const [showColourSelection, setShowColourSelection] = useState(false);
     const [buttonPressed, setButtonPressed] = useState(false);
+
+    const background_colour_array = ["WhiteBackgroundColour", "CreamBackgroundColour", "GreyBackgroundColour", "DarkGreyBackgroundColour"]
 
     useEffect(() => {
         let lastScrollTop = 0;
@@ -16,8 +20,11 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
             const st = window.pageYOffset || document.documentElement.scrollTop;
             if (st > lastScrollTop) {
                 // Scroll down
+                setScrollAway(true)
+                setHide(false)
             } else {
                 // Scroll up
+                setScrollAway(false)
             }
             lastScrollTop = st <= 0 ? 0 : st; // For mobile or negative scrolling
         };
@@ -26,55 +33,62 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const getbackgoundStyle = (pos) => {
-        let styles = "flex px-4 w-fit h-8 shadow items-center justify-center transition-all duration-300 font-medium"
+    const handleHide = () => {
+        setTimeout(() => {
+            setHide(!hide);
+        }, 200);
+    };
 
-        if (pos == "middle") null;
-        else if (pos == "end") styles += " rounded-r-2xl"
-        else if (pos == "start" && buttonPressed) styles += " rounded-l-2xl rounded-r-sm"
-        else if (pos == "start" && !buttonPressed) styles += " rounded-2xl"
+    const change_background_style_callback = (colour) => {
+        Cookies.set('backgroundColour', colour)
+            setBackgroundColour(colour)
+            updateThemeColor(getPrimaryColour(colour))
+    }
 
-        return styles;
+    const setFontCallback = (font) => {
+        setFontUsed(font); 
+        Cookies.set('user_font', font);
     }
 
     return (
-        <div className={`mr-3 overflow-hidden flex`}>
+        <div className={`mx-3 overflow-visible flex`}>
 
-            <div className={"cursor-pointer z-10 bg-zinc-300 flex items-center px-4 rounded-md"} onClick={() => {setButtonPressed(!buttonPressed);}}>
-                <Image className='' src={'/images/svgs/colour_icon.svg'} width={25} height={25}></Image>
+            {/** Button */}
+            <div 
+                className={
+                    `z-10 rounded-md flex items-center px-2 bg-dg-400 transition-all ease-in-out relative
+                    ${buttonPressed ? '' : 'cursor-pointer'} 
+                    ${scrollAway ? 'h-2 opacity-30 duration-500 ' : 'duration-200 h-9 opacity-100'} 
+                    ${buttonPressed ? 'w-full h-28' : 'w-[calc(8rem + 0.5rem + 1.5rem)]'}`
+                }
+                onClick={() => {
+                        if (buttonPressed) return;
+                        if (scrollAway) { setScrollAway(false) }
+                        else { setButtonPressed(!buttonPressed); handleHide();}
+                    }}>
 
-                <div className=""></div>
-            </div>
+                {!hide && <div className={`flex transition-opacity w-full ${scrollAway || buttonPressed ? 'opacity-0 duration-200' : 'opacity-100 duration-500'}`}>
+                    <div className={`h-6 w-6 rounded-md transition-colors duration-500 mr-2 ${Cookies.get('backgroundColour') || "DarkGreyBackgroundColour"}`}/> 
+                    <div className={`${Cookies.get('user_font') || "font-Josefin"}`}>typeface</div>
+                </div>}
 
-            <div className={`${buttonPressed ? '' : 'z-9 opacity-0 pointer-events-none'} flex transition-all duration-300 overflow-hidden`}>
-                <div className={`ml-2 flex space-x-3 ${getbackgoundStyle("middle")} ${!buttonPressed ? ' -translate-x-40' : ''} bg-blue-400 rounded-sm`}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer WhiteBackgroundColour"
-                        onClick={() => {
-                            setBackgroundColour("WhiteBackgroundColour")
-                            updateThemeColor(getPrimaryColour("WhiteBackgroundColour"))
-                            }}></div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer CreamBackgroundColour"
-                    onClick={() => {
-                        setBackgroundColour("CreamBackgroundColour")
-                        updateThemeColor(getPrimaryColour("CreamBackgroundColour"))
-                    }}></div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer GreyBackgroundColour"
-                    onClick={() => {
-                        setBackgroundColour("GreyBackgroundColour")
-                        updateThemeColor(getPrimaryColour("GreyBackgroundColour"))
-                    }}></div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer DarkGreyBackgroundColour"
-                    onClick={() => {
-                        setBackgroundColour("DarkGreyBackgroundColour")
-                        updateThemeColor(getPrimaryColour("DarkGreyBackgroundColour"))
-                    }}></div>
-                </div>
-
-                <div className={`ml-2 flex space-x-3 ${getbackgoundStyle("end")} ${!buttonPressed ? ' -translate-x-40' : ''} bg-blue-500 rounded-sm`}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer font-serif font-medium text-xl" onClick={() => {setFontUsed("font-serif")}}>A</div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer font-sans font-medium text-xl" onClick={() => {setFontUsed("font-sans")}}>A</div>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer font-dys font-medium text-xl" onClick={() => {setFontUsed("font-dys")}}>D</div>
-                </div>
+                {hide && <div className="identify w-full h-full p-4 flex flex-col justify-between">
+                    <div className="flex flex-col">
+                        <div className="flex justify-between">
+                            <div className={`h-5 font-Josefin font-medium text-xl cursor-pointer translate-y-0.5`} onClick={() => {setFontCallback("font-Josefin")}}>Sans-Serif</div>
+                            <div className={`h-5 font-serif font-medium text-xl cursor-pointer`} onClick={() => {setFontCallback("font-serif")}}>Serif</div>
+                            <div className={`h-5 font-dys font-medium text-xl cursor-pointer`} onClick={() => {setFontCallback("font-dys")}}>Dyslexic</div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col">
+                        <div className="flex justify-between">
+                            {background_colour_array.map((CSScolour, index) => {
+                                return <div key={index} className={`h-5 w-12 rounded-md ${CSScolour} cursor-pointer`} onClick={() => {change_background_style_callback(CSScolour)}}/>
+                            })}
+                        </div>
+                    </div>
+                </div>}
+                
             </div>
                         
         </div>

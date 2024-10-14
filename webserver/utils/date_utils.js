@@ -49,4 +49,19 @@ export const getDaysAgo = (dateString) => {
     return `${yearnum} years ago`;
 
 };
+
+export const getFormattedDate = (dateString) => {
+    const inputDate = new Date(dateString);
+    const currentDate = new Date();
+
+    // Remove time parts for an accurate day difference
+    const dateOnly = new Date(inputDate.setHours(0, 0, 0, 0));
+    const currentDateOnly = new Date(currentDate.setHours(0, 0, 0, 0));
+
+    let day = dateOnly.getDay
+
+    return `${dateOnly.getDay()}/${dateOnly.getMonth()}/${dateOnly.getFullYear()}`
+
+};
+
 export default getDate;

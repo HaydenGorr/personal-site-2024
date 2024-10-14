@@ -7,6 +7,7 @@ import NewClosableChip from '../components/new_closable_chip'
 import AiChat from '../components/ai_chat';
 import recursive_filtering from '../utils/content_filtering'
 const recommended_searches = require('../utils/suggested_searches.json')
+import { getFormattedDate } from '../utils/date_utils';
 
 export async function getStaticProps() {
   try {
@@ -213,10 +214,10 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 						{Object.entries(categorised_content).map(([key, value]) => (
 							<div className='mt-8'>
 								<div className='w-full flex justify-center px-4'>
-									<h3 className='w-full text-center max-w-prose text-lg font-semibold'>{key || "uncategoriesd"}</h3>
+									<h3 className='w-full text-center max-w-prose text-lg font-semibold'>{`${key || "uncategoriesd"} [${value.length}]`}</h3>
 								</div>
 								
-								<div className='flex overflow-x-scroll '>
+								<div className='flex overflow-x-scroll'>
 									{value.map((item, index) => (
 									<div key={index} className='m-3 flex items-center' >
 										<NewContainer
@@ -229,7 +230,6 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 									))}
 								</div>
 							</div>
-
 						))}
 					</div>
 				</div>}
