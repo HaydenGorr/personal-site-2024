@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image";
 import MB_Button from "./MB_Button";
-import { getPrimaryColour, getSecondaryColour, getTextColour, updateThemeColor } from '../utils/colour';
+import { getPrimaryColour, getSecondaryColour, getTextColour, updateThemeColor, getDarkerColour } from '../utils/colour';
 import Cookies from 'js-cookie'
 
 export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
@@ -158,6 +158,7 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
                     `z-10 rounded-md flex items-center px-2 bg-dg-400 transition-all ease-in-out relative duration-300 max-w-96
                     ${expand_settings_container ? 'w-full h-32' : `cursor-pointer w-32 ${double_minimised ? 'h-2 opacity-30' : 'h-9 opacity-100'}`}`
                 }
+                style={ {backgroundColor: getDarkerColour(Cookies.get('backgroundColour' || "DarkGreyBackgroundColour"))} }
                 onClick={() => {
                         if (expand_settings_container) return;
                         else if (double_minimised) wake_frome_double_minimised(); 

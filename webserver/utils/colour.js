@@ -48,9 +48,18 @@ const getTextColour = (backgroundColour) => {
 }
 
 
+const getDarkerColour = (backgroundColour) => {
+  if (backgroundColour === 'WhiteBackgroundColour') return "rgb(219, 219, 219)"
+  else if (backgroundColour === 'CreamBackgroundColour')  return "rgb(212, 203, 178)"
+  else if (backgroundColour === 'GreyBackgroundColour')  return "rgb(51, 50, 54)"
+  else if (backgroundColour === 'DarkGreyBackgroundColour') return "rgb(5, 5, 5)"
+  else return "rgb(18, 18, 18)"
+}
 
 
 
 
 
-module.exports = { getPrimaryColour, getSecondaryColour, getTirtaryColour, getTextColour, updateThemeColor };
+
+
+module.exports = { getPrimaryColour, getSecondaryColour, getTirtaryColour, getTextColour, updateThemeColor, getDarkerColour };
