@@ -12,8 +12,12 @@ import TableOfContentsButton from '../../components/table_of_contents_button';
 import ChangeStyle from '../../components/change_style'
 import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, updateThemeColor } from '../../utils/colour';
 import LineBreak from '../../components/line_break';
-import NewChangeStyle from '../../components/new_change_style';
+import PopUpMain from '../../components/pop_up_settings/pop_up_main';
 import Cookies from 'js-cookie'
+import StyleCustomiser from '../../components/pop_up_settings/content/style_customiser';
+import StyleCustomiserHeader from '../../components/pop_up_settings/headers/style_customiser_header';
+import ArticleIndexHeader from '../../components/pop_up_settings/headers/article_index_header';
+import ArticleIndex from '../../components/pop_up_settings/content/article_index'
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
@@ -86,19 +90,19 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 					<p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
 				</div>
 				<div className='misc-button-container fixed bottom-4 w-full flex justify-center'>
-					<div className='w-full max-w-[calc(50rem)]'>
-						<NewChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour}></NewChangeStyle>
+					<div className='w-full max-w-[calc(50rem)] overflow-y-scroll space-y-4'>
+						<PopUpMain>
+							<StyleCustomiserHeader/>
+							<StyleCustomiser setBackgroundColour={setBackgroundColour} setFontUsed={setFontUsed}/>
+						</PopUpMain>
+						<PopUpMain>
+							<ArticleIndexHeader/>
+							<ArticleIndex setBackgroundColour={setBackgroundColour} setFontUsed={setFontUsed}/>
+						</PopUpMain>
 					</div>
 						
 				</div>
 			</div>
-
-			{/* <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3 w-full'> */}
-			{/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
-			{/* <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} /> */}
-				{/* <NewChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour}></NewChangeStyle> */}
-			{/* </div> */}
-
 
 		</Layout>
 	);

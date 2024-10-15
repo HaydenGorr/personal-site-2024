@@ -12,7 +12,7 @@ const updateThemeColor = (color) => {
 };
 
 
-
+const colour_array = ["WhiteBackgroundColour", "CreamBackgroundColour", "GreyBackgroundColour", "DarkGreyBackgroundColour"]
 
 const getPrimaryColour = (backgroundColour) => {
   if (backgroundColour === 'WhiteBackgroundColour') return "#fafafa"
@@ -62,4 +62,4 @@ const getDarkerColour = (backgroundColour) => {
 
 
 
-module.exports = { getPrimaryColour, getSecondaryColour, getTirtaryColour, getTextColour, updateThemeColor, getDarkerColour };
+module.exports = { getPrimaryColour, getSecondaryColour, getTirtaryColour, getTextColour, updateThemeColor, getDarkerColour, colour_array };
