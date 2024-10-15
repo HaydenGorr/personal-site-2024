@@ -2,16 +2,14 @@ import { useState, useEffect, useRef } from "react"
 import { getDarkerColour } from '../../utils/colour';
 import Cookies from 'js-cookie'
 
-export default function PopUpMain({ children }) {
+export default function PopUpMain({ colour, children }) {
 
     {/** Header size vars for sizing the header dynamically */}
     const PopupheaderRef = useRef(null);
+    const PopupContentRef = useRef(null);
     const [headerW, setHeaderW] = useState(null);
-    useEffect(() => {
-        if (PopupheaderRef.current) {
-            setHeaderW(PopupheaderRef.current.scrollWidth);
-        }
-      }, [children]);
+    const [contentH, setcontentH] = useState(null);
+    const [contentW, setcontentW] = useState(null);
 
     {/** Animation State Vars */}
     const [expand_settings_container, set_expand_settings_container] = useState(false);
@@ -47,6 +45,18 @@ export default function PopUpMain({ children }) {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    useEffect(() => {
+        
+        if (PopupheaderRef.current) {
+            setHeaderW(PopupheaderRef.current.scrollWidth);
+        }
+        if (PopupContentRef.current) {
+            setcontentH(PopupContentRef.current.scrollHeight);
+            setcontentW(PopupContentRef.current.scrollWidth);
+        }
+      }, [children, remove_settings_name, remove_settings, ]);
+
 
     const openSettings = () => {
 
@@ -120,17 +130,18 @@ export default function PopUpMain({ children }) {
     }
 
     return (
-        <div className={`mx-3 overflow-visible flex`}>
+        <div className={`mx-3 flex w-full`}>
 
             {/** Button */}
             <div 
                 className={
-                    `z-10 rounded-md flex items-center px-2 bg-dg-400 transition-all ease-in-out relative duration-300 max-w-96 ml-4
-                    ${expand_settings_container ? 'w-full h-32' : `cursor-pointer w-32 ${double_minimised ? 'h-2 opacity-30' : 'h-9 opacity-100'}`}`
+                    `z-10 rounded-md flex transition-all ease-in-out relative duration-300   mr-6
+                    ${expand_settings_container ? '' : `cursor-pointer ${double_minimised ? 'opacity-30' : 'opacity-100'}`}`
                 }
                 style={ {
-                    backgroundColor: getDarkerColour(Cookies.get('backgroundColour' || "DarkGreyBackgroundColour")),
-                    width: expand_settings_container  ? `` : `calc(${headerW}px + 1rem)`
+                    backgroundColor: colour,
+                    width: expand_settings_container  ? `calc(${contentW}px)` : `calc(${headerW}px)`,
+                    height: expand_settings_container  ? `calc(${contentH}px)` : `${double_minimised ? '0.5rem' : '2.25rem'}`
                 } }
                 onClick={() => {
                         if (expand_settings_container) return;
@@ -148,7 +159,12 @@ export default function PopUpMain({ children }) {
                         {children[0]}
                     </div>}
 
-                {!remove_settings && <div className={`w-full h-full ${make_settings_invisible ? 'opacity-0' : 'opacity-100'}`}>{children[1]}</div>}
+                {!remove_settings && 
+                <div 
+                    ref={PopupContentRef}
+                    className={`w-full ${make_settings_invisible ? 'opacity-0' : 'opacity-100'}`}>
+                        { children[1] }
+                </div>}
                 
             </div>
                         

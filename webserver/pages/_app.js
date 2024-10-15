@@ -2,12 +2,25 @@ import Head from 'next/head';
 import '../styles/global.css';
 import { useEffect, useState } from 'react';
 import Blob from '../components/blob'
+import Cookies from 'js-cookie'
 
 export default function MyApp({ Component, pageProps }) {
 
   const [backgroundColour, setBackgroundColour] = useState('DarkGreyBackgroundColour');
 
   useEffect(() => {
+		const user_backgorund_preference = Cookies.get('backgroundColour')
+		const user_font_preference = Cookies.get('user_font')
+		
+		if (user_backgorund_preference === undefined){
+      console.log("user background preferece is UNDEFINED")
+			Cookies.set('backgroundColour', "DarkGreyBackgroundColour", { path: '/' })
+		}
+		if (user_font_preference === undefined){
+      console.log("user font preferece is UNDEFINED")
+			Cookies.set('user_font', "font-Josefin", { path: '/' })
+		}
+
     const handleTabClose = (event) => {
       sessionStorage.clear();
     };
