@@ -1,11 +1,19 @@
 import { useState, useEffect, useRef } from "react"
-import Image from "next/image";
-import MB_Button from "../MB_Button";
-import { getPrimaryColour, getSecondaryColour, getTextColour, updateThemeColor, getDarkerColour } from '../../utils/colour';
+import { getDarkerColour } from '../../utils/colour';
 import Cookies from 'js-cookie'
 
-export default function PopUpMain({ setFontUsed, setBackgroundColour, children }) {
+export default function PopUpMain({ children }) {
 
+    {/** Header size vars for sizing the header dynamically */}
+    const PopupheaderRef = useRef(null);
+    const [headerW, setHeaderW] = useState(null);
+    useEffect(() => {
+        if (PopupheaderRef.current) {
+            setHeaderW(PopupheaderRef.current.scrollWidth);
+        }
+      }, [children]);
+
+    {/** Animation State Vars */}
     const [expand_settings_container, set_expand_settings_container] = useState(false);
     const [make_settings_name_invisible, set_make_settings_name_invisible] = useState(false);
     const [remove_settings_name, set_remove_settings_name] = useState(false);
@@ -117,10 +125,13 @@ export default function PopUpMain({ setFontUsed, setBackgroundColour, children }
             {/** Button */}
             <div 
                 className={
-                    `z-10 rounded-md flex items-center px-2 bg-dg-400 transition-all ease-in-out relative duration-300 max-w-96
-                    ${expand_settings_container ? 'w-full h-32' : `cursor-pointer w-fit ${double_minimised ? 'h-2 opacity-30' : 'h-9 opacity-100'}`}`
+                    `z-10 rounded-md flex items-center px-2 bg-dg-400 transition-all ease-in-out relative duration-300 max-w-96 ml-4
+                    ${expand_settings_container ? 'w-full h-32' : `cursor-pointer w-32 ${double_minimised ? 'h-2 opacity-30' : 'h-9 opacity-100'}`}`
                 }
-                style={ {backgroundColor: getDarkerColour(Cookies.get('backgroundColour' || "DarkGreyBackgroundColour"))} }
+                style={ {
+                    backgroundColor: getDarkerColour(Cookies.get('backgroundColour' || "DarkGreyBackgroundColour")),
+                    width: expand_settings_container  ? `` : `calc(${headerW}px + 1rem)`
+                } }
                 onClick={() => {
                         if (expand_settings_container) return;
                         else if (double_minimised) wake_frome_double_minimised(); 
@@ -129,8 +140,11 @@ export default function PopUpMain({ setFontUsed, setBackgroundColour, children }
 
                 {!remove_settings_name && 
                     <div 
-                    className={`flex transition-opacity w-full duration-200
-                    ${make_settings_name_invisible ? 'opacity-0' : 'opacity-100 '}`}>
+                    className={
+                        `mil flex transition-opacity duration-200
+                        ${make_settings_name_invisible ? 'opacity-0' : 'opacity-100 '}`
+                    }
+                    ref={PopupheaderRef}>
                         {children[0]}
                     </div>}
 
