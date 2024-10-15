@@ -10,10 +10,14 @@ import getDate from '../../utils/date_utils'
 import { useEffect, useRef, useState } from 'react';
 import TableOfContentsButton from '../../components/table_of_contents_button';
 import ChangeStyle from '../../components/change_style'
-import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, updateThemeColor } from '../../utils/colour';
+import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, getDarkerColour } from '../../utils/colour';
 import LineBreak from '../../components/line_break';
-import NewChangeStyle from '../../components/new_change_style';
+import PopUpMain from '../../components/pop_up_settings/pop_up_main';
 import Cookies from 'js-cookie'
+import StyleCustomiser from '../../components/pop_up_settings/content/style_customiser';
+import StyleCustomiserHeader from '../../components/pop_up_settings/headers/style_customiser_header';
+import ArticleIndexHeader from '../../components/pop_up_settings/headers/article_index_header';
+import ArticleIndex from '../../components/pop_up_settings/content/article_index'
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
@@ -37,8 +41,10 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 	const containerRef = useRef(null);
 
 	const scrollToText = (text) => {
-		const elements = Array.from(containerRef.current.querySelectorAll('h2, h3, h4, h5, h6'))
+		const elements = Array.from(containerRef.current.querySelectorAll('h1, h2, h3, h4, h5, h6'))
 			.find(el => el.textContent.includes(text));
+
+		console.log("bucket ", elements)
 		
 		if (elements) {
 			elements.scrollIntoView({ behavior: 'smooth' });
@@ -46,17 +52,23 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 	};
 
 	useEffect(() => {
-		const user_backgorund_preference = Cookies.get('backgroundColour')
-		const user_font_preference = Cookies.get('user_font')
-		
-		if (user_backgorund_preference === undefined){
-			Cookies.set('backgroundColour', "DarkGreyBackgroundColour")
-		}
-		if (user_font_preference === undefined){
-			Cookies.set('user_font', "font-Josefin")
-		}
-		setBackgroundColour(user_backgorund_preference || "DarkGreyBackgroundColour")
+		setBackgroundColour(Cookies.get('backgroundColour'))
 	}, []);
+
+	
+    const [button_colour, set_button_colour] = useState(null);
+    const [check, setCheck] = useState(false);
+    useEffect(() => {
+        // Get the background colour from the cookie
+        const bgColor = Cookies.get('backgroundColour');
+        if (bgColor) {
+			// Set the state with the darker colour
+			set_button_colour(getDarkerColour(bgColor));
+        } else {
+			// Optionally set a default color if the cookie is not set
+			set_button_colour(getDarkerColour('GreyBackgroundColour')); // Replace with your default color
+        }
+      }, [check]);
 
 	return (
 		<Layout stickyHeader={false} backgroundColour={backgroundColour}>
@@ -86,19 +98,19 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 					<p className="flex justify-center place-content-center font-sm mt-3 text-gray-500 text-xs">{"published: " + getDate(publishDate).toString()}</p>
 				</div>
 				<div className='misc-button-container fixed bottom-4 w-full flex justify-center'>
-					<div className='w-full max-w-[calc(50rem)]'>
-						<NewChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour}></NewChangeStyle>
+					<div className='w-full max-w-[calc(50rem)] max-h-screen pt-4 overflow-y-scroll space-y-4' onClick={() => { setCheck(!check) }}>
+						<PopUpMain colour={button_colour} >
+							<StyleCustomiserHeader/>
+							<StyleCustomiser setBackgroundColour={setBackgroundColour} setFontUsed={setFontUsed}/>
+						</PopUpMain>
+						<PopUpMain colour={button_colour} >
+							<ArticleIndexHeader/>
+							<ArticleIndex headers={headers} scrollToTextCallback={scrollToText}/>
+						</PopUpMain>
 					</div>
 						
 				</div>
 			</div>
-
-			{/* <div className='fixed bottom-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-96 overflow-visible text space-y-3 w-full'> */}
-			{/* {headers.length > 0 && <TableOfContentsButton headers={headers} scrollToText={scrollToText}/>} */}
-			{/* <ChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour} /> */}
-				{/* <NewChangeStyle setFontUsed={setFontUsed} setBackgroundColour={setBackgroundColour}></NewChangeStyle> */}
-			{/* </div> */}
-
 
 		</Layout>
 	);

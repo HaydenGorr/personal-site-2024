@@ -1,20 +1,17 @@
 import { useState, useEffect, useRef } from "react"
-import Image from "next/image";
-import MB_Button from "./MB_Button";
-import { getPrimaryColour, getSecondaryColour, getTextColour, updateThemeColor, getDarkerColour } from '../utils/colour';
+import { getDarkerColour } from '../../utils/colour';
 import Cookies from 'js-cookie'
 
-export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
+export default function PopUpMain({ colour, children }) {
 
-    const [scrollAway, setScrollAway] = useState(false);
-    const [hide_settings_content, set_hide_settings_content] = useState(false);
-    const [showColourSelection, setShowColourSelection] = useState(false);
-    const [buttonPressed, setButtonPressed] = useState(false);
-    const [shrink_settings_content, set_shrink_settings_content] = useState(false);
-    const [hide_settings_main_content, set_hide_settings_main_content] = useState(false);
+    {/** Header size vars for sizing the header dynamically */}
+    const PopupheaderRef = useRef(null);
+    const PopupContentRef = useRef(null);
+    const [headerW, setHeaderW] = useState(null);
+    const [contentH, setcontentH] = useState(null);
+    const [contentW, setcontentW] = useState(null);
 
-
-
+    {/** Animation State Vars */}
     const [expand_settings_container, set_expand_settings_container] = useState(false);
     const [make_settings_name_invisible, set_make_settings_name_invisible] = useState(false);
     const [remove_settings_name, set_remove_settings_name] = useState(false);
@@ -22,26 +19,12 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
     const [remove_settings, set_remove_settings] = useState(true);
     const [double_minimised, set_double_minimised] = useState(false);
 
-    const [pause_for_animation, set_pause_for_animation] = useState(true);
-
     const expandSettingsContainerRef = useRef(expand_settings_container);
     const expandDouble_minimisedRef = useRef(double_minimised);
     useEffect(() => {
         expandSettingsContainerRef.current = expand_settings_container;
         expandDouble_minimisedRef.current = double_minimised;
       }, [expand_settings_container, double_minimised]);
-
-    const background_colour_array = ["WhiteBackgroundColour", "CreamBackgroundColour", "GreyBackgroundColour", "DarkGreyBackgroundColour"]
-
-    // useEffect(() => {
-    //     console.log("pause_for_animation", pause_for_animation)
-    //     console.log("expand_settings_container", expand_settings_container)
-    //     console.log("make_settings_name_invisible", make_settings_name_invisible)
-    //     console.log("remove_settings_name", remove_settings_name)
-    //     console.log("make_settings_invisible", make_settings_invisible)
-    //     console.log("remove_settings", remove_settings)
-    //     console.log("\n")
-    // }, [expand_settings_container, make_settings_name_invisible, remove_settings_name, make_settings_invisible, remove_settings, pause_for_animation]);
 
     useEffect(() => {
         let lastScrollTop = 0;
@@ -62,6 +45,18 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    useEffect(() => {
+        
+        if (PopupheaderRef.current) {
+            setHeaderW(PopupheaderRef.current.scrollWidth);
+        }
+        if (PopupContentRef.current) {
+            setcontentH(PopupContentRef.current.scrollHeight);
+            setcontentW(PopupContentRef.current.scrollWidth);
+        }
+      }, [children, remove_settings_name, remove_settings, ]);
+
 
     const openSettings = () => {
 
@@ -132,65 +127,43 @@ export default function NewChangeStyle({setFontUsed, setBackgroundColour}) {
             set_remove_settings_name(false)
             set_make_settings_name_invisible(false)
         }, 300);
-
-        setTimeout(()=>{
-            set_pause_for_animation(false)
-        }, 900)
-    }
-
-    const change_background_style_callback = (colour) => {
-        Cookies.set('backgroundColour', colour)
-            setBackgroundColour(colour)
-            updateThemeColor(getPrimaryColour(colour))
-    }
-
-    const setFontCallback = (font) => {
-        setFontUsed(font); 
-        Cookies.set('user_font', font);
     }
 
     return (
-        <div className={`mx-3 overflow-visible flex`}>
+        <div className={`mx-3 flex w-full`}>
 
             {/** Button */}
             <div 
                 className={
-                    `z-10 rounded-md flex items-center px-2 bg-dg-400 transition-all ease-in-out relative duration-300 max-w-96
-                    ${expand_settings_container ? 'w-full h-32' : `cursor-pointer w-32 ${double_minimised ? 'h-2 opacity-30' : 'h-9 opacity-100'}`}`
+                    `z-10 rounded-md flex transition-all ease-in-out relative duration-300   mr-6
+                    ${expand_settings_container ? '' : `cursor-pointer ${double_minimised ? 'opacity-30' : 'opacity-100'}`}`
                 }
-                style={ {backgroundColor: getDarkerColour(Cookies.get('backgroundColour' || "DarkGreyBackgroundColour"))} }
+                style={ {
+                    backgroundColor: colour,
+                    width: expand_settings_container  ? `calc(${contentW}px)` : `calc(${headerW}px)`,
+                    height: expand_settings_container  ? `calc(${contentH}px)` : `${double_minimised ? '0.5rem' : '2.25rem'}`
+                } }
                 onClick={() => {
                         if (expand_settings_container) return;
                         else if (double_minimised) wake_frome_double_minimised(); 
                         else {openSettings()}
-
                     }}>
 
                 {!remove_settings_name && 
                     <div 
-                    className={`flex transition-opacity w-full duration-200
-                    ${make_settings_name_invisible ? 'opacity-0' : 'opacity-100 '}`}>
-                        
-                        <div className={`h-6 w-6 rounded-md transition-colors duration-500 mr-2 ${Cookies.get('backgroundColour') || "DarkGreyBackgroundColour"}`}/> 
-                        <div className={`${Cookies.get('user_font') || "font-Josefin"}`}>typeface</div>
+                    className={
+                        `mil flex transition-opacity duration-200
+                        ${make_settings_name_invisible ? 'opacity-0' : 'opacity-100 '}`
+                    }
+                    ref={PopupheaderRef}>
+                        {children[0]}
                     </div>}
 
-                {!remove_settings && <div className={`identify w-full h-full p-4 flex flex-col justify-between transition-opacity duration-300
-                    ${make_settings_invisible ? 'opacity-0' : 'opacity-100'}`}>
-                    <div className="flex flex-col">
-                        <div className="flex justify-between">
-                            <div className={`h-5 font-Josefin font-medium text-xl cursor-pointer translate-y-0.5`} onClick={() => {setFontCallback("font-Josefin")}}>Sans-Serif</div>
-                            <div className={`h-5 font-serif font-medium text-xl cursor-pointer`} onClick={() => {setFontCallback("font-serif")}}>Serif</div>
-                            <div className={`h-5 font-dys font-medium text-xl cursor-pointer`} onClick={() => {setFontCallback("font-dys")}}>Dyslexic</div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col">
-                        <div className="flex justify-between">
-                            {background_colour_array.map((CSScolour, index) => {
-                                return <div key={index} className={`h-10 w-10 rounded-md ${CSScolour} cursor-pointer`} onClick={() => {change_background_style_callback(CSScolour)}}/>
-                            })}
-                        </div>
-                    </div>
+                {!remove_settings && 
+                <div 
+                    ref={PopupContentRef}
+                    className={`w-full ${make_settings_invisible ? 'opacity-0' : 'opacity-100'}`}>
+                        { children[1] }
                 </div>}
                 
             </div>
