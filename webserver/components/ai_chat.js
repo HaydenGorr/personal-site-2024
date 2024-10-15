@@ -55,7 +55,6 @@ export default function AiChat(  {
             set_ai_response_error_message(result.data)
         }
         else {
-            console.log("check", result.data)
             recursive_filtering(result.data.logical_filter)
             set_filter_name(result.data.name)
         }
@@ -71,7 +70,6 @@ export default function AiChat(  {
         else {
             // Handle good data
             set_ai_chat_response(result.data)
-            console.log("result " + result)
         }
     }
 

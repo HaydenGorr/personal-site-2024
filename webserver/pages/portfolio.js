@@ -14,9 +14,6 @@ export default function Portfolio({portfolio_articles, setBackgroundColour}) {
   useEffect(() => {
     setBackgroundColour("WhiteBackgroundColour")
 
-    let titles = {};
-    console.log(portfolio_articles)
-
     const SA = {};
 
     for (const article of portfolio_articles) {

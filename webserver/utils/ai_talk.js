@@ -38,8 +38,6 @@ export const send_tag_query_to_ai = async (user_message, querying_ai_callback=()
     // Get response from ai
     const answer = await get_response({ai: "TF", message: user_message})
 
-    console.log(answer)
-
     querying_ai_callback(false)
 
     if (answer.error) return answer

@@ -128,7 +128,6 @@ export default function Admin({setBackgroundColour}) {
             credentials: 'include'
         });
         if (res.ok) {
-            console.log("response is OKAY");
             const data = await res.json();
             setArticles(data);
         } else {
@@ -142,7 +141,6 @@ export default function Admin({setBackgroundColour}) {
     const get_chips = async () => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/get_unique_chips`);
         if (res.ok) {
-            console.log("response is OKAY");
             const data = await res.json();
             if (data.error) {}
             setChips(data.data);
@@ -155,19 +153,15 @@ export default function Admin({setBackgroundColour}) {
      * Populate the admin page with all of the chips
      */
     const get_categories = async () => {
-        console.log("lonesome get_categories")
         const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_categories`, {
             method: 'GET',
             credentials: 'include'
         });
         if (res.ok) {
-            console.log("response is OKAY");
             const data = await res.json();
 
             const cleaned_data = data.map(obj => obj.name);
             
-            console.log("lonesome ", cleaned_data)
-
             setCategories(cleaned_data || []);
         } else {
             console.error('Error:', res.statusText);
