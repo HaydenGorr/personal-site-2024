@@ -1,6 +1,5 @@
 User-agent: *
-Disallow: /admin/login
-Disallow: /admin/adminpage
+Disallow: /admin/
 
 User-agent: anthropic-ai
 Disallow: /
