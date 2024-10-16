@@ -25,7 +25,7 @@ const run_xml_generation_and_saving_process = async () => {
 
     if (success){
         console.log("success")
-        const result = await fetch(`http://${process.env.DOMAIN_URL}/sitemap.xml`)
+        const result = await fetch(`${process.env.DOMAIN_URL}/sitemap.xml`)
         const result_text = await result.text()
         assert(result_text == xml_file)
     }
@@ -66,9 +66,15 @@ const create_the_xml = async () => {
             sitemap.ele('url')
                 .ele('loc').txt(article.url).up()
                 .ele('lastmod').txt(article.lastmod).up()
-                .ele('changefreq').txt('daily').up()
-                .ele('priority').txt('0.8').up();
+                .ele('changefreq').txt('never').up()
+                .ele('priority').txt('0.5').up();
         });
+
+        sitemap.ele('url')
+            .ele('loc').txt(process.env.DOMAIN_URL).up()
+            .ele('lastmod').txt(format_date_for_sitemap(data[0].publishDate)).up()
+            .ele('changefreq').txt('weekly').up()
+            .ele('priority').txt('0.9').up();
 
         const xmlString = sitemap.end({ prettyPrint: true });
 

@@ -6,3 +6,4 @@ Dockerfile
 README.md
 .env.local
 .env.*
+sitemap.xml
