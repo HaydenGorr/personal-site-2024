@@ -74,7 +74,7 @@ export default function Article({mdxSource, title, chips, publishDate, wordCount
 		<Layout stickyHeader={false} backgroundColour={backgroundColour}>
 			<div className={`flex justify-center p-6 ${fontUsed} ${fontUsed == "font-dys" ? 'font-medium': ''} `}>
 				<div className={`prose max-w-prose text flex flex-col items-center transition-all duration-500`} style={{'--tw-prose-headings' : getTextColour(backgroundColour), color: getTextColour(backgroundColour) }}>
-					<h1 className={`md:mt-4 mt-8 mb-6 font-extrabold text-5xl text-neutral-100`}
+					<h1 className={`md:mt-4 mt-8 mb-6 font-extrabold text-5xl text-neutral-100 w-full`}
 						style={{'--tw-prose-headings' : getTextColour(backgroundColour), color: getTextColour(backgroundColour)}}>{title}</h1>
 						
 					{(wordCount != undefined && wordCount > 1) && <div className='relative flex justify-center space-x-2 mb-8'>
