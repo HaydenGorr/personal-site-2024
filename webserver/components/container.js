@@ -34,7 +34,7 @@ export default function Container({ chips=null, home_post_obj, btnAction = () =>
 
 
     return (
-        <div className={`${override ? "" : colour + "flex flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width"}`}>
+        <div className={`${override ? "" : colour + "flex Neo-Brutal-White px-3 pb-3 h-auto shadow-MB"}`}>
 
             <div className="flex items-center my-6 font-medium text-xl leading-none justify-center">
                 <div>
@@ -47,8 +47,8 @@ export default function Container({ chips=null, home_post_obj, btnAction = () =>
                 src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`}
                 unoptimized={true}
                 alt=""
-                width={600}
-                height={128}
+                width={200}
+                height={200}
                 onClick={() => {go_to_article(home_post_obj.source)}}
             />}
 

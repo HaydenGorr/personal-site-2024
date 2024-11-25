@@ -198,8 +198,8 @@ export default function AdminContainer({
 
     return (
         <div className={`mb-10 ${!ready ? "opacity-40" : ""}`}>
-            <div className="flex justify-center mx-3 ">
-                <div flex className="flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-fit container-max-width">
+            <div className="flex justify-center mx-3 w-full">
+                <div flex className="flex-col Neo-Brutal-White px-3 pb-3 h-auto flex shadow-MB w-full ">
                     <Container override={true} chips={chips} home_post_obj={home_post_obj} btnAction={btnAction} colour={colour} add_keywords_to_filter={add_keywords_to_filter} selectedKeywords={selectedKeywords} remove_keyword_from_filer={remove_keyword_from_filer}></Container>
                 
                     {in_edit && <div className="w-100%">

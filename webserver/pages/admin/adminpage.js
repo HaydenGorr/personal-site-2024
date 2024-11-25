@@ -315,26 +315,22 @@ export default function Admin({setBackgroundColour}) {
                 </div>
 
                 <div className="">
-                    <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 1100: 3}}>
-                        <Masonry gutter="0px">
-                            {articles.length > 0 && articles.map((item, index) => (
-                                <AdminContainer
-                                    categories={categories}
-                                    refresh_categories={()=>{
-                                        get_articles();
-                                        get_chips();
-                                        get_categories();
-                                    }}
-                                    key={item.id}
-                                    home_post_obj={item}
-                                    add_keywords_to_filter={() => {}}
-                                    remove_keyword_from_filer={() => {}}
-                                    selectedKeywords={[]}
-                                    all_chips={chips.map((chip, index) => {return chip.name})}
-                                    refreshArticlesCallback={async () => {await get_articles()}}/>
-                            ))}
-                        </Masonry>
-                    </ResponsiveMasonry>
+                    {articles.length > 0 && articles.map((item, index) => (
+                        <AdminContainer
+                            categories={categories}
+                            refresh_categories={()=>{
+                                get_articles();
+                                get_chips();
+                                get_categories();
+                            }}
+                            key={item.id}
+                            home_post_obj={item}
+                            add_keywords_to_filter={() => {}}
+                            remove_keyword_from_filer={() => {}}
+                            selectedKeywords={[]}
+                            all_chips={chips.map((chip, index) => {return chip.name})}
+                            refreshArticlesCallback={async () => {await get_articles()}}/>
+                    ))}
                 </div>
 
             </div>
