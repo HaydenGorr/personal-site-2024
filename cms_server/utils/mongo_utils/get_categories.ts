@@ -9,10 +9,10 @@ async function get_all_categories(): Promise<api_return_schema<category[]>> {
 
     try {
       const category_search_result: category[] = await category(connection).find();
-      return {data: category_search_result, error: { has_error: false, error_message:"", error_type: mongo_error_enum.no_error }}
+      return {data: category_search_result, error: { has_error: false, error_message:""}}
     } catch (error) {
         console.error('Error:', error);
-        return {data: [], error: { has_error: true, error_message:'Internal server error', error_type: mongo_error_enum.internal_server_error }}
+        return {data: [], error: { has_error: true, error_message:'Internal server error'}}
     }
 }
 

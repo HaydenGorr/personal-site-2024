@@ -1,5 +1,3 @@
-// import { auth_error_enum } from "../../error_types/auth_errors";
-
 export interface category {
     _id?: number;
     name: string;
@@ -32,5 +30,4 @@ export interface api_return_schema<T> {
 export interface error {
     has_error: Boolean,
     error_message: string,
-    error_type: any,
 }

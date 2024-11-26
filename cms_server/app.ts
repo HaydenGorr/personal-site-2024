@@ -32,7 +32,7 @@ const { add_category } = require('./utils/mongo_utils/add_category')
 // const { get_all_categories } = require('./endpoint_logic/categories')
 import { api_return_schema, category } from "./interfaces/interfaces"
 import { Request, Response } from 'express';
-import { auth_error_enum } from '../error_types/auth_errors'
+const { DeleteCategory } = require("./utils/mongo_utils/delete_category")
 
 declare module 'express' {
   export interface Request {
@@ -40,16 +40,29 @@ declare module 'express' {
   }
 }
 
-// app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com', 'http://localhost:3004'];
 
-app.use(cors({
+const JWTMiddleware = (req: Request, res: Response, next: any) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    console.log("User did not provide a token");
+    return res.status(401).json({
+      data: false,
+      error: {
+        has_error: true,
+        error_message: "User did not provide a token",
+      }
+    });
+  }
+  
+  next();
+};
+
+const cors_middleware = cors({
   origin: function(origin: any, callback: any) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -58,7 +71,16 @@ app.use(cors({
     }
   },
   credentials: true
-}));
+})
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors_middleware);
+
+const protectedRouter = express.Router();
+protectedRouter.use(JWTMiddleware);
+
+app.use('/secure', protectedRouter);
 
 /**
  * THIS IS A REPLACEMENT FOR HOME_POSTS AND UNIQUE CHIPS
@@ -69,7 +91,7 @@ app.get('/get_all_ready_articles', async (req: Request, res: Response) => {
 
   const response = await get_all_ready_articles()
 
-  console.log(`${response.data.length} ready articles retrieved`)
+  // console.log(`${response.data.length} ready articles retrieved`)
   console.log(response)
 
   res.json(response);
@@ -138,25 +160,11 @@ app.get('/get_article_meta', async (req: Request, res: Response) => {
 
 })
 
-app.get('/loggedIn', async (req: Request, res: Response) => {
+app.get('/loggedIn', protectedRouter, async (req: Request, res: Response) => {
   console.log("user checking if logged in");
 
-  const token = req.cookies.token;
-  if (!token) {
-    console.log("User did not provide a token");
-    res.status(401).json({
-      data: false,
-      error: {
-        has_error: true,
-        error_message: "User did not provide a token",
-        error_type: auth_error_enum.no_token
-      }
-    })
-    return
-  }
-
   try {
-    // Verify the JWT
+    const token = req.cookies.token;
     const decoded = jwt.verify(token, process.env.SECRETKEY);
     console.log(decoded)
     console.log("success");
@@ -165,7 +173,6 @@ app.get('/loggedIn', async (req: Request, res: Response) => {
       error: {
         has_error: false,
         error_message: "",
-        error_type: auth_error_enum.no_error
       }
     })
     return
@@ -177,7 +184,6 @@ app.get('/loggedIn', async (req: Request, res: Response) => {
       error: {
         has_error: true,
         error_message: "Token has expired",
-        error_type: auth_error_enum.token_expired
       }
     })
     return
@@ -277,6 +283,19 @@ app.get('/secure/get_all_categories', async (req: Request, res: Response)  => {
 
   res.json({data, error: { has_error, error_message } });
 })
+
+app.post('/secure/delete_category', async (req: Request, res: Response) => {
+  // req.body will now contain parsed fields
+  console.log("Received data:", req.body);
+
+  const given_category: category = req.body.category_stringified as category;
+
+  // Perform operations like DeleteCategory(category)
+  const result: api_return_schema<Boolean> = await DeleteCategory(given_category);
+
+  res.status(200).json(result)
+
+});
 
 /**
  * Upload a new chip with a name, description and image
