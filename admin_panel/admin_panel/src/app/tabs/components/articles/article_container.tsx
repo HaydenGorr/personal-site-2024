@@ -20,10 +20,12 @@ const [expand, set_expand] = useState<Boolean>(false);
 return (
 	<div className="flex">
 		<button className="bg-purple-300 rounded-full text-black px-2 h-fit my-auto mr-2" onClick={()=>set_expand(!expand)}>expand</button>
+		<button className="bg-purple-300 rounded-full text-black px-2 h-fit my-auto mr-2" onClick={()=>set_expand(!expand)}>edit</button>
 		<div className={`${className} bg-neutral-700 px-4 py-2 rounded-full`}>
-			<p>{art.title}</p>
+			<p>{`${art.title}`}</p>
+			<p>{`${art.source}`}</p>
 			{expand && <div>
-				{art.desc}
+				{art.hasImage ? "yes" : "no"}
 			</div>}
 		</div>
 	</div>

@@ -6,7 +6,8 @@ const app = express();
 const PORT = process.env.PORT;
 // const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
 const { get_unique_chips, get_all_ready_articles, create_article, get_all_ready_portfolio_articles, check_if_best_article_exists } = require('./utils/mongo_utils');
-const { get_article } = require('./utils/mongo_utils/get_article')
+const { get_article, hasContainerPng } = require('./utils/mongo_utils/get_article')
+const { articles_dir } = require('./utils/path_consts');
 const Cookies = require('js-cookie');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -257,29 +258,26 @@ app.post('/signup', async (req: Request, res: Response) => {
  * SECURE ENDPOINTS
  */
 app.get('/secure/get_all_articles', async (req: Request, res: Response) => {
-
   
   // Grab and return the articles
-  const articles = await get_all_articles()
+  var articles: api_return_schema<article[]> = await get_all_articles()
 
-  const return_val:api_return_schema<article> = {data: articles, error:{has_error:false, error_message:""}}
+  if (articles.error.has_error) {res.status(500).json(articles); return}
 
-  res.json(return_val);
+  articles.data = articles.data.map((article_obj: any) => {
+    return { ...article_obj.toObject(), hasImage: hasContainerPng(article_obj.source) };
+  });
+
+  res.status(200).json(articles);
 })
-
-
 
 app.get('/secure/get_all_categories', async (req: Request, res: Response)  => {
 
-  const result = await validate_JWT(req.cookies.token)
+  const mongo_api_response: api_return_schema<category> = await get_all_categories();
 
-  if (!result.success) {
-    return {data: [], has_error: true, error_message: `${res.status(result.errorcode).json({ error: result.message })}`};
-  }
-  
-  const { data, error: { has_error, error_message }}:api_return_schema<category> = await get_all_categories()
+  if (mongo_api_response.error.has_error) { res.status(500).json(mongo_api_response)}
 
-  res.json({data, error: { has_error, error_message } });
+  res.status(200).json(mongo_api_response);
 })
 
 app.post('/secure/delete_category', async (req: Request, res: Response) => {
@@ -289,25 +287,28 @@ app.post('/secure/delete_category', async (req: Request, res: Response) => {
   // Perform operations like DeleteCategory(category)
   const result: api_return_schema<Boolean> = await DeleteCategory(given_category);
 
-  if (result.error.has_error) res.status(500).json(result)
+  if (result.error.has_error) {res.status(500).json(result); return;}
 
   res.status(200).json(result)
 
 });
 
 app.post('/secure/add_category', async (req: Request, res: Response) => {
-  // req.body will now contain parsed fields
-  console.log("Received data:", req.body);
 
   const { category_name } = req.body;
 
   const result: api_return_schema<Boolean> = await add_category(category_name)
 
-  if (result.error.has_error) res.status(500).json(result)
+  if (result.error.has_error) {res.status(500).json(result); return}
 
   res.status(200).json(result)
 
 });
+
+
+
+
+
 
 /**
  * Upload a new chip with a name, description and image

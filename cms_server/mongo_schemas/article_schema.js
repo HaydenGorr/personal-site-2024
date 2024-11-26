@@ -13,7 +13,6 @@ const articleSchema = new mongoose.Schema({
     ready: {type: Boolean, default: false},
     portfolioReady: {type: Boolean, default: false},
     type: {type: String, default: "misc."},
-
 });
 
 module.exports = (conn) => conn.model('articles', articleSchema);

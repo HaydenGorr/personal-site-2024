@@ -19,7 +19,8 @@ export interface article {
     views: number;
     publishDate: Date,
     ready: Boolean,
-    portfolioReady: Boolean
+    portfolioReady: Boolean,
+    hasImage: Boolean
 }
 
 export interface api_return_schema<T> {

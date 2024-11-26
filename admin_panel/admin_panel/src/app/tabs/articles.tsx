@@ -52,10 +52,10 @@ return (
         {!loading && !fetch_error && <div className="space-y-4 w-full flex flex-col items-center">
 
             <div className="w-full flex justify-around">
-                <button 
+                <button
                     className="bg-green-400 hover:bg-green-700 rounded-full p-2 w-fit"
                     onClick={()=>{set_article_in_progress(null)}}>add</button>
-                {article_in_progress && <button 
+                {article_in_progress && <button
                     className="bg-red-400 hover:bg-red-700 rounded-full p-2 w-fit"
                     onClick={()=>{set_article_in_progress(null)}}>stop</button>}
             </div>

@@ -28,7 +28,7 @@ const submit_new_category = async () => {
     await submit_category(
         name,
         ()=>{refresh()},
-        ()=>{})
+        (e:string)=>{set_error_msg(e)})
 
 }
 
