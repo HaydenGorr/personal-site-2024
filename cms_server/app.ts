@@ -16,7 +16,6 @@ const cookieParser = require('cookie-parser');
 const { get_all_articles } = require('./utils/mongo_utils/get_article')
 const { validate_JWT } = require('./utils/validate_JWT')
 const dbConnect = require('./utils/db_conn')
-const { Response } = require('./utils/response_obj')
 const multer = require('multer');
 const { DATA_DIR, svg_dir } = require('./utils/path_consts')
 const { get_chip } = require('./utils/mongo_utils/get_chips')
@@ -30,6 +29,16 @@ const { edit_chip } = require('./utils/mongo_utils/edit_chip')
 const { deleteChip } = require('./utils/mongo_utils/delete_chip');
 const { get_all_categories } = require('./utils/mongo_utils/get_categories');
 const { add_category } = require('./utils/mongo_utils/add_category')
+// const { get_all_categories } = require('./endpoint_logic/categories')
+import { api_return_schema, category } from "./interfaces/interfaces"
+import { Request, Response } from 'express';
+import { auth_error_enum } from '../error_types/auth_errors'
+
+declare module 'express' {
+  export interface Request {
+    cookies: { [key: string]: string };
+  }
+}
 
 // app.use(cors());
 app.use(express.json());
@@ -38,10 +47,10 @@ app.use(cookieParser());
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com'];
+const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com', 'http://localhost:3004'];
 
 app.use(cors({
-  origin: function(origin, callback) {
+  origin: function(origin: any, callback: any) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -54,7 +63,7 @@ app.use(cors({
 /**
  * THIS IS A REPLACEMENT FOR HOME_POSTS AND UNIQUE CHIPS
  */
-app.get('/get_all_ready_articles', async (req, res) => {
+app.get('/get_all_ready_articles', async (req: Request, res: Response) => {
 
   console.log("getting all articles marked ready")
 
@@ -67,7 +76,7 @@ app.get('/get_all_ready_articles', async (req, res) => {
 
 });
 
-app.get('/get_all_ready_portfolio_articles', async (req, res) => {
+app.get('/get_all_ready_portfolio_articles', async (req: Request, res: Response) => {
 
   console.log("getting all portfolio articles marked ready")
 
@@ -85,7 +94,7 @@ app.get('/get_all_ready_portfolio_articles', async (req, res) => {
     res.json(response);
   }
   else {
-    const updatedData = await Promise.all(response.data.map(async (article) => {
+    const updatedData = await Promise.all(response.data.map(async (article: any) => {
       const hasBestArticle = await check_if_best_article_exists(article.source);
       return { ...article._doc, has_best_article: hasBestArticle };
     }));
@@ -95,7 +104,7 @@ app.get('/get_all_ready_portfolio_articles', async (req, res) => {
 
 });
 
-app.get('/get_unique_chips', async (req, res) => {
+app.get('/get_unique_chips', async (req: Request, res: Response) => {
   console.log("called: get unique chips")
 
   const response = await get_unique_chips()
@@ -104,22 +113,18 @@ app.get('/get_unique_chips', async (req, res) => {
     
 });
 
-app.get('/add_view', async (req, res) => {})
+app.get('/add_view', async (req: Request, res: Response) => {})
 
-app.get('/create_article', async (req, res) => {
+app.get('/create_article', async (req: Request, res: Response) => {
 
   console.log("called: create_article")
 
   await create_article(req.query)
 
-  if (response.code != 200) {
-    await res.status(response.code).json({ error: response.error_msg });
-  }else {
-    res.json(response)
-  }
+  await res.status(res.statusCode).json({ error: "" });
 })
 
-app.get('/get_article_meta', async (req, res) => {
+app.get('/get_article_meta', async (req: Request, res: Response) => {
 
   console.log("called: get_article_meta")
 
@@ -133,28 +138,54 @@ app.get('/get_article_meta', async (req, res) => {
 
 })
 
-app.get('/loggedIn', async (req, res) => {
-  console.log("User opened login page");
+app.get('/loggedIn', async (req: Request, res: Response) => {
+  console.log("user checking if logged in");
 
   const token = req.cookies.token;
   if (!token) {
-    // If no token is provided, send a response indicating that the user is not logged in
-    return res.status(200).json({ loggedIn: false });
+    console.log("User did not provide a token");
+    res.status(401).json({
+      data: false,
+      error: {
+        has_error: true,
+        error_message: "User did not provide a token",
+        error_type: auth_error_enum.no_token
+      }
+    })
+    return
   }
 
   try {
     // Verify the JWT
     const decoded = jwt.verify(token, process.env.SECRETKEY);
+    console.log(decoded)
+    console.log("success");
+    res.json({
+      data: true,
+      error: {
+        has_error: false,
+        error_message: "",
+        error_type: auth_error_enum.no_error
+      }
+    })
+    return
 
-    // If the token is valid, send a response indicating that the user is logged in
-    return res.status(200).json({ loggedIn: true });
-  } catch (error) {
-    // If the token is invalid or has expired, send a response indicating that the user is not logged in
-    return res.status(200).json({ loggedIn: false });
+  } catch (e) {
+    console.log("fail");
+    res.status(401).json({
+      data: false,
+      error: {
+        has_error: true,
+        error_message: "Token has expired",
+        error_type: auth_error_enum.token_expired
+      }
+    })
+    return
   }
+
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   console.log("logging in: ", username, password)
@@ -194,7 +225,7 @@ app.post('/login', async (req, res) => {
 
 })
 
-app.post('/signup', async (req, res) => {
+app.post('/signup', async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   console.log(username, password)
@@ -219,7 +250,7 @@ app.post('/signup', async (req, res) => {
 /**
  * SECURE ENDPOINTS
  */
-app.get('/secure/get_all_articles', async (req, res) => {
+app.get('/secure/get_all_articles', async (req: Request, res: Response) => {
 
   const result = await validate_JWT(req.cookies.token)
 
@@ -232,27 +263,27 @@ app.get('/secure/get_all_articles', async (req, res) => {
   res.json(articles);
 })
 
-app.get('/secure/get_all_categories', async (req, res) => {
+
+
+app.get('/secure/get_all_categories', async (req: Request, res: Response)  => {
 
   const result = await validate_JWT(req.cookies.token)
 
   if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
+    return {data: [], has_error: true, error_message: `${res.status(result.errorcode).json({ error: result.message })}`};
   }
   
-  // Grab and return the articles
-  const categories = await get_all_categories()
-  console.log(categories)
+  const { data, error: { has_error, error_message }}:api_return_schema<category> = await get_all_categories()
 
-  res.json(categories);
+  res.json({data, error: { has_error, error_message } });
 })
 
 /**
  * Upload a new chip with a name, description and image
  */
-app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
+app.post('/secure/upload_chip', upload.single('image'), async (req: Request, res: Response) => {
   const { name, description } = req.body;
-  const image = req.file;
+  const image: any = req.file;
 
   const result = await validate_JWT(req.cookies.token)
 
@@ -277,7 +308,7 @@ app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
   const imagePath = path.join(svg_dir, name+".svg");
   
   // WRite the file from the buffer into the CMS
-  fs.writeFile(imagePath, image.buffer, (error) => {
+  fs.writeFile(imagePath, image.buffer, (error:any) => {
     if (error) {
       console.error('Error writing the image file:', error);
       return res.status(500).json({ message: 'An error occurred while uploading the image' });
@@ -290,7 +321,7 @@ app.post('/secure/upload_chip', upload.single('image'), async (req, res) => {
 /**
  * Edit a chip with a name, description and image
  */
-app.post('/secure/edit_chip', upload.single('image'), async (req, res) => {
+app.post('/secure/edit_chip', upload.single('image'), async (req: Request, res: Response) => {
   const { name, description, original_name } = req.body;
   const image = req.file;
 
@@ -320,7 +351,7 @@ app.post('/secure/edit_chip', upload.single('image'), async (req, res) => {
     const imagePath = path.join(svg_dir, name+".svg");
 
     // Write the file from the buffer into the CMS
-    fs.writeFile(imagePath, image.buffer, (error) => {
+    fs.writeFile(imagePath, image.buffer, (error: any) => {
       if (error) {
         console.error('Error writing the image file:', error);
         return res.status(500).json({ message: 'An error occurred while uploading the image' });
@@ -346,11 +377,16 @@ app.post('/secure/edit_chip', upload.single('image'), async (req, res) => {
 /**
  * Upload a new chip with a name, description and image
  */
-app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }, { name: 'best_mdx', maxCount: 1 }]), async (req, res) => {
+app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }, { name: 'best_mdx', maxCount: 1 }]), async (req: Request, res: Response) => {
   const { databaseID, title, desc, category, infoText, chips, source, views, type, publishDate, ready, portfolioReady} = req.body;
-  const imageFile = req.files['image'] ? req.files['image'][0] : undefined;
-  const mdxFile = req.files['mdx'] ? req.files['mdx'][0] : undefined;
-  const bestpart_mdxFile = req.files['best_mdx'] ? req.files['best_mdx'][0] : undefined;
+
+  if (!req.files || Array.isArray(req.files)) {
+    throw new Error('No files uploaded');
+  }
+
+  const imageFile: any = req.files['image'] ? req.files['image'][0] : undefined;
+  const mdxFile: any = req.files['mdx'] ? req.files['mdx'][0] : undefined;
+  const bestpart_mdxFile: any = req.files['best_mdx'] ? req.files['best_mdx'][0] : undefined;
 
   console.log("\n\n\n\n\ncalled update articles")
   console.log(databaseID, title, desc, category, infoText, chips, source, views, publishDate, ready, portfolioReady, type)
@@ -394,7 +430,7 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
   }
 })
 
-app.get('/secure/add_unpublished_article', async (req, res) => {
+app.get('/secure/add_unpublished_article', async (req: Request, res: Response) => {
 
   console.log("\n\n\n\nbreakdown")
 
@@ -423,7 +459,7 @@ app.get('/secure/add_unpublished_article', async (req, res) => {
 
 })
 
-app.post('/secure/delete_article', async (req, res) => {
+app.post('/secure/delete_article', async (req: Request, res: Response) => {
   const { databaseID, source } = req.body;
   
   console.log("Jason ", databaseID, source)
@@ -446,7 +482,7 @@ app.post('/secure/delete_article', async (req, res) => {
   }
 })
 
-app.post('/secure/delete_chip', async (req, res) => {
+app.post('/secure/delete_chip', async (req: Request, res: Response) => {
   const { name } = req.body;
 
   console.log("name: ", name)
@@ -480,42 +516,42 @@ app.post('/secure/delete_chip', async (req, res) => {
   }
 })
 
-app.post('/secure/remove_chips', async (req, res) => {
-  const { articles, chips_to_remove } = req.body;
+// app.post('/secure/remove_chips', async (req: Request, res: Response) => {
+//   const { articles, chips_to_remove } = req.body;
 
-  const result = await validate_JWT(req.cookies.token)
+//   const result = await validate_JWT(req.cookies.token)
 
-  if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
-  }
+//   if (!result.success) {
+//     return res.status(result.errorcode).json({ error: result.message });
+//   }
 
-  try {
+//   try {
 
-    // Update the article
-    const update_result = await updatedArticle(req.body)
+//     // Update the article
+//     const update_result = await updatedArticle(req.body)
 
-    if (mdxFile) {
-      const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");
-      fs.writeFileSync(mdxPath, mdxFile.buffer);
-    }
+//     if (mdxFile) {
+//       const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");
+//       fs.writeFileSync(mdxPath, mdxFile.buffer);
+//     }
 
-    if (imageFile) {
-      const imagePath = path.join(DATA_DIR, "CMS", "articles", source, "container.png");
-      fs.writeFileSync(imagePath, imageFile.buffer);
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ message: 'An error occurred during the operation' });
-  }
+//     if (imageFile) {
+//       const imagePath = path.join(DATA_DIR, "CMS", "articles", source, "container.png");
+//       fs.writeFileSync(imagePath, imageFile.buffer);
+//     }
+//   } catch (error) {
+//     console.error('Error:', error);
+//     res.status(500).json({ message: 'An error occurred during the operation' });
+//   }
 
-})
+// })
 
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
 app.use('/image/', express.static(path.join(DATA_DIR, 'image')));
 
-app.get(`/favicon`, async (req, res) => {
-    const { href } = req.query;
+app.get(`/favicon`, async (req: Request, res: Response) => {
+    const { href }: any = req.query;
     let faviconUrl = null;
   
     try {

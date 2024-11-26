@@ -1,11 +1,12 @@
 import Layout from "../../components/layout";
 import { useEffect, useState } from "react";
 import AdminContainer from "../../components/admin/admin_container";
-import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 import ClosableChip from "../../components/closable_chip";
 import LineBreak from '../../components/line_break'
 import MB_Button from "../../components/MB_Button";
 import Image from "next/image";
+import CategoriesSection from './subpages/categories/categories'
+import { admin_pages_enum } from "../../utils/interfaces/enums";
 
 export const config = {
     api: {
@@ -13,7 +14,13 @@ export const config = {
     },
 };
 
-export default function Admin({setBackgroundColour}) {
+interface props {
+    setBackgroundColour: (a:string) => void
+}
+
+export default function Admin({setBackgroundColour}: props) {
+
+    const [section, set_section] = useState<admin_pages_enum>(admin_pages_enum.categories);
 
     const [original_chip_edit_name, set_original_chip_edit_name] = useState("");
     const [chip_edit_name, set_chip_edit_name] = useState("");
@@ -153,25 +160,25 @@ export default function Admin({setBackgroundColour}) {
      * Populate the admin page with all of the chips
      */
     const get_categories = async () => {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_categories`, {
-            method: 'GET',
-            credentials: 'include'
-        });
-        if (res.ok) {
-            const data = await res.json();
+        // const res = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_categories`, {
+        //     method: 'GET',
+        //     credentials: 'include'
+        // });
+        // if (res.ok) {
+        //     const data = await res.json();
 
-            const cleaned_data = data.map(obj => obj.name);
+        //     const cleaned_data = data.map((obj: any) => obj.name);
             
-            setCategories(cleaned_data || []);
-        } else {
-            console.error('Error:', res.statusText);
-        }
+        //     setCategories(cleaned_data || []);
+        // } else {
+        //     console.error('Error:', res.statusText);
+        // }
     };
 
     /**
      * Add a new unpublished article to DB
      */
-    const add_unpublished_article = async () => {
+    const add_unpublished_article = async (onPass=()=>{}, onFail=()=>{}) => {
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/add_unpublished_article`, {
@@ -181,12 +188,15 @@ export default function Admin({setBackgroundColour}) {
             if (response.ok) {
                 // Handle successful response
                 console.log('Chip uploaded successfully');
+                onPass()
             } else {
                 // Handle error response
                 console.error('Error uploading chip');
+                onFail()
             }
         } catch (error) {
             console.error('Error uploading chip', error);
+            onFail()
         }
     };
 
@@ -240,10 +250,31 @@ export default function Admin({setBackgroundColour}) {
 
     return (
         <Layout>
-            <h1 className='mt-5 mb-2 text-center font-extrabold text-4xl'>ADMIN PAGE</h1>
+            <div className="px-4">
+                <h1 className='mt-5 mb-2 text-center font-extrabold text-4xl'>ADMIN PAGE</h1>
+
+                <div className="w-full flex justify-around mb-8">
+                    <button
+                        className={` rounded-full p-2 ${section==admin_pages_enum.articles ? 'bg-red-400' : 'bg-red-200'}`}
+                        onClick={()=>{set_section(admin_pages_enum.articles)}}>articles</button>
+
+                    <button 
+                        className={` rounded-full p-2 ${section==admin_pages_enum.categories ? 'bg-red-400' : 'bg-red-200'}`}
+                        onClick={()=>{set_section(admin_pages_enum.categories)}}>categories</button>
+
+                    <button 
+                        className={` rounded-full p-2 ${section==admin_pages_enum.chips ? 'bg-red-400' : 'bg-red-200'}`}
+                        onClick={()=>{set_section(admin_pages_enum.chips)}}>chips</button>
+                </div>
+
+                {section==admin_pages_enum.articles && <div>articles</div>}
+                {section==admin_pages_enum.categories && <CategoriesSection/>}
+                {section==admin_pages_enum.chips && <div>chips</div> }
+            </div>
+
 
             {/** CHIP EDIT MODAL */}
-            <dialog id="default-modal" className="modal modal-bottom sm:modal-middle shadow-MB p-6 Neo-Brutal-White">
+            {/* <dialog id="default-modal" className="modal modal-bottom sm:modal-middle shadow-MB p-6 Neo-Brutal-White">
                 <div className="flex justify-center items-center flex-col">
                     <Image 
                         className="mb-3"
@@ -287,10 +318,10 @@ export default function Admin({setBackgroundColour}) {
                     <MB_Button text="close" btnAction={()=>close_modal_and_reset_vars()}></MB_Button>
                 </div>
 
-            </dialog>
+            </dialog> */}
 
-            <div className="mx-3">
-                <div className={`mx-3`}>
+            {/* <div className="mx-3"> */}
+                {/* <div className={`mx-3`}>
                     <div className={`flex flex-wrap mt-2`}>
                         {chips.map((chip, index) => (
                             <div className={`mr-3 mt-3 flex`} onClick={()=>set_edit_chip(index)}>
@@ -306,15 +337,13 @@ export default function Admin({setBackgroundColour}) {
                     
                     <div className="mr-3 mt-3 flex justify-center"><MB_Button type={"submit"} text={'add chip'} btnAction={()=>{set_create_chip();}}/></div>
 
-                </div>
+                </div> */}
 
-                <LineBreak className="mb-16 mt-6"/>
+                {/* <div className="w-full">
+                    <button className="" onClick={async () => {await add_unpublished_article();}}>Create New Article</button>
+                </div> */}
 
-                <div className="mb-12">
-                    <MB_Button text="Create New Article" btnAction={async () => {await add_unpublished_article(); get_articles();}}/>
-                </div>
-
-                <div className="">
+                {/* <div className="">
                     {articles.length > 0 && articles.map((item, index) => (
                         <AdminContainer
                             categories={categories}
@@ -331,9 +360,9 @@ export default function Admin({setBackgroundColour}) {
                             all_chips={chips.map((chip, index) => {return chip.name})}
                             refreshArticlesCallback={async () => {await get_articles()}}/>
                     ))}
-                </div>
+                </div> */}
 
-            </div>
+            {/* </div> */}
         </Layout>
     );
   }
