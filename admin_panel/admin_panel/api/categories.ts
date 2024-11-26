@@ -58,22 +58,33 @@ export async function delete_category(
 }
 
 
-export async function submit_category(category_name: string) {
-    // try {
-    //     const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_categories`, {
-    //         method: 'POST',
-    //         credentials: 'include'
-    //     });
+export async function submit_category(
+    category_name: string,
+    on_pass:()=>void,
+    on_fail:(e: string)=>void) {
 
-    //     const json_result: api_return_schema<Boolean> = await response.json();
+    const formData = new FormData();
+    formData.append('category_name', category_name);
+
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/add_category`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ category_name: category_name }),
+        });
+
+        const json_result: api_return_schema<Boolean> = await response.json();
         
-    //     if(response.ok) {
-    //         if (json_result.error.has_error) on_fail()
-    //         else on_pass()
-    //     }
-    //     else on_fail()
+        if(response.ok) {
+            if (json_result.error.has_error) on_fail(json_result.error.error_message)
+            else on_pass()
+        }
+        else on_fail(json_result.error.error_message)
 
-    // } catch (error) {
-    //     on_fail ()
-    // }
+    } catch (error) {
+        on_fail ("could not connect to CMS")
+    }
 }

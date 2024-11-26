@@ -30,7 +30,7 @@ const { deleteChip } = require('./utils/mongo_utils/delete_chip');
 const { get_all_categories } = require('./utils/mongo_utils/get_categories');
 const { add_category } = require('./utils/mongo_utils/add_category')
 // const { get_all_categories } = require('./endpoint_logic/categories')
-import { api_return_schema, category } from "./interfaces/interfaces"
+import { api_return_schema, article, category } from "./interfaces/interfaces"
 import { Request, Response } from 'express';
 const { DeleteCategory } = require("./utils/mongo_utils/delete_category")
 
@@ -258,15 +258,13 @@ app.post('/signup', async (req: Request, res: Response) => {
  */
 app.get('/secure/get_all_articles', async (req: Request, res: Response) => {
 
-  const result = await validate_JWT(req.cookies.token)
-
-  if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
-  }
   
   // Grab and return the articles
   const articles = await get_all_articles()
-  res.json(articles);
+
+  const return_val:api_return_schema<article> = {data: articles, error:{has_error:false, error_message:""}}
+
+  res.json(return_val);
 })
 
 
@@ -285,13 +283,27 @@ app.get('/secure/get_all_categories', async (req: Request, res: Response)  => {
 })
 
 app.post('/secure/delete_category', async (req: Request, res: Response) => {
-  // req.body will now contain parsed fields
-  console.log("Received data:", req.body);
 
   const given_category: category = req.body.category_stringified as category;
 
   // Perform operations like DeleteCategory(category)
   const result: api_return_schema<Boolean> = await DeleteCategory(given_category);
+
+  if (result.error.has_error) res.status(500).json(result)
+
+  res.status(200).json(result)
+
+});
+
+app.post('/secure/add_category', async (req: Request, res: Response) => {
+  // req.body will now contain parsed fields
+  console.log("Received data:", req.body);
+
+  const { category_name } = req.body;
+
+  const result: api_return_schema<Boolean> = await add_category(category_name)
+
+  if (result.error.has_error) res.status(500).json(result)
 
   res.status(200).json(result)
 

@@ -75,7 +75,7 @@ return (
                     onClick={()=>{set_category_in_progress(null)}}>stop</button>}
             </div>
 
-            {category_in_progress && <CategoryInProgress/>}
+            {category_in_progress && <CategoryInProgress refresh={()=>fetch_page_data()}/>}
 
             {categories.map((cat_iter) => {
                 return(

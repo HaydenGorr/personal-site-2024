@@ -1,5 +1,6 @@
 const Article = require('../../mongo_schemas/article_schema.js');
 const { dbConnect } = require('../db_conn')
+
 async function get_article(article_dir_name){
 
     const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
