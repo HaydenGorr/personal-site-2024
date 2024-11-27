@@ -23,11 +23,11 @@ import fs from 'fs';
 
 import { add_user, get_users_by_username } from './utils/mongo_utils/admin_user';
 import { delete_article, add_article, updatedArticle, get_all_articles, get_article, get_all_ready_articles } from "./utils/mongo_utils/article";
-import { DeleteChip, EditChip, add_chip, get_chips, get_unique_chips } from "./utils/mongo_utils/chips";
+import { DeleteChip, EditChip, add_chip, get_chips, get_unique_chips, create_article } from "./utils/mongo_utils/chips";
 import { get_all_categories, DeleteCategory } from "./utils/mongo_utils/category";
 import { AddCategory } from "./utils/mongo_utils/category";
 
-import { api_return_schema, article, category } from "./interfaces/interfaces"
+import { api_return_schema, article, category, chip, user } from "./interfaces/interfaces"
 import { Request, Response } from 'express';
 import { SaveFileToRandomDir } from "./utils/save_image_to_drive";
 
@@ -144,7 +144,7 @@ app.get('/get_article_meta', async (req: Request, res: Response) => {
 
   const {articlesrc} = req.query
 
-  const article = await get_article(articlesrc)
+  const article = await get_article(articlesrc as string)
 
   if (article.length === 0) res.status(404).json({ error: 'Article not found' });
 
@@ -157,7 +157,7 @@ app.get('/loggedIn', protectedRouter, async (req: Request, res: Response) => {
 
   try {
     const token = req.cookies.token;
-    const decoded = jwt.verify(token, process.env.SECRETKEY);
+    const decoded = jwt.verify(token, process.env.SECRETKEY as string);
     console.log(decoded)
     console.log("success");
     res.json({
@@ -188,18 +188,17 @@ app.post('/login', async (req: Request, res: Response) => {
 
   console.log("logging in: ", username, password)
 
-  const users = await get_users_by_username(username, password)
+  const users = await get_users_by_username(username)
 
   console.log("got users: ", users)
 
-  if (users.length > 0){
-    var user = users[0]
-  }
-  else {
-    console.log(users)
+  if (users.length === 0) {
     console.log("no users found.")
+    res.status(401).json({ error: 'Invalid credentials' });
     return
   }
+
+  const user: user = users[0] as user;
 
   try {
     console.log("validate password")
@@ -208,20 +207,22 @@ app.post('/login', async (req: Request, res: Response) => {
 
     if (!isPasswordValid) {
       console.log("Password invalid")
-      return res.status(401).json({ error: 'Invalid credentials' });
+      res.status(401).json({ error: 'Invalid credentials' });
+      return 
     }
 
     console.log("creating token")
-    const token = await jwt.sign({ userId: user.id }, process.env.SECRETKEY, { expiresIn: '1h' });
-    console.log("creatied token")
+    const token = await jwt.sign({ userId: user.id }, process.env.SECRETKEY as string, { expiresIn: '1h' });
+    console.log("created token")
 
     res.json({ token });
+    return 
   } catch(error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error' });
+    return 
   }
-
-})
+});
 
 app.post('/signup', async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -264,7 +265,7 @@ app.get('/secure/get_all_articles', async (req: Request, res: Response) => {
 
 app.get('/secure/get_all_categories', async (req: Request, res: Response)  => {
 
-  const mongo_api_response: api_return_schema<category> = await get_all_categories();
+  const mongo_api_response: api_return_schema<category[]> = await get_all_categories();
 
   if (mongo_api_response.error.has_error) { res.status(500).json(mongo_api_response)}
 
@@ -304,7 +305,7 @@ app.post('/secure/add_category', async (req: Request, res: Response) => {
 
 app.get('/get_all_chips', async (req: Request, res: Response) => {
 
-  const response = await get_unique_chips()
+  const response: api_return_schema<chip[]> = await get_unique_chips()
 
   if (response.error.has_error) {res.status(500).json(response); return}
 
@@ -318,7 +319,8 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
 
   try {
     if (!req.file) {
-        return res.status(400).json({ data:"", error: {has_error: true, error_message: 'No image file provided'} });
+        res.status(400).json({ data:"", error: {has_error: true, error_message: 'No image file provided'} });
+        return 
     }
 
     console.log("got file")
@@ -355,7 +357,8 @@ app.post('/secure/upload_chip', upload.single('image'), async (req: Request, res
   const result = await validate_JWT(req.cookies.token)
 
   if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
+    res.status(result.errorcode).json({ error: result.message });
+    return
   }
 
   /**
@@ -378,7 +381,8 @@ app.post('/secure/upload_chip', upload.single('image'), async (req: Request, res
   fs.writeFile(imagePath, image.buffer, (error:any) => {
     if (error) {
       console.error('Error writing the image file:', error);
-      return res.status(500).json({ message: 'An error occurred while uploading the image' });
+      res.status(500).json({ message: 'An error occurred while uploading the image' });
+      return
     }
 
     res.status(200).json({ message: 'Chip uploaded successfully' });

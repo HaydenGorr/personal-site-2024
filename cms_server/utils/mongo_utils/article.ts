@@ -117,3 +117,71 @@ export const updatedArticle = async({ title, desc, category, infoText, chips, so
         return 'Internal server error';
     }
 }
+
+/**
+ * Takes a new article in cms_data, validates it and adds it to the database
+ * @param {String} article_dir_name - The name of the dir containing the article you're creating
+ */
+export async function create_article(article: any){
+
+  // const article_dir_name = article
+
+  // console.log("creating article: ", article)
+
+  // const new_article_path = path.join(articles_dir, article_dir_name);
+
+  // /**
+  //  * This will return false, true, or an array of props.
+  //  * it returns an array of props if the article has already been published AND
+  //  * the meta.file doesn't match the DB entry. This means that the article has been
+  //  * updated locally and this update needs to be reflected in the DB
+  //  */
+  // const result = await validate_article_before_publishing(new_article_path, article_dir_name)
+
+  // // If result is false. validate_article_before_publishing() should never return an empty array
+  // if(!result) return false
+
+  // const article_meta = await readJSON(path.join(new_article_path, "meta.json"))
+
+  // if (typeof result == "object") {
+  //   console.log("This article has already been published, but there are updates to commit")
+  //   console.log("The updates: ", result)
+  //   await update_article(article_dir_name, result, article_meta)
+  // }else {
+  //   // Create a whole new article record
+  //   dbConnect(process.env.DB_ARTICLES_NAME)
+  //   .then((conn) => {
+        
+  //       // Create a new document
+  //       const newArticle = new Article(conn)({
+  //       title: article_meta.title,
+  //       desc: article_meta.desc,
+  //       infoText: article_meta.infoText,
+  //       chips: article_meta.chips,
+  //       source: article_dir_name,
+  //       views: 0,
+  //       publishDate: Date.now(),
+  //       ready: true
+  //       });
+        
+  //       // Save the document
+  //       return newArticle.save();
+  //   })
+  //   .then(() => {
+  //       console.log('Document inserted successfully');
+  //   })
+  //   .catch((err) => {
+  //       console.error('Error:', err);
+  //   });
+  // }
+
+  return
+
+  // // Add the chips
+  // const new_defs = await get_definitions_for_new_chips(article_meta.chips)
+
+  // // Ensure the chips has definitions
+  // for (const chip of new_defs) {
+  //     await add_chip(chip.name, chip.description)
+  // }
+}

@@ -34,3 +34,9 @@ export interface error {
     has_error: Boolean,
     error_message: string,
 }
+
+export interface user {
+    id: number;
+    username: string;
+    password: string;
+}
