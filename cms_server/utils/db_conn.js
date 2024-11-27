@@ -1,7 +1,7 @@
 // lib/dbConnect.js
-const mongoose = require('mongoose');
-const { MONGODB_BASE } = require('./path_consts');
-const {Response} = require('./response_obj')
+import mongoose from 'mongoose';
+import { MONGODB_BASE } from './path_consts';
+import Response from './response_obj'
 
 const DB_ARTICLES = process.env.DB_ARTICLES_NAME;
 const DB_CHIPS = process.env.DB_CHIPS_NAME;
@@ -30,7 +30,7 @@ if (!cached) {
 
 const connections = {};
 
-async function dbConnect(dbName) {
+export default async function dbConnect(dbName) {
   // console.log("getting connection")
   if (connections[dbName]) {
     // console.log("got pre-existing connection")
@@ -51,7 +51,3 @@ async function dbConnect(dbName) {
     return new Response("", 500, `Could not establish a connection to "${dbName}":`);
   }
 }
-
-module.exports = {
-  dbConnect
-};

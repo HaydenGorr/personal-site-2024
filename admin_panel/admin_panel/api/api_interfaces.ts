@@ -11,6 +11,7 @@ export interface chip {
 
 export interface article {
     _id?: number;
+    article: string;
     title: string;
     desc: string;
     infoText: string;

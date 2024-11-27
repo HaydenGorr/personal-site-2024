@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define the schema
 const chip_schema = new mongoose.Schema({
@@ -6,4 +6,4 @@ const chip_schema = new mongoose.Schema({
     description: { type: String, required: true }
 });
 
-module.exports = (conn) => conn.model('chips', chip_schema);
+export default (conn: mongoose.Connection) => conn.model('chips', chip_schema);

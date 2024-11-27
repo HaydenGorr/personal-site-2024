@@ -26,14 +26,16 @@ const fs = require('fs');
 const { updatedArticle } = require('./utils/mongo_utils/update_article')
 const { add_article } = require('./utils/mongo_utils/add_article')
 const { deleteArticle } = require('./utils/mongo_utils/delete_article')
-const { edit_chip } = require('./utils/mongo_utils/edit_chip')
-const { deleteChip } = require('./utils/mongo_utils/delete_chip');
-const { get_all_categories } = require('./utils/mongo_utils/get_categories');
-const { add_category } = require('./utils/mongo_utils/add_category')
-// const { get_all_categories } = require('./endpoint_logic/categories')
+import EditChip from "./utils/mongo_utils/edit_chip";
+import DeleteChip from "./utils/mongo_utils/delete_chip"
+import get_all_categories from "./utils/mongo_utils/get_categories";
+import { AddCategory } from "./utils/mongo_utils/add_category";
 import { api_return_schema, article, category } from "./interfaces/interfaces"
 import { Request, Response } from 'express';
-const { DeleteCategory } = require("./utils/mongo_utils/delete_category")
+import { DeleteCategory } from "./utils/mongo_utils/delete_category";
+import { SaveFileToRandomDir } from "./utils/save_image_to_drive";
+
+
 
 declare module 'express' {
   export interface Request {
@@ -295,13 +297,19 @@ app.post('/secure/delete_category', async (req: Request, res: Response) => {
 
 app.post('/secure/add_category', async (req: Request, res: Response) => {
 
-  const { category_name } = req.body;
+  try{
+    const { category_name } = req.body;
 
-  const result: api_return_schema<Boolean> = await add_category(category_name)
+    const result: api_return_schema<Boolean> = await AddCategory(category_name)
 
-  if (result.error.has_error) {res.status(500).json(result); return}
+    if (result.error.has_error) {res.status(500).json(result); return}
 
-  res.status(200).json(result)
+    res.status(200).json(result)
+  } catch {
+    res.status(500).json({data:[], error:{has_error: true, error_msg: "Internal Server Error"}})
+    return
+  }
+
 
 });
 
@@ -315,6 +323,36 @@ app.get('/get_all_chips', async (req: Request, res: Response) => {
     
 });
 
+app.post('/secure/upload_image', upload.single('image'), async (req: Request, res: Response) => {
+
+  console.log("Inside upload image")
+
+  try {
+    if (!req.file) {
+        return res.status(400).json({ data:"", error: {has_error: true, error_message: 'No image file provided'} });
+    }
+
+    console.log("got file")
+
+    const file = req.file;
+  
+    const file_path: string = await SaveFileToRandomDir(file)
+
+    if (file_path=="") {
+      res.status(500).json({data:"", error:{has_error: true, error_message: "could not save to drive"}})
+      return
+    }
+
+    res.status(200).json({data:file_path, error:{has_error: false, error_message: ""}})
+    return
+
+
+  } catch {
+    res.status(500).json({data:"", error:{has_error: true, error_message: "Internal Server Error"}})
+    return
+}
+    
+});
 
 
 
@@ -410,7 +448,7 @@ app.post('/secure/edit_chip', upload.single('image'), async (req: Request, res: 
   }
 
   // Put the chip into the DB
-  await edit_chip(id, name, description)
+  await EditChip(id, name, description)
   res.status(200).json({ message: 'Chip uploaded successfully' });
 })
 
@@ -445,7 +483,7 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
     // Update the article
     const update_result = await updatedArticle(req.body)
 
-    const update_result2 = await add_category(category)
+    const update_result2 = await AddCategory(category)
 
     if (mdxFile) {
       const mdxPath = path.join(DATA_DIR, "CMS", "articles", source, "article.mdx");
@@ -547,7 +585,7 @@ app.post('/secure/delete_chip', async (req: Request, res: Response) => {
       return res.status(500).json({ message: 'An error occurred while uploading the image' });
     }
 
-    await deleteChip(id);
+    await DeleteChip(id);
 
     res.status(200).json({ message: 'Chip uploaded successfully' });
   }

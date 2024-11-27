@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 // Define the schema
 const articleSchema = new mongoose.Schema({
@@ -14,6 +14,7 @@ const articleSchema = new mongoose.Schema({
     portfolioReady: {type: Boolean, default: false},
     type: {type: String, default: "misc."},
     image: {type: String, default: ""},
+    article: { type: String, required: true, default: "" },
 });
 
-module.exports = (conn) => conn.model('articles', articleSchema);
+export default (conn: mongoose.Connection) => conn.model('articles', articleSchema);
