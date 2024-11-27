@@ -1,6 +1,6 @@
-const fs = require('fs').promises;
+import { promises as fs } from 'fs';
 
-async function does_temp_meta_dir_exist(path_to_temp_dir) {
+export async function does_temp_meta_dir_exist(path_to_temp_dir) {
   try {
     const stats = await fs.stat(path_to_temp_dir);
     return stats.isDirectory();
@@ -8,7 +8,7 @@ async function does_temp_meta_dir_exist(path_to_temp_dir) {
     return false;
   }
 }
-async function make_temp_dir(path_to_meta_dir) {
+export async function make_temp_dir(path_to_meta_dir) {
     try {
         // Use path.join to ensure the correct path format
         await fs.mkdir(path_to_meta_dir, { recursive: true });
@@ -19,7 +19,7 @@ async function make_temp_dir(path_to_meta_dir) {
     }
 }
 
-async function delete_temp_dir(path_to_meta_dir) {
+export async function delete_temp_dir(path_to_meta_dir) {
     try {
         // Use path.join to ensure the correct path format
         await fs.rm(path_to_meta_dir, { recursive: true });
@@ -29,10 +29,3 @@ async function delete_temp_dir(path_to_meta_dir) {
         return false;
     }
 }
-
-
-module.exports = {
-    does_temp_meta_dir_exist,
-    make_temp_dir,
-    delete_temp_dir
-};

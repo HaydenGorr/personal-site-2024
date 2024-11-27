@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
+import * as jwt from 'jsonwebtoken';
 
-async function validate_JWT(token) {
+export async function validate_JWT(token) {
     if (!token) {
         return {success: false, message: "No token provided", errorcode: 401};
     }
@@ -19,8 +19,3 @@ async function validate_JWT(token) {
         return {success: false, message: "Internal server error", errorcode: 500};
     }
 }
-
-module.exports = {
-    validate_JWT
-};
-  

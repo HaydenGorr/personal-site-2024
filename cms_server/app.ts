@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { NextFunction, RequestHandler } from 'express';
 import cors from 'cors';
 import path from 'path';
 
@@ -7,10 +7,10 @@ import path from 'path';
 dotenv.config({ path: process.env.ENV_FILE });
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT: number = parseInt(process.env.PORT!, 10);
 
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+const jwt = await import('jsonwebtoken');
 import cookieParser from 'cookie-parser';
 
 import { validate_JWT } from './utils/validate_JWT';
@@ -38,21 +38,30 @@ const upload = multer({ storage: storage });
 
 const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com', 'http://localhost:3004'];
 
-const JWTMiddleware = async (req: Request, res: Response, next: any) => {
+const JWTMiddleware: RequestHandler = (req: Request, res: Response, next) => {
   const token = req.cookies.token;
 
   if (!token) {
     console.log("User did not provide a token");
-    return res.status(401).json({
+    res.status(401).json({
       data: false,
       error: {
         has_error: true,
         error_message: "User did not provide a token",
       }
     });
+    return; // Exit the function without returning a value
   }
-  
-  next();
+
+  // Handle the asynchronous operation
+  validate_JWT(token)
+    .then(() => {
+      next();
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
 };
 
 const cors_middleware = cors({
@@ -582,14 +591,15 @@ app.post('/secure/delete_chip', async (req: Request, res: Response) => {
     /**
      * Check that this tag doesn't already exist in the DB
      */
-    const foundChips = await get_chip(name)
+    const foundChips: api_return_schema<chip[]> = await get_chip(name)
 
-    const id = foundChips[0]._id
+    const id:number = foundChips.data[0]._id as number
 
-    if (foundChips.length == 0) {
+    if (foundChips.data.length == 0) {
       console.log("did not find chips. Quitting")
       // If it already exists in the DB return early
-      return res.status(500).json({ message: 'An error occurred while uploading the image' });
+      res.status(500).json({ message: 'An error occurred while uploading the image' });
+      return
     }
 
     await DeleteChip(id);

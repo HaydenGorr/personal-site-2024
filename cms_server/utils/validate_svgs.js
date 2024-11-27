@@ -1,7 +1,6 @@
-const fs = require('fs').promises;
-const path = require('path');
-const { svg_dir } = require('./path_consts.js')
-
+import { promises as fs } from 'fs';
+import path from 'path';
+import { svg_dir } from './path_consts.js';
 
 /**
  * Reads the unique chips file and ensures every chips has an svg
@@ -9,7 +8,7 @@ const { svg_dir } = require('./path_consts.js')
  * @param {string} path_to_unique_chips - The path to the unique_chips json file.
  * @returns {string} The SVG file name in lowercase.
  */
-async function validate_chips_have_svgs(path_to_svgs, path_to_unique_chips) {
+export async function validate_chips_have_svgs(path_to_svgs, path_to_unique_chips) {
     try {
         var passed = true;
         const jsonData = await fs.readFile(path_to_unique_chips, 'utf8');
@@ -36,7 +35,7 @@ async function validate_chips_have_svgs(path_to_svgs, path_to_unique_chips) {
 }
 
 
-async function validate_chips_in_article(chips_array, chip_path) {
+export async function validate_chips_in_article(chips_array, chip_path) {
     try {
         var passed = true;
         
@@ -59,9 +58,3 @@ async function validate_chips_in_article(chips_array, chip_path) {
         return false
     }
 }
-
-module.exports = {
-    validate_chips_have_svgs,
-    validate_chips_in_article
-  };
-  
