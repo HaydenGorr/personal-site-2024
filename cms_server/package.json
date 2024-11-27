@@ -18,9 +18,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "start:dev": "cross-env ENV_FILE=.env.local ts-node-dev --respawn ./app.ts",
-    "start:prod": "cross-env ENV_FILE=.env.prod ts-node ./app.ts",
-    "build:prod": "tsc && cross-env ENV_FILE=.env.prod node dist/app.ts"
+    "start:dev": "cross-env DOTENV_CONFIG_PATH=.env.local tsx watch --require dotenv/config ./app.ts",
+    "start:prod": "cross-env DOTENV_CONFIG_PATH=.env.prod tsx --require dotenv/config ./app.ts",
+    "build:prod": "tsc && cross-env DOTENV_CONFIG_PATH=.env.prod node -r dotenv/config dist/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +35,7 @@
     "@types/node": "^22.9.3",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
 }

@@ -3,6 +3,7 @@ import express, { NextFunction, RequestHandler } from 'express';
 import cors from 'cors';
 import path from 'path';
 
+
 // Configure dotenv first
 dotenv.config({ path: process.env.ENV_FILE });
 
@@ -10,7 +11,7 @@ const app = express();
 const PORT: number = parseInt(process.env.PORT!, 10);
 
 import bcrypt from 'bcrypt'
-const jwt = await import('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 
 import { validate_JWT } from './utils/validate_JWT';

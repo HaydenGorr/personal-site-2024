@@ -1,4 +1,4 @@
-const { images_dir } = require('../utils/path_consts')
+import { images_dir } from './path_consts';
 import { randomBytes } from 'crypto';
 import { mkdir, writeFile, access } from 'fs/promises';
 import path from 'path';
@@ -95,7 +95,3 @@ try {
     console.error('Failed to save file:', error);
 }
 */
-
-module.exports = {
-    saveFileToRandomDir,
-};
