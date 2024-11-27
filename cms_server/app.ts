@@ -1,47 +1,36 @@
-require('dotenv').config({ path: process.env.ENV_FILE });
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+
+// Configure dotenv first
+dotenv.config({ path: process.env.ENV_FILE });
+
 const app = express();
 const PORT = process.env.PORT;
-// const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'cms_data');
-const { get_unique_chips, get_all_ready_articles, create_article, get_all_ready_portfolio_articles, check_if_best_article_exists } = require('./utils/mongo_utils');
-const { get_article, hasContainerPng } = require('./utils/mongo_utils/get_article')
-const { articles_dir } = require('./utils/path_consts');
-const Cookies = require('js-cookie');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { get_users_by_username } = require('./utils/mongo_utils/get_user_by_username')
-const { add_user } = require('./utils/mongo_utils/add_user')
-const cookieParser = require('cookie-parser');
-const { get_all_articles } = require('./utils/mongo_utils/get_article')
-const { validate_JWT } = require('./utils/validate_JWT')
-const dbConnect = require('./utils/db_conn')
-const multer = require('multer');
-const { DATA_DIR, svg_dir } = require('./utils/path_consts')
-const { get_chip } = require('./utils/mongo_utils/get_chips')
-const { add_chip } = require('./utils/mongo_utils/add_chip')
-const fss = require('fs').promises;
-const fs = require('fs');
-const { updatedArticle } = require('./utils/mongo_utils/update_article')
-const { add_article } = require('./utils/mongo_utils/add_article')
-const { deleteArticle } = require('./utils/mongo_utils/delete_article')
-import EditChip from "./utils/mongo_utils/edit_chip";
-import DeleteChip from "./utils/mongo_utils/delete_chip"
-import get_all_categories from "./utils/mongo_utils/get_categories";
-import { AddCategory } from "./utils/mongo_utils/add_category";
+
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import cookieParser from 'cookie-parser';
+
+import { validate_JWT } from './utils/validate_JWT';
+import multer from 'multer';
+
+import { DATA_DIR, svg_dir } from './utils/path_consts';
+
+import { promises as fss } from 'fs';
+import fs from 'fs';
+
+import { add_user, get_users_by_username } from './utils/mongo_utils/admin_user';
+import { delete_article, add_article, updatedArticle, get_all_articles, get_article, get_all_ready_articles } from "./utils/mongo_utils/article";
+import { DeleteChip, EditChip, add_chip, get_chips, get_unique_chips } from "./utils/mongo_utils/chips";
+import { get_all_categories, DeleteCategory } from "./utils/mongo_utils/category";
+import { AddCategory } from "./utils/mongo_utils/category";
+
 import { api_return_schema, article, category } from "./interfaces/interfaces"
 import { Request, Response } from 'express';
-import { DeleteCategory } from "./utils/mongo_utils/delete_category";
 import { SaveFileToRandomDir } from "./utils/save_image_to_drive";
 
-
-
-declare module 'express' {
-  export interface Request {
-    cookies: { [key: string]: string };
-  }
-}
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -101,33 +90,33 @@ app.get('/get_all_ready_articles', async (req: Request, res: Response) => {
 
 });
 
-app.get('/get_all_ready_portfolio_articles', async (req: Request, res: Response) => {
+// app.get('/get_all_ready_portfolio_articles', async (req: Request, res: Response) => {
 
-  console.log("getting all portfolio articles marked ready")
+//   console.log("getting all portfolio articles marked ready")
 
-  var response = await get_all_ready_portfolio_articles()
+//   var response = await get_all_ready_portfolio_articles()
 
-  for (let i = 0; i < response.data.length; i++) {
-    if (await check_if_best_article_exists(response.data[i].source)) {
-      response.data[i]["has_best_article"] = true
-    }
-  }
+//   for (let i = 0; i < response.data.length; i++) {
+//     if (await check_if_best_article_exists(response.data[i].source)) {
+//       response.data[i]["has_best_article"] = true
+//     }
+//   }
 
-  console.log(response.data)
+//   console.log(response.data)
 
-  if (response.error){
-    res.json(response);
-  }
-  else {
-    const updatedData = await Promise.all(response.data.map(async (article: any) => {
-      const hasBestArticle = await check_if_best_article_exists(article.source);
-      return { ...article._doc, has_best_article: hasBestArticle };
-    }));
+//   if (response.error){
+//     res.json(response);
+//   }
+//   else {
+//     const updatedData = await Promise.all(response.data.map(async (article: any) => {
+//       const hasBestArticle = await check_if_best_article_exists(article.source);
+//       return { ...article._doc, has_best_article: hasBestArticle };
+//     }));
 
-    res.json({error: "", data: updatedData});
-  }
+//     res.json({error: "", data: updatedData});
+//   }
 
-});
+// });
 
 app.get('/get_unique_chips', async (req: Request, res: Response) => {
   console.log("called: get unique chips")

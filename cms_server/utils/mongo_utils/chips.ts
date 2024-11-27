@@ -30,6 +30,20 @@ export async function add_chip(inName: string, inDefinition: string){
 
 }
 
+export async function get_unique_chips(){
+
+    console.log("inside get_unique_chips")
+    const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+    console.log("got response")
+    try {
+        const chips = await Chip_Schema(connection).find();
+        return {"error": "", "data":chips}
+    } catch (error) {
+        return {"error": "Could not fetch Chip data from DB", "data":[]}
+    }
+  
+  }
+
 export async function EditChip(id: number, inName: string, inDefinition: string){
   
     try {
