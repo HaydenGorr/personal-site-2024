@@ -22,14 +22,15 @@ import { promises as fss } from 'fs';
 import fs from 'fs';
 
 import { add_user, get_users_by_username } from './utils/mongo_utils/admin_user';
-import { delete_article, add_article, updatedArticle, get_all_articles, get_article, get_all_ready_articles } from "./utils/mongo_utils/article";
-import { DeleteChip, EditChip, add_chip, get_chips, get_unique_chips, create_article } from "./utils/mongo_utils/chips";
+import { delete_article, add_article, updatedArticle, get_all_articles, get_article, get_all_ready_articles, create_article } from "./utils/mongo_utils/article";
+import { DeleteChip, EditChip, add_chip, get_chips, get_unique_chips, get_chip } from "./utils/mongo_utils/chips";
 import { get_all_categories, DeleteCategory } from "./utils/mongo_utils/category";
 import { AddCategory } from "./utils/mongo_utils/category";
 
 import { api_return_schema, article, category, chip, user } from "./interfaces/interfaces"
 import { Request, Response } from 'express';
 import { SaveFileToRandomDir } from "./utils/save_image_to_drive";
+import { error } from 'console';
 
 
 const storage = multer.memoryStorage();
@@ -188,17 +189,17 @@ app.post('/login', async (req: Request, res: Response) => {
 
   console.log("logging in: ", username, password)
 
-  const users = await get_users_by_username(username)
+  const users: api_return_schema<user[]> = await get_users_by_username(username)
 
   console.log("got users: ", users)
 
-  if (users.length === 0) {
+  if (users.data.length === 0) {
     console.log("no users found.")
     res.status(401).json({ error: 'Invalid credentials' });
     return
   }
 
-  const user: user = users[0] as user;
+  const user: user = users.data[0] as user;
 
   try {
     console.log("validate password")
@@ -212,7 +213,7 @@ app.post('/login', async (req: Request, res: Response) => {
     }
 
     console.log("creating token")
-    const token = await jwt.sign({ userId: user.id }, process.env.SECRETKEY as string, { expiresIn: '1h' });
+    const token = await jwt.sign({ userId: user._id }, process.env.SECRETKEY as string, { expiresIn: '1h' });
     console.log("created token")
 
     res.json({ token });
@@ -364,11 +365,12 @@ app.post('/secure/upload_chip', upload.single('image'), async (req: Request, res
   /**
    * Check that this tag doesn't already exist in the DB
    */
-  const foundChips = await get_chip(name)
+  const foundChips:api_return_schema<chip[]> = await get_chip(name)
 
-  if (foundChips.length > 0) {
+  if (foundChips.data.length > 0) {
     // If it already exists in the DB return early
-    return res.status(500).json({ message: 'An error occurred while uploading the image' });
+    res.status(500).json({ message: 'An error occurred while uploading the image' });
+    return
   }
 
   // Put the chip into the DB
@@ -401,20 +403,22 @@ app.post('/secure/edit_chip', upload.single('image'), async (req: Request, res: 
   const result = await validate_JWT(req.cookies.token)
 
   if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
+    res.status(result.errorcode).json({ error: result.message });
+    return
   }
 
   /**
    * Check that this tag doesn't already exist in the DB
    */
-  const foundChips = await get_chip(original_name)
+  const foundChips: api_return_schema<chip[]> = await get_chip(original_name)
 
-  const id = foundChips[0]._id
+  const id = foundChips.data[0]._id as number
 
-  if (foundChips.length == 0) {
+  if (foundChips.data.length == 0) {
     console.log("did not find chips. Quitting")
     // If it already exists in the DB return early
-    return res.status(500).json({ message: 'An error occurred while uploading the image' });
+    res.status(500).json({ message: 'An error occurred while uploading the image' });
+    return
   }
 
   if (image){
@@ -425,7 +429,8 @@ app.post('/secure/edit_chip', upload.single('image'), async (req: Request, res: 
     fs.writeFile(imagePath, image.buffer, (error: any) => {
       if (error) {
         console.error('Error writing the image file:', error);
-        return res.status(500).json({ message: 'An error occurred while uploading the image' });
+        res.status(500).json({ message: 'An error occurred while uploading the image' });
+        return
       }
     });
   }
@@ -443,6 +448,7 @@ app.post('/secure/edit_chip', upload.single('image'), async (req: Request, res: 
   // Put the chip into the DB
   await EditChip(id, name, description)
   res.status(200).json({ message: 'Chip uploaded successfully' });
+  return
 })
 
 /**
@@ -465,7 +471,8 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
   const result = await validate_JWT(req.cookies.token)
 
   if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
+    res.status(result.errorcode).json({ error: result.message });
+    return
   }
 
   try {
@@ -508,13 +515,16 @@ app.get('/secure/add_unpublished_article', async (req: Request, res: Response) =
   const result = await validate_JWT(req.cookies.token)
 
   if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
+    res.status(result.errorcode).json({ error: result.message });
+    return
   }
 
   try {
-    const entry = await add_article();
+    const entry: api_return_schema<article|null> = await add_article();
 
-    const new_dir_path = path.join(DATA_DIR, "CMS", "articles", entry.source)
+    if (entry.error.has_error) throw error("Could not find article")
+
+    const new_dir_path = path.join(DATA_DIR, "CMS", "articles", entry.data!.source as string)
 
     console.log(new_dir_path)
 
@@ -538,18 +548,21 @@ app.post('/secure/delete_article', async (req: Request, res: Response) => {
   const result = await validate_JWT(req.cookies.token)
 
   if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
+    res.status(result.errorcode).json({ error: result.message });
+    return
   }
 
   try {
     console.log("look")
-    await deleteArticle(databaseID);
-    await fs.rm(path.join(DATA_DIR, "CMS", "articles", source), {recursive: true});
+    await delete_article(databaseID);
+    await fs.promises.rm(path.join(DATA_DIR, "CMS", "articles", source), { recursive: true });
 
     res.status(200).json({ message: 'Chip uploaded successfully' });
+    return
   }
   catch {
     res.status(500).json({ message: 'Failed' });
+    return
   }
 })
 
@@ -561,7 +574,8 @@ app.post('/secure/delete_chip', async (req: Request, res: Response) => {
   const result = await validate_JWT(req.cookies.token)
 
   if (!result.success) {
-    return res.status(result.errorcode).json({ error: result.message });
+    res.status(result.errorcode).json({ error: result.message });
+    return
   }
 
   try {
@@ -581,9 +595,11 @@ app.post('/secure/delete_chip', async (req: Request, res: Response) => {
     await DeleteChip(id);
 
     res.status(200).json({ message: 'Chip uploaded successfully' });
+    return
   }
   catch {
     res.status(500).json({ message: 'Failed' });
+    return
   }
 })
 

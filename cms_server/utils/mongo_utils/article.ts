@@ -48,7 +48,7 @@ export async function get_all_ready_articles(){
   }
 }
 
-export async function add_article(source_folder: string){
+export async function add_article(): Promise<api_return_schema<article|null>>{
 
     console.log("creating chip")
 
@@ -69,11 +69,11 @@ export async function add_article(source_folder: string){
             portfolioReady: false
         });
 
-        const asd = await newArticle.save();
+        const asd: any = await newArticle.save();
 
-        return asd;
+        return {data: asd, error:{has_error:false, error_message: ""}};
     } catch (error) {
-        console.error('Error:', error);
+        return {data: null, error:{has_error:true, error_message: "Internal server error"}};
     }
 
 }
