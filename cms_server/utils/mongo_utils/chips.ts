@@ -30,6 +30,18 @@ export async function add_chip(inName: string, inDefinition: string){
 
 }
 
+export async function get_chip(inName: string): Promise<api_return_schema<chip[]>> {
+
+    const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+  
+    try {
+        const chips: chip[] = await Chip_Schema(connection).find({name: inName});
+        return {data: chips, error: { has_error: false, error_message:""}}
+    } catch (error) {
+        return {data: [], error: { has_error: true, error_message:"Could not fetch Chip data from DB"}}
+    }
+}
+
 export async function get_unique_chips(): Promise<api_return_schema<chip[]>>{
 
     console.log("inside get_unique_chips")

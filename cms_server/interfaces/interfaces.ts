@@ -36,7 +36,7 @@ export interface error {
 }
 
 export interface user {
-    id: number;
+    _id?: number;
     username: string;
     password: string;
 }
