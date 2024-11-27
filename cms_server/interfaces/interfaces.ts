@@ -15,12 +15,14 @@ export interface article {
     desc: string;
     infoText: string;
     chips: chip[],
+    category: string,
     source: string;
     views: number;
     publishDate: Date,
     ready: Boolean,
     portfolioReady: Boolean,
-    hasImage: Boolean
+    hasImage: Boolean,
+    image: string
 }
 
 export interface api_return_schema<T> {

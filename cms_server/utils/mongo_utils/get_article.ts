@@ -21,7 +21,7 @@ const { articles_dir } = require('../path_consts');
 async function get_all_articles(): Promise<api_return_schema<article[]>>{
     try {
         const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
-        const articles: article[] = await Article(connection).find().sort({ publishDate: -1 });
+        const articles: any[] = await Article(connection).find().sort({ publishDate: -1 });
         return {data: articles, error:{has_error: false, error_message: ""}}
     } catch (error) {
         console.error('Error:', error);

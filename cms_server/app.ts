@@ -46,7 +46,7 @@ const upload = multer({ storage: storage });
 
 const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com', 'http://localhost:3004'];
 
-const JWTMiddleware = (req: Request, res: Response, next: any) => {
+const JWTMiddleware = async (req: Request, res: Response, next: any) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -264,9 +264,9 @@ app.get('/secure/get_all_articles', async (req: Request, res: Response) => {
 
   if (articles.error.has_error) {res.status(500).json(articles); return}
 
-  articles.data = articles.data.map((article_obj: any) => {
-    return { ...article_obj.toObject(), hasImage: hasContainerPng(article_obj.source) };
-  });
+  // articles.data = articles.data.map((article_obj: any) => {
+  //   return { ...article_obj.toObject(), hasImage: hasContainerPng(article_obj.source) };
+  // });
 
   res.status(200).json(articles);
 })
@@ -305,7 +305,15 @@ app.post('/secure/add_category', async (req: Request, res: Response) => {
 
 });
 
+app.get('/get_all_chips', async (req: Request, res: Response) => {
 
+  const response = await get_unique_chips()
+
+  if (response.error.has_error) {res.status(500).json(response); return}
+
+  res.status(200).json(response)
+    
+});
 
 
 

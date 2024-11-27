@@ -14,13 +14,14 @@ export interface article {
     title: string;
     desc: string;
     infoText: string;
-    chips: chip[],
+    chips: string[],
+    category: string,
     source: string;
     views: number;
     publishDate: Date,
     ready: Boolean,
     portfolioReady: Boolean,
-    hasImage: Boolean
+    image: string,
 }
 
 export interface api_return_schema<T> {

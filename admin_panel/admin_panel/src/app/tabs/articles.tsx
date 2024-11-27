@@ -4,6 +4,7 @@ import { get_all_articles } from "../../../api/articles";
 import { api_return_schema, article } from "../../../api/api_interfaces";
 import ArticleContainer from "./components/articles/article_container"
 import CategoryInProgress from "./components/categories/category_inprogress";
+import ArticleInProgress from "./components/articles/article_inprogress";
 
 const enum tabs{
 	categories,
@@ -23,6 +24,9 @@ export default function Articles({ className }: props) {
     const [fetch_error_msg, set_fetch_error_msg] = useState<string>("");
 
     const [article_in_progress, set_article_in_progress] = useState<article | null>(null);
+
+    const [edit_article, set_edit_article] = useState<number>(-1);
+    const [create_new_article, set_create_new_article] = useState<Boolean>(false);
 
     const fetch_page_data = async () => {
         set_loading(true)
@@ -49,23 +53,25 @@ export default function Articles({ className }: props) {
 
 return (
 	<div className={`${className}`}>
+
+        { edit_article>-1 && <ArticleInProgress given_article={articles[edit_article]} on_close_click={()=>{set_edit_article(-1)}}/>}
+        { create_new_article && <ArticleInProgress on_close_click={()=>{set_create_new_article(false)}}/>}
+
+
         {!loading && !fetch_error && <div className="space-y-4 w-full flex flex-col items-center">
 
             <div className="w-full flex justify-around">
                 <button
                     className="bg-green-400 hover:bg-green-700 rounded-full p-2 w-fit"
-                    onClick={()=>{set_article_in_progress(null)}}>add</button>
-                {article_in_progress && <button
-                    className="bg-red-400 hover:bg-red-700 rounded-full p-2 w-fit"
-                    onClick={()=>{set_article_in_progress(null)}}>stop</button>}
+                    onClick={()=>{set_create_new_article(true)}}>add</button>
             </div>
 
             {article_in_progress && <CategoryInProgress refresh={()=>fetch_page_data()}/>}
 
-            {articles.map((art_iter) => {
+            {articles.map((art_iter, index) => {
                 return(
                     <div key={art_iter._id} className="flex space-x-4 w-full max-w-prose">
-                        <ArticleContainer art={art_iter}/>
+                        <ArticleContainer art={art_iter} on_click_edit={() => {set_edit_article(index)}}/>
                         <button className="bg-red-500 rounded-full p-2 hover:bg-red-700" onClick={() => {}}>delete</button>
                     </div>
                 )
