@@ -1,11 +1,12 @@
 import { app, protectedRouter } from "../express";
 import bcrypt from 'bcrypt'
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { get_user_by_username } from '../utils/mongo_utils/admin_user';
 import { api_return_schema, user, userId_JWTPayload } from "../interfaces/interfaces"
 import { Request, Response } from 'express';
 import { add_user } from "../utils/mongo_utils/admin_user";
 import { create_jwt_token } from "../utils/create_jwt_token";
+import { error } from "console";
 
 app.post('/login', async (req: Request, res: Response) => {
 	const { username, password } = req.body;
@@ -99,22 +100,44 @@ app.get('/loggedIn', protectedRouter, async (req: Request, res: Response) => {
 
 
 app.post('/signup', async (req: Request, res: Response) => {
-	const { username, password } = req.body;
+	const { username, password, regkey } = req.body;
 
-	console.log(username, password)
+	console.log("username, password, regkey", username, password, regkey)
 
-	try {
-	// Hash the password using bcrypt
-	const hashedPassword = await bcrypt.hash(password, 10);
-
-	if (!await add_user(username, hashedPassword)) {
-		console.log("Failed to add user")
+	if (!username || !password || !regkey) {
+		res.status(400).json({data:null, error:{has_error: true, error_message: "Missing required fields"}})
 		return
 	}
 
-	res.status(201).json({ message: 'User registered successfully' });
+	if (regkey != process.env.REG_KEY) {
+		res.status(401).json({data:null, error:{has_error: true, error_message: "Registration key is incorrect"}})
+		return
+	}
+
+	try {
+		const hashedPassword = await bcrypt.hash(password, 10);
+
+		const user_added: api_return_schema<string|null> = await add_user(username, hashedPassword)
+
+		if (!user_added.data) {
+			throw Error("No user ID. Serious error. User was possibly created. Investigate ASAP.")
+		}
+
+		if (user_added.error.has_error && user_added.error.error_message == "A user with this username already exists") {
+			res.status(401).json( user_added )
+			return
+		}
+
+		if (user_added.error.has_error) {
+			res.status(500).json( user_added )
+			return
+		}
+
+		const token = await create_jwt_token(parseInt(user_added.data)) 
+
+		res.status(201).json({data: token, error:{has_error: false, error_message: ""}});
 	} catch (error) {
-	console.error('Registration error:', error);
-	res.status(500).json({ error: 'Internal server error' });
+		res.status(500).json({data:null, error:{has_error: true, error_message: "Internal server error"}});
+		return
 	}
 })

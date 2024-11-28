@@ -7,6 +7,7 @@ import Categories from "../tabs/categories";
 import Articles from "../tabs/articles";
 import Chips from "../tabs/chips";
 import Images from "../tabs/images";
+import Cookies from "js-cookie";
 
 const enum tabs{
 	categories,
@@ -23,6 +24,9 @@ const [selected_tab, set_selected_tab] = useState<tabs>(tabs.categories);
 
 return (
 	<div className="p-4 w-full flex flex-col items-center relative">
+		<button 
+		className="bg-neutral-900 text-neutral-500 px-2 py-1 rounded-full top-2 right-2 absolute"
+		onClick={async ()=>{await Cookies.remove('token'); router.push('/')}}>log out</button>
 
 		<h1 className="font-black text-4xl">Admin Panel</h1>
 

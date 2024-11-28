@@ -1,10 +1,9 @@
 import dbConnect from '../db_conn';
 import user_schema from "../../mongo_schemas/user_schema"
 import { api_return_schema, user } from '../../interfaces/interfaces';
+import { MongoServerError } from 'mongodb';
 
-export async function add_user(username:string, password:string){
-
-    console.log("creating user")
+export async function add_user(username:string, password:string): Promise<api_return_schema<string|null>> {
 
     const connection = await dbConnect(process.env.DB_USERS_NAME)
   
@@ -16,13 +15,17 @@ export async function add_user(username:string, password:string){
             password: password
         });
 
-        const asd = await newUser.save();
+        const newuser = await newUser.save();
 
-        console.log("SENATORS ", asd)
-
-        return asd;
+        return {data:newuser._id.toString(), error:{has_error: false, error_message: ""}};
     } catch (error) {
-        console.error('Error:', error);
+        // Check if the error is a duplicate key error
+        if (error instanceof MongoServerError && error.code == 11000) {
+            return {data:null, error:{has_error: true, error_message: "A user with this username already exists"}}
+        }
+        else {
+            return {data:null, error:{has_error: true, error_message: "Internal server error"}}
+        }
     }
 }
 
