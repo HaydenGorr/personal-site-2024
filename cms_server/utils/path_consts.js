@@ -13,7 +13,7 @@ const MONOGDB_CHIPS = MONGODB_BASE + '/chips?authSource=<authenticationDatabase>
 const MONOGDB_USERS = MONGODB_BASE + '/users?authSource=<authenticationDatabase>';
 
 const articles_dir = path.join(DATA_DIR, './CMS/articles/');
-const images_dir = path.join(DATA_DIR, './CMS/images/');
+const images_dir = path.join(DATA_DIR, './images/');
 const metas_dir = path.join(DATA_DIR, './meta_resources/');
 const temp_meta_dir = path.join(DATA_DIR, './temp_meta_resources/');
 const svg_dir = path.join(DATA_DIR, './TAG_SVGS/');

@@ -165,7 +165,7 @@ const getCheckbox = (label: string, isChecked:Boolean, onChange:()=>void) => {
     )
 }
 
-const start_upload_image = () => {
+const start_upload_image = (inFile: File) => {
     if (image_set_from_db) {
         set_error_msg("This image is already uploaded")
         return
@@ -174,10 +174,13 @@ const start_upload_image = () => {
     if (image_file == null) return
 
     upload_image(
-        image_file as File,
-            (newpath: api_return_schema<string>)=>{console.log("this is the new path" + newpath.data)},
-            (error: api_return_schema<string>)=>{console.log("error: " + error.error.error_message)}
-        )
+        inFile as File,
+        (newpath: string)=>{
+            console.log("passed: this is the new path" + newpath)
+        },
+        (error: api_return_schema<string|null>)=>{console.log("error: " + error.error.error_message)}
+    )
+
 }
 
 const start_upload_article = () => {
@@ -239,7 +242,7 @@ return (
             <ImageUpload 
                 on_file_change={(a: File|null)=>{set_image_file(a)}}
                 image_file={image_file}
-                onImageUpload={(inFile: File)=>{start_upload_image()}}/>
+                onImageUpload={(inFile: File)=>{start_upload_image(inFile)}}/>
 
             <MDXUpload
                 on_file_change={(a: File|null)=>{set_article_file(a); set_article_set_from_db(false)}}

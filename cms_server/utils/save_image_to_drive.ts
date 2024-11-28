@@ -2,6 +2,7 @@ import { images_dir } from './path_consts';
 import { randomBytes } from 'crypto';
 import { mkdir, writeFile, access } from 'fs/promises';
 import path from 'path';
+import { api_return_schema } from '../interfaces/interfaces';
 
 interface SaveFileOptions {
     allowedTypes?: string[];
@@ -12,14 +13,12 @@ interface SaveFileOptions {
 export async function SaveFileToRandomDir(
     file: Express.Multer.File, 
     options: SaveFileOptions = {}
-): Promise<string> {
+): Promise<api_return_schema<string|null>> {
     const {
         allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'],
         maxSizeBytes = 50 * 1024 * 1024, // 5MB default
         baseDir = path.join(images_dir)
     } = options;
-
-    console.log("we're here, trying to save.")
 
     try {
         // Validate file type
@@ -45,7 +44,7 @@ export async function SaveFileToRandomDir(
             attempts++;
 
             try {
-                await access(baseDir);
+                await access(dirPath);
                 // If we get here, the directory exists
             } catch {
                 // Directory doesn't exist, we can use this name
@@ -70,14 +69,11 @@ export async function SaveFileToRandomDir(
         await writeFile(filePath, file.buffer);
 
         // Construct and return the URL
-        const fileUrl = filePath.toString();
-
-        return fileUrl;
+        const fileUrl = `${process.env.ADMIN_ROUTE}/cms/images/${randomDirName}/${fileName}${fileExt}`;
+        return {data: fileUrl, error: {has_error: false, error_message: ""}};
 
     } catch (error) {
-        console.error('Error saving file:', error);
-        throw error instanceof Error ? error : new Error('Failed to save file');
-        return ""
+        return {data: null, error: {has_error: true, error_message: 'Error saving file:'}};
     }
 }
 

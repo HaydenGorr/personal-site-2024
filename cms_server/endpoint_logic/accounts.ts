@@ -60,6 +60,7 @@ app.post('/login', async (req: Request, res: Response) => {
 });
 
 app.get('/loggedIn', protectedRouter, async (req: Request, res: Response) => {
+	console.log("called logged in")
 
 	try {
 

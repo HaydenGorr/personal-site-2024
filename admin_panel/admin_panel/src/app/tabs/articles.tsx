@@ -66,8 +66,6 @@ return (
                     onClick={()=>{set_create_new_article(true)}}>add</button>
             </div>
 
-            {article_in_progress && <CategoryInProgress refresh={()=>fetch_page_data()}/>}
-
             {articles.map((art_iter, index) => {
                 return(
                     <div key={art_iter._id} className="flex space-x-4 w-full max-w-prose">
@@ -80,7 +78,7 @@ return (
         </div>}
         {loading && 
         <div>
-            Fetching categories
+            Fetching Articles
         </div>
         }
 

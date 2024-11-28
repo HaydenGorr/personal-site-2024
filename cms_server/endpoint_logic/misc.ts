@@ -1,12 +1,15 @@
 import { app, upload } from "../express";
-import { Request, Response } from "express";
+import { Request, Response, Express } from "express";
 import { SaveFileToRandomDir } from "../utils/save_image_to_drive";
+import { api_return_schema } from "../interfaces/interfaces";
+
+import express from 'express';
+import { images_dir } from "../utils/path_consts";
+import path from "path";
 
 app.get('/add_view', async (req: Request, res: Response) => {})
 
 app.post('/secure/upload_image', upload.single('image'), async (req: Request, res: Response) => {
-
-  console.log("Inside upload image")
 
   try {
     if (!req.file) {
@@ -18,14 +21,14 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
 
     const file = req.file;
   
-    const file_path: string = await SaveFileToRandomDir(file)
+    const file_path: api_return_schema<string|null> = await SaveFileToRandomDir(file)
 
-    if (file_path=="") {
-      res.status(500).json({data:"", error:{has_error: true, error_message: "could not save to drive"}})
+    if (file_path.error) {
+      res.status(500).json(file_path)
       return
     }
 
-    res.status(200).json({data:file_path, error:{has_error: false, error_message: ""}})
+    res.status(200).json(file_path)
     return
 
 
@@ -36,6 +39,11 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
     
 });
 
+app.use('images/', (req, res, next) => {
+  console.log('Accessing image:', req.url);
+  console.log('Full path:', path.join(images_dir, req.url));
+  next();
+}, express.static(images_dir));
 
 app.get(`/favicon`, async (req: Request, res: Response) => {
     const { href }: any = req.query;
