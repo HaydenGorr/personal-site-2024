@@ -23,8 +23,6 @@ export default function Articles({ className }: props) {
     const [fetch_error, set_fetch_error] = useState<Boolean>(false);
     const [fetch_error_msg, set_fetch_error_msg] = useState<string>("");
 
-    const [article_in_progress, set_article_in_progress] = useState<article | null>(null);
-
     const [edit_article, set_edit_article] = useState<number>(-1);
     const [create_new_article, set_create_new_article] = useState<Boolean>(false);
 
@@ -48,29 +46,34 @@ export default function Articles({ className }: props) {
     }
 
     useEffect(()=>{
+        // We don't need to refresh this page if we're in edit mode
+        if (edit_article != -1) return
+
         fetch_page_data()
-    }, [])
+    }, [create_new_article, edit_article])
 
 return (
-	<div className={`${className}`}>
+	<div className={`${className} max-w-prose w-full`}>
 
         { edit_article>-1 && <ArticleInProgress given_article={articles[edit_article]} on_close_click={()=>{set_edit_article(-1)}}/>}
         { create_new_article && <ArticleInProgress on_close_click={()=>{set_create_new_article(false)}}/>}
 
 
-        {!loading && !fetch_error && <div className="space-y-4 w-full flex flex-col items-center">
+        {edit_article == -1 && !loading && !fetch_error && <div className="space-y-4 w-full flex flex-col items-center">
 
             <div className="w-full flex justify-around">
                 <button
-                    className="bg-green-400 hover:bg-green-700 rounded-full p-2 w-fit"
+                    className="bg-green-400 hover:bg-green-700 rounded-lg p-2 max-w-prose w-full"
                     onClick={()=>{set_create_new_article(true)}}>add</button>
             </div>
 
             {articles.map((art_iter, index) => {
                 return(
                     <div key={art_iter._id} className="flex space-x-4 w-full max-w-prose">
-                        <ArticleContainer art={art_iter} on_click_edit={() => {set_edit_article(index)}}/>
-                        <button className="bg-red-500 rounded-full p-2 hover:bg-red-700" onClick={() => {}}>delete</button>
+                        <button className="bg-purple-300 hover:bg-purple-400 rounded-lg px-2 text-neutral-900" onClick={()=>{set_edit_article(index)}}>edit</button>
+                        <ArticleContainer art={art_iter}/>
+                        <button className="bg-red-500 hover:bg-red-700 rounded-lg px-2" onClick={() => {}}>delete</button>
+
                     </div>
                 )
             })}

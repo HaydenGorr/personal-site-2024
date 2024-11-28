@@ -2,7 +2,7 @@ import { app, upload } from "../express";
 import { api_return_schema, article } from "../interfaces/interfaces"
 import { Request, Response } from 'express';
 import { get_all_ready_articles, create_article, get_all_articles, add_article, delete_article } from "../utils/mongo_utils/article";
-import { updatedArticle, get_article } from "../utils/mongo_utils/article";
+import { update_article, get_article } from "../utils/mongo_utils/article";
 import { AddCategory } from "../utils/mongo_utils/category";
 import fs from 'fs'
 import path from "path";
@@ -51,7 +51,17 @@ app.get('/secure/get_all_articles', async (req: Request, res: Response) => {
 
 
 app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }, { name: 'best_mdx', maxCount: 1 }]), async (req: Request, res: Response) => {
-    const { databaseID, title, desc, category, infoText, chips, source, views, type, publishDate, ready, portfolioReady} = req.body;
+    const edited_article: article = req.body.edited_article as article;
+    
+    const updated_result = await update_article(edited_article)
+
+    if (updated_result.error.has_error) {
+      res.status(500).json(updated_result)
+      return
+    }
+
+    res.status(200).json(updated_result)
+    return
   
     if (!req.files || Array.isArray(req.files)) {
       throw new Error('No files uploaded');
@@ -146,6 +156,10 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
       return
     }
   })
+
+
+
+
 
 // app.get('/get_all_ready_portfolio_articles', async (req: Request, res: Response) => {
 

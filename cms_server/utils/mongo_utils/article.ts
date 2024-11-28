@@ -1,4 +1,4 @@
-import { article, api_return_schema } from "../../interfaces/interfaces";
+import { article, api_return_schema, image, error } from "../../interfaces/interfaces";
 import article_schema from "../../mongo_schemas/article_schema";
 import { MONOGDB_ARTICLES } from '../path_consts.js'
 import dbConnect from '../db_conn';
@@ -95,26 +95,31 @@ export async function delete_article(articleId: number) {
     }
   }
 
-export const updatedArticle = async({ title, desc, category, infoText, chips, source, views, publishDate, ready, portfolioReady}: article) => {
+export const update_article = async(updated_article: article): Promise<api_return_schema<article|null>> => {
     const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
 
     try {
         const articleModel = await article_schema(connection)
 
-        // const updated_article = await articleModel.findByIdAndUpdate(
-        //     databaseID, // the _id of the document to update
-        //     { $set: { title: title, desc: desc, category: category, infoText: infoText, chips: chips, source: source, views: views, publishDate: publishDate, ready: ready, portfolioReady: portfolioReady } }, // the update operations
-        //     { new: true } // return the updated document
-        // );
+        const art = await articleModel.findByIdAndUpdate(
+          updated_article._id,
+          { $set: updated_article },
+          { new: true, runValidators: true }
+        );
 
-        // console.log("updated, ", updated_article)
+        if (!art) throw Error()
 
-        // return updated_article;
+        await art.save();
+
+        return {data:null, error:{has_error: false, error_message:""}};
     }
-    catch {
-        console.log("tractor")
-        // console.error('Error:', error);
-        return 'Internal server error';
+    catch (err: unknown){
+      console.error('Full error:', {
+        message: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack : undefined,
+        name: err instanceof Error ? err.name : undefined
+    });
+        return {data:null, error:{has_error: true, error_message:"Internal Server Error"}};
     }
 }
 

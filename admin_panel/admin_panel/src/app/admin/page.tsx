@@ -30,19 +30,19 @@ return (
 
 		<h1 className="font-black text-4xl">Admin Panel</h1>
 
-		<div className="mt-8 flex justify-around w-full max-w-prose">
+		<div className="mt-8 flex justify-between w-full max-w-prose overflow-x-scroll space-x-4 scrollbar-h">
 			<button 
-			className={` px-4 py-2 rounded-full ${ selected_tab == tabs.categories ? "bg-gray-500" : "bg-gray-800"}`}
+			className={` px-4 py-2 rounded-lg ${ selected_tab == tabs.categories ? "bg-gray-500" : "bg-gray-800"}`}
 			onClick={()=>{set_selected_tab(tabs.categories)}}>Categories</button>
 
 			<button 
-			className={` px-4 py-2 rounded-full ${ selected_tab == tabs.articles ? "bg-gray-500" : "bg-gray-800"}`}
+			className={` px-4 py-2 rounded-lg ${ selected_tab == tabs.articles ? "bg-gray-500" : "bg-gray-800"}`}
 			onClick={()=>{set_selected_tab(tabs.articles)}}>Articles</button>
 
-			<button className={` px-4 py-2 rounded-full ${ selected_tab == tabs.chips ? "bg-gray-500" : "bg-gray-800"}`}
+			<button className={` px-4 py-2 rounded-lg ${ selected_tab == tabs.chips ? "bg-gray-500" : "bg-gray-800"}`}
 			onClick={()=>{set_selected_tab(tabs.chips)}}>Chips</button>
 
-			<button className={` px-4 py-2 rounded-full ${ selected_tab == tabs.images ? "bg-gray-500" : "bg-gray-800"}`}
+			<button className={` px-4 py-2 rounded-lg ${ selected_tab == tabs.images ? "bg-gray-500" : "bg-gray-800"}`}
 			onClick={()=>{set_selected_tab(tabs.images)}}>Images</button>
 		</div>
 		

@@ -10,6 +10,7 @@ import MDXUpload from "@/app/components/mdx_upload";
 import { upload_image } from "../../../../../api/image";
 import ImageDropdown from "@/app/components/image_dropdown";
 import { full_image_path_from_filename } from "../../../../../utils/path_utils";
+import { submit_article_changes } from "../../../../../api/articles";
 
 const enum tabs{
 	categories,
@@ -45,10 +46,10 @@ const [image_url, set_image_url] = useState<string|null>(given_article.image ? g
 const [article_set_from_db, set_article_set_from_db] = useState<Boolean>(given_article.article != "");
 const [article_file, set_article_file] = useState<File|null>(null);
 
+const [submit_success_message, set_submit_success_message] = useState<string|null>(null);
 const [error_msg, set_error_msg] = useState<string|null>(null);
 const [article_under_edit, set_article_under_edit] = useState<article>(given_article);
 const is_brand_new_article = useRef(!("_id" in given_article))
-
 
 const set_article_preview = async (url: string) => {
     try{
@@ -81,11 +82,13 @@ const set_article_preview = async (url: string) => {
 }
 
 useEffect(()=>{
+
+    handleArticleChange("article", "placeholder_path")
+
     if (article_set_from_db) set_article_preview(given_article.article)
 
     // if (image_set_from_db) set_preview(given_article.image)
 },[])
-
 
 const handleArticleChange = (field: keyof article, value: any) => {
     set_article_under_edit({
@@ -93,12 +96,6 @@ const handleArticleChange = (field: keyof article, value: any) => {
         [field]: value
     });
 };
-
-const is_ready_to_push = () => {
-    if (!is_brand_new_article && !("_id" in article_under_edit)) return false
-    if (article_under_edit.title.length == 0) return false
-    if (article_under_edit.desc.length == 0) return false
-}
 
 const getInput = (label: string, value:string)=> {
     return (
@@ -138,8 +135,28 @@ const getCheckbox = (label: string, isChecked:Boolean, onChange:()=>void) => {
     )
 }
 
+const isArticleReady = (): boolean => {
+    if (article_under_edit.title.length == 0) return false
+    if (!article_under_edit.category) return false
+    if (article_under_edit.chips.length == 0) return false
+    if (image_url === null) return false
+    if (article_under_edit.desc.length == 0) return false
+
+    return true
+}
+
+const submit_changes = () => {
+    if (!isArticleReady()) return
+
+    submit_article_changes(
+        article_under_edit,
+        ()=>{ set_error_msg(null); set_submit_success_message("Sucessfully submitted!") },
+        (a: string)=>{ set_error_msg(a); set_submit_success_message(null) }
+    )
+}
+
 return (
-	<div className={`${className} min-h-screen w-fit p-8 relative flex flex-col items-center`}>
+	<div className={`${className} min-h-screen w-full p-8 relative flex flex-col items-center`}>
 
         <button className="bg-zinc-900 text-zinc-600 px-2 py-1 rounded-full top-0 right-4 absolute" onClick={()=>{on_close_click()}}>close</button>
 
@@ -155,14 +172,17 @@ return (
             <div className="flex space-x-2">
                 <div className={`${image_url != null ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>image</div>
                 <div className={`${article_under_edit.ready? 'bg-green-400' : 'bg-yellow-400'} w-fit px-4 py-2 rounded-full font-bold`}>published</div>
-                <div className={`${article_under_edit.desc.length > 0 ? 'bg-green-400' : 'bg-yellow-400'} w-fit px-4 py-2 rounded-full font-bold`}>description</div>
+                <div className={`${article_under_edit.desc.length > 0 ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>description</div>
                 <div className={`${article_under_edit.infoText.length > 0 ? 'bg-green-400' : 'bg-yellow-400'} w-fit px-4 py-2 rounded-full font-bold`}>info</div>
             </div>
-
-            <div className="flex space-x-2">
-
-            </div>
         </div>
+
+        <p className="mt-8 font-bold text-green-400">{submit_success_message}</p>
+
+        <button
+            disabled={!isArticleReady()}
+            className={`mt-4 ${isArticleReady() ? 'bg-green-200 hover:bg-green-300' : 'bg-neutral-600 opacity-70'} px-2 py-1 rounded-lg text-neutral-800 font-bold ${isArticleReady() ? 'cursor-pointer' : 'cursor-not-allowed select-none' }`}
+            onClick={()=>{submit_changes()}}>Submit</button>
 
         { error_msg && <p className="text-red-500">{error_msg}</p>}
 
@@ -172,8 +192,10 @@ return (
             {getInput("title", article_under_edit.title)}
             {getInput("desc", article_under_edit.desc)}
             {getInput("infoText", article_under_edit.infoText)}
+
             <CategoryDropdown
                 display_value={article_under_edit.category} on_select={ (in_string: string) => { handleArticleChange("category" as keyof article, in_string) } }/>
+
             <ChipDropdown
                 display_values={article_under_edit.chips}
                 on_select={ (in_string: string) => { 
@@ -187,11 +209,14 @@ return (
             <ImageUpload 
                 image_url={image_url}
                 onImageUpload={(inurl: string|null)=>{
-                    console.log("watch me", inurl);
+                    handleArticleChange('image', inurl)
                     set_image_url(inurl as string)
                     }}/>
 
-            <ImageDropdown on_select={(path_string: string) => {set_image_url(full_image_path_from_filename(path_string))}} />
+            <ImageDropdown on_select={(path_string: string) => {
+                set_image_url(full_image_path_from_filename(path_string));
+                handleArticleChange('image', full_image_path_from_filename(path_string))
+            }} />
 
             {/* <MDXUpload
                 on_file_change={(a: File|null)=>{set_article_file(a); set_article_set_from_db(false)}}

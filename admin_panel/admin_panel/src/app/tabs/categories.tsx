@@ -63,8 +63,8 @@ export default function Categories({ className }: props) {
     }, [])
 
 return (
-	<div className={`${className}`}>
-        {!loading && !fetch_error && <div className="space-y-4 w-full flex flex-col items-center">
+	<div className={`${className} w-full max-w-prose`}>
+        {!loading && !fetch_error && <div className="space-y-4 w-full max-w-prose flex flex-col items-center">
 
             <div className="w-full flex justify-around">
                 <button 
@@ -79,7 +79,7 @@ return (
 
             {categories.map((cat_iter) => {
                 return(
-                    <div key={cat_iter._id} className="flex space-x-4 w-full">
+                    <div key={cat_iter._id} className="flex space-x-4 w-full justify-between">
                         <CategoryContainer name={cat_iter.name} _id={cat_iter._id as number}/>
                         <button className="bg-red-500 rounded-full p-2 hover:bg-red-700" onClick={() => go_delete_category(cat_iter)}>delete</button>
                     </div>
