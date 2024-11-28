@@ -34,3 +34,8 @@ export interface error {
     has_error: Boolean,
     error_message: string
 }
+
+export interface jwt_api {
+    new_token: string;
+    logged_in: Boolean;
+}

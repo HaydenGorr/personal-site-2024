@@ -40,3 +40,8 @@ export interface user {
     username: string;
     password: string;
 }
+
+import { JwtPayload } from "jsonwebtoken";
+export interface userId_JWTPayload extends JwtPayload {
+    userId: string;
+}
