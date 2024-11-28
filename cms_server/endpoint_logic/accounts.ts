@@ -30,7 +30,6 @@ app.post('/login', async (req: Request, res: Response) => {
 
 	if (!("_id" in mongo_response.data)) {
 		throw Error(`missing user ID in user ${username}`)
-		return
 	}
 
 	const user = mongo_response.data
@@ -60,7 +59,6 @@ app.post('/login', async (req: Request, res: Response) => {
 });
 
 app.get('/loggedIn', protectedRouter, async (req: Request, res: Response) => {
-	console.log("called logged in")
 
 	try {
 

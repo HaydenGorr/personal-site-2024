@@ -1,10 +1,10 @@
 'use client'
 import { useState, useEffect } from "react";
-import { get_all_categories, delete_category } from "../../../api/categories";
-import { api_return_schema, category } from "../../../api/api_interfaces";
-import CategoryContainer from "./components/categories/category_container";
-import CategoryInProgress from "./components/categories/category_inprogress";
+import { get_all_images, delete_image } from "../../../api/image";
+import { image } from "../../../api/api_interfaces";
 import Image from "next/image";
+import path from "path";
+import ImageUpload from "../components/image_upload";
 
 const enum tabs{
 	categories,
@@ -18,36 +18,63 @@ interface props {
 
 export default function Images({ className }: props) {
 
-    const [images, set_images] = useState<any>(["qwe", "asd", "zxc"]);
+    const [images, set_images] = useState<image[]>([]);
     const [loading, set_loading] = useState<Boolean>(false);
+    const [error_message, set_error_message] = useState<string|null>(null);
+    const [image_url_for_uploading, set_image_url_for_uploading] = useState<string|null>(null);
+
 
     const fetch_page_data = async () => {
         set_loading(true)
 
-        await get_all_categories(
-            (res: api_return_schema<category[]>) => {
-                // set_categories(res.data as category[])
-                // set_fetch_error(false)
-                // set_fetch_error_msg("")
+        await get_all_images(
+            (res: image[]) => {
+                set_error_message(null)
+                set_images(res)
+                console.log("image res", res)
             },
-            (res: api_return_schema<category[]>) => {
-                // set_categories([])
-                // set_fetch_error(res.error.has_error)
-                // set_fetch_error_msg(res.error.error_message)
+            (res: string) => {
+                set_images([])
+                set_error_message(res)
             }
         )
         
         set_loading(false)
     }
 
+    useEffect(()=>{
+        fetch_page_data()
+    },[])
+
+    const onDelete = (inImg: image) => {
+        console.log("deleting ", inImg)
+        delete_image(
+            inImg,
+            () => {
+                fetch_page_data()
+            },
+            (error_message: string)=> {
+                set_error_message(error_message)
+            }
+        )
+    }
+
 return (
 	<div className={`${className} flex flex-col items-center max-w-prose w-full`}>
         <div className="space-y-4 w-full">
-            {images.map((val: string, index: number) => {
+            <ImageUpload image_url={image_url_for_uploading} onImageUpload={(inurl: string|null)=>{
+                    set_image_url_for_uploading(null)
+                    fetch_page_data()
+                }}/>
+            {images.map((val: image, index: number) => {
                 return(
-                    <div key={index} className="bg-neutral-900 rounded-full px-4 py-2">
-                        <p>{val}</p>
-                        <img src=""></img>
+                    <div key={index} className="bg-neutral-900 rounded-lg px-4 py-2">
+                        <p>{val.file_name}</p>
+                        <Image
+                            className={'h-48 w-auto rounded-lg'} width={100} height={100} alt="" src={path.join(process.env.NEXT_PUBLIC_USER_ACCESS_CMS as string,'images',`${val.file_name}`).toString()}/>
+                        <button
+                            className="bg-neutral-800 text-neutral-500 p-4 hover:bg-red-700 hover:text-red-400 mt-2 rounded-full"
+                            onClick={()=>{ onDelete(val) }}>X</button>
                     </div>
                 )
             })}

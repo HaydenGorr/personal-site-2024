@@ -2,7 +2,7 @@ import { images_dir } from './path_consts';
 import { randomBytes } from 'crypto';
 import { mkdir, writeFile, access } from 'fs/promises';
 import path from 'path';
-import { api_return_schema } from '../interfaces/interfaces';
+import { api_return_schema, image_on_drive } from '../interfaces/interfaces';
 
 interface SaveFileOptions {
     allowedTypes?: string[];
@@ -13,7 +13,7 @@ interface SaveFileOptions {
 export async function SaveFileToRandomDir(
     file: Express.Multer.File, 
     options: SaveFileOptions = {}
-): Promise<api_return_schema<string|null>> {
+): Promise<api_return_schema<image_on_drive|null>> {
     const {
         allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'],
         maxSizeBytes = 50 * 1024 * 1024, // 5MB default
@@ -31,45 +31,22 @@ export async function SaveFileToRandomDir(
             throw new Error('File too large');
         }
 
-        // Generate random directory name
-        let randomDirName: string;
-        let dirPath: string;
-        let attempts = 0;
-        const maxAttempts = 10;
-
-        // Keep trying until we find a unique directory name
-        do {
-            randomDirName = randomBytes(4).toString('hex');
-            dirPath = path.join(baseDir, randomDirName);
-            attempts++;
-
-            try {
-                await access(dirPath);
-                // If we get here, the directory exists
-            } catch {
-                // Directory doesn't exist, we can use this name
-                break;
-            }
-        } while (attempts < maxAttempts);
-
-        if (attempts >= maxAttempts) {
-            throw new Error('Failed to create unique directory');
-        }
-
-        // Create the directory
-        await mkdir(dirPath, { recursive: true });
+        await access(baseDir);
 
         // Get file extension and create filename
         const fileExt = path.extname(file.originalname) || 
                        `.${file.mimetype.split('/')[1]}`;
         const fileName = `${randomBytes(4).toString('hex')}${fileExt}`;
-        const filePath = path.join(dirPath, fileName);
+        const filePath = path.join(baseDir, fileName);
 
         // Write the file
         await writeFile(filePath, file.buffer);
 
         // Construct and return the URL
-        const fileUrl = `${process.env.ADMIN_ROUTE}/cms/images/${randomDirName}/${fileName}${fileExt}`;
+        // const fileUrl = `images/${randomDirName}/${fileName}${fileExt}`;
+        const fileUrl:image_on_drive = {filename:fileName};
+
+        console.log("do this")
         return {data: fileUrl, error: {has_error: false, error_message: ""}};
 
     } catch (error) {

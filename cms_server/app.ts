@@ -10,6 +10,7 @@ import './endpoint_logic/articles'
 import './endpoint_logic/categories'
 import './endpoint_logic/chips'
 import './endpoint_logic/misc'
+import './endpoint_logic/images'
 
 app.listen(PORT, '::', () => {
     console.log(`Server running on port ${PORT}`);

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: process.env.ENV_FILE });
 
-import express from 'express';
+import express, { NextFunction } from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import { DATA_DIR, images_dir } from './utils/path_consts';
@@ -24,4 +24,4 @@ app.use('/secure', protectedRouter);
 
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
-// app.use('/images/', express.static(images_dir));
+app.use('/images/', express.static(images_dir));

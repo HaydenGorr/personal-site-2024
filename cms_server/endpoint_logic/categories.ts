@@ -8,7 +8,10 @@ app.get('/secure/get_all_categories', async (req: Request, res: Response)  => {
 
     const mongo_api_response: api_return_schema<category[]> = await get_all_categories();
   
-    if (mongo_api_response.error.has_error) { res.status(500).json(mongo_api_response)}
+    if (mongo_api_response.error.has_error) { 
+      res.status(500).json(mongo_api_response)
+      return
+    }
   
     res.status(200).json(mongo_api_response);
   })

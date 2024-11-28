@@ -1,47 +1,62 @@
 import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
 import { Url } from 'next/dist/shared/lib/router/router';
+import { upload_image } from '../../../api/image';
 
 interface props {
     className?: string;
-    onImageUpload: (file: File) => void;
-    image_file: File|null;
-    on_file_change: (a: File|null) => void;
+    onImageUpload: (new_url: string|null) => void;
+    image_url: string|null;
 }
 
-export default function ImageUpload({className, onImageUpload, image_file, on_file_change}:props) {
+export default function ImageUpload({ className, onImageUpload, image_url }:props) {
 const acceptedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-const [preview, setPreview] = useState<string | null>(null);
+// const [preview, setPreview] = useState<string | null>(null);
 const [error, setError] = useState<string | null>(null);
 const fileInputRef = useRef<HTMLInputElement>(null);
 const maxSizeBytes = 50;
 const maxSizeBits = maxSizeBytes*8e+6;
+const [imagePreview, set_imagePreview] = useState<File | null>(null);
+const [previewURL, set_previewURL] = useState<string | null>(null);
 
-useEffect(() => {
-    let objectUrl: string;
-    if (image_file != null) {
-        objectUrl = URL.createObjectURL(image_file);
-        setPreview(objectUrl);
+const start_upload_image = () => {
+    // if (image_set_from_db) {
+    //     set_error_msg("This image is already uploaded")
+    //     return
+    // }
+
+    if (previewURL == null) {
+        setError("You have not loaded an image")
+        return
     }
 
-    return () => {
-        if (objectUrl) {
-            URL.revokeObjectURL(objectUrl);
+    upload_image(
+        imagePreview as File,
+        (newpath: string)=>{
+            setError(null)
+            onImageUpload(newpath)
+        },
+        (error_message: string)=>{
+            setError(error_message)
         }
-    };
-}, [image_file]);
+    )
+
+}
+
+useEffect(() => {
+    if (image_url != null) {
+        set_previewURL(image_url);
+        set_imagePreview(null)
+    }
+}, [image_url]);
 
 const validateFile = (file: File): boolean => {
     setError(null);
-
-    console.log(file.type)
 
     if (!acceptedTypes.includes(file.type)) {
         setError(`Invalid file type. Please upload ${acceptedTypes.join(', ')}`);
         return false;
     }
-
-    console.log(file.size)
 
     if (file.size > maxSizeBits) {
         setError(`File size must be less than 50MB`);
@@ -64,26 +79,26 @@ const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     }
 };
 
-const handleFile = (file: File) => {
+const handleFile = async (file: File) => {
     if (validateFile(file)) {
-        console.log("oldest", file)
-        on_file_change(file);
-        
-        const objectUrl = URL.createObjectURL(file);
-        setPreview(objectUrl);
-        
-        onImageUpload(file);
+        console.log("validated")
+        onImageUpload(null)
+        const local_url: string = URL.createObjectURL(file)
+        set_previewURL(local_url)
+        set_imagePreview(file)
     }
 };
 
 const removeImage = () => {
-    setPreview(null);
+    set_imagePreview(null);
     setError(null);
     if (fileInputRef.current) {
         fileInputRef.current.value = '';
     }
-    on_file_change(null)
+    onImageUpload(null)
+    set_previewURL(null)
 };
+
 
 return (
     <div className={`w-full ${className}`}>
@@ -103,10 +118,10 @@ return (
             onChange={handleChange}
         />
 
-        {preview ? (
+        {previewURL ? (
         <div className="relative inline-block">
             <img
-                src={preview}
+                src={new URL(previewURL).toString()}
                 alt="Preview"
                 className="max-w-full h-auto max-h-64 rounded"
             />
@@ -115,7 +130,7 @@ return (
                     e.stopPropagation();
                     removeImage();
                 }}
-                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 z-40"
                 >
                 <X size={16} />
             </button>
@@ -135,13 +150,14 @@ return (
         )}
     </div>
 
-        { preview && <button
+        { imagePreview && <button
             className='bg-blue-300 px-2 py-1 rounded-full text-black mt-1' 
-            onClick={()=>{onImageUpload(image_file as File)}}>upload</button>}
+            onClick={()=>{start_upload_image()}}>upload</button>}
 
         {error && (
             <div className="mt-2 text-sm text-red-500">{error}</div>
         )}
+
     </div>
 );
 };

@@ -121,11 +121,7 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
   
       const new_dir_path = path.join(DATA_DIR, "CMS", "articles", entry.data!.source as string)
   
-      console.log(new_dir_path)
-  
-      console.log("creating dir")
       await fss.mkdir(new_dir_path);
-      console.log("creatied dir")
   
       res.status(200).json({ message: 'Chip uploaded successfully' });
     }

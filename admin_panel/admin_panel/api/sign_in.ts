@@ -13,8 +13,8 @@ export const send_login_request = async (username: string, password: string, on_
         });
 
         if (response.ok) {
-            const { token } = await response.json();
-            await Cookies.set('token', token);
+            const res: api_return_schema<string> = await response.json();
+            await Cookies.set('token', res.data);
             on_pass()
         } else {
             on_fail(`Sign in error: ${response.statusText}`)
