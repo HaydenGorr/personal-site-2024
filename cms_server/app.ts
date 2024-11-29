@@ -11,6 +11,7 @@ import './endpoint_logic/categories'
 import './endpoint_logic/chips'
 import './endpoint_logic/misc'
 import './endpoint_logic/images'
+import './endpoint_logic/mdx'
 
 app.listen(PORT, '::', () => {
     console.log(`Server running on port ${PORT}`);

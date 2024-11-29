@@ -1,4 +1,4 @@
-import { api_return_schema, image_on_drive, image } from "./api_interfaces";
+import { api_return_schema, file_in_cms_drive, image } from "./api_interfaces";
 import path from "path";
 
 export async function upload_image(
@@ -16,7 +16,7 @@ export async function upload_image(
             body: formData,
         });
 
-        const json_result: api_return_schema<image_on_drive|null> = await response.json();
+        const json_result: api_return_schema<file_in_cms_drive|null> = await response.json();
         
         if (json_result.error.has_error) {
             on_fail(json_result.error.error_message)

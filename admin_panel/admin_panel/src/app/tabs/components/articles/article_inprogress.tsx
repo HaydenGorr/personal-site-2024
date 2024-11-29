@@ -11,6 +11,8 @@ import { upload_image } from "../../../../../api/image";
 import ImageDropdown from "@/app/components/image_dropdown";
 import { full_image_path_from_filename } from "../../../../../utils/path_utils";
 import { submit_article_changes } from "../../../../../api/articles";
+import { MDXEditor } from '@mdxeditor/editor'
+import '@mdxeditor/editor/style.css'
 
 const enum tabs{
 	categories,
@@ -42,52 +44,14 @@ const empty_article: article = {
 export default function ArticleInProgress({ className, on_close_click, given_article=empty_article }: props) {
 
 const [image_url, set_image_url] = useState<string|null>(given_article.image ? given_article.image : null);
-
-const [article_set_from_db, set_article_set_from_db] = useState<Boolean>(given_article.article != "");
-const [article_file, set_article_file] = useState<File|null>(null);
+const [mdx_url, set_mdx_url] = useState<string|null>(given_article.article ? given_article.article : null);
 
 const [submit_success_message, set_submit_success_message] = useState<string|null>(null);
 const [error_msg, set_error_msg] = useState<string|null>(null);
 const [article_under_edit, set_article_under_edit] = useState<article>(given_article);
-const is_brand_new_article = useRef(!("_id" in given_article))
-
-const set_article_preview = async (url: string) => {
-    try{
-        const urlObject = new URL(url);
-        let fileName = urlObject.pathname.split('/').pop();
-
-        if (!fileName) return
-
-        fileName = decodeURIComponent(fileName)
-
-        const response = await fetch(url, {
-            headers: {
-                'Accept': 'text/markdown, text/plain, text/mdx, text/md',
-            },
-            mode: 'cors',  // Explicitly enable CORS
-            cache: 'no-cache'  // Bypass cache to ensure fresh content
-        });
-
-        if (!response.ok) return
-
-        const text = await response.text();
-
-        const file = new File([text], fileName, { type: 'text/md' });
-
-        set_article_file(file)
-    }
-    catch {
-        return
-    }
-}
 
 useEffect(()=>{
-
-    handleArticleChange("article", "placeholder_path")
-
-    if (article_set_from_db) set_article_preview(given_article.article)
-
-    // if (image_set_from_db) set_preview(given_article.image)
+    console.log("weed", given_article)
 },[])
 
 const handleArticleChange = (field: keyof article, value: any) => {
@@ -170,6 +134,7 @@ return (
             </div>
 
             <div className="flex space-x-2">
+                <div className={`${mdx_url != null ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>mdx</div>
                 <div className={`${image_url != null ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>image</div>
                 <div className={`${article_under_edit.ready? 'bg-green-400' : 'bg-yellow-400'} w-fit px-4 py-2 rounded-full font-bold`}>published</div>
                 <div className={`${article_under_edit.desc.length > 0 ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>description</div>
@@ -218,10 +183,13 @@ return (
                 handleArticleChange('image', full_image_path_from_filename(path_string))
             }} />
 
-            {/* <MDXUpload
-                on_file_change={(a: File|null)=>{set_article_file(a); set_article_set_from_db(false)}}
-                article_file={article_file}
-                onImageUpload={(inFile: File)=>{start_upload_article()}}/> */}
+            <MDXUpload
+                mdx_url={mdx_url}
+                onMDXUpload={(inurl: string|null)=>{
+                    handleArticleChange('article', inurl)
+                    set_mdx_url(inurl as string)
+            }}/>
+            
         </div>
 
 	</div>

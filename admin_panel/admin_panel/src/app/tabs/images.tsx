@@ -71,9 +71,9 @@ return (
                     <div key={index} className="bg-neutral-900 rounded-lg px-4 py-2">
                         <p>{val.file_name}</p>
                         <Image
-                            className={'h-48 w-auto rounded-lg'} width={100} height={100} alt="" src={path.join(process.env.NEXT_PUBLIC_USER_ACCESS_CMS as string,'images',`${val.file_name}`).toString()}/>
+                            className={'h-48 w-auto rounded-lg'} width={300} height={300} alt="" src={path.join(process.env.NEXT_PUBLIC_USER_ACCESS_CMS as string,'images',`${val.file_name}`).toString()}/>
                         <button
-                            className="bg-neutral-800 text-neutral-500 p-4 hover:bg-red-700 hover:text-red-400 mt-2 rounded-full"
+                            className="bg-neutral-800 text-neutral-500 hover:bg-red-700 hover:text-red-400 mt-2 rounded-full h-10 w-10 text-center"
                             onClick={()=>{ onDelete(val) }}>X</button>
                     </div>
                 )

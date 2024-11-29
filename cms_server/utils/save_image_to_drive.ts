@@ -1,8 +1,8 @@
-import { images_dir } from './path_consts';
+import { images_dir, mdx_dir } from './path_consts';
 import { randomBytes } from 'crypto';
 import { mkdir, writeFile, access } from 'fs/promises';
 import path from 'path';
-import { api_return_schema, image_on_drive } from '../interfaces/interfaces';
+import { api_return_schema, image_on_drive, mdx_on_drive } from '../interfaces/interfaces';
 
 interface SaveFileOptions {
     allowedTypes?: string[];
@@ -47,6 +47,39 @@ export async function SaveFileToRandomDir(
         const fileUrl:image_on_drive = {filename:fileName};
 
         console.log("do this")
+        return {data: fileUrl, error: {has_error: false, error_message: ""}};
+
+    } catch (error) {
+        return {data: null, error: {has_error: true, error_message: 'Error saving file:'}};
+    }
+}
+
+export async function SaveStringToRandomDir(
+    text: string, 
+    options: SaveFileOptions = {}
+): Promise<api_return_schema<mdx_on_drive|null>> {
+    const {
+        allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'],
+        maxSizeBytes = 50 * 1024 * 1024, // 5MB default
+        baseDir = path.join(mdx_dir)
+    } = options;
+
+    try {
+
+        await access(baseDir);
+
+        // Get file extension and create filename
+        const fileExt = '.mdx';
+        const fileName = `${randomBytes(4).toString('hex')}${fileExt}`;
+        const filePath = path.join(baseDir, fileName);
+
+        // Write the file
+        await writeFile(filePath, text, 'utf8');
+
+        // Construct and return the URL
+        // const fileUrl = `images/${randomDirName}/${fileName}${fileExt}`;
+        const fileUrl:mdx_on_drive = {file_name:fileName};
+        
         return {data: fileUrl, error: {has_error: false, error_message: ""}};
 
     } catch (error) {

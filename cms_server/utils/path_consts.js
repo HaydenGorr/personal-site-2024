@@ -14,6 +14,7 @@ const MONOGDB_USERS = MONGODB_BASE + '/users?authSource=<authenticationDatabase>
 
 const articles_dir = path.join(DATA_DIR, './CMS/articles/');
 const images_dir = path.join(DATA_DIR, './images/');
+const mdx_dir = path.join(DATA_DIR, './mdx/');
 const metas_dir = path.join(DATA_DIR, './meta_resources/');
 const temp_meta_dir = path.join(DATA_DIR, './temp_meta_resources/');
 const svg_dir = path.join(DATA_DIR, './TAG_SVGS/');
@@ -40,5 +41,6 @@ export {
     home_posts_path, 
     temp_chip_definition_path, 
     chip_definition_path,
-    images_dir 
+    images_dir,
+    mdx_dir,
 };

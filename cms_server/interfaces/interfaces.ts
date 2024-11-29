@@ -29,6 +29,11 @@ export interface image_on_drive {
     filename: string
 }
 
+export interface mdx_on_drive {
+    _id?: number;
+    file_name: string;
+}
+
 export interface api_return_schema<T> {
     data: T
     error: error
@@ -46,6 +51,11 @@ export interface user {
 }
 
 export interface image {
+    _id?: number;
+    file_name: string;
+}
+
+export interface mdx {
     _id?: number;
     file_name: string;
 }

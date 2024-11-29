@@ -25,7 +25,7 @@ export interface article {
     image: string,
 }
 
-export interface image_on_drive {
+export interface file_in_cms_drive {
     filename: string
 }
 
@@ -35,6 +35,11 @@ export interface api_return_schema<T> {
 }
 
 export interface image {
+    _id?: number;
+    file_name: string;
+}
+
+export interface mdx {
     _id?: number;
     file_name: string;
 }
