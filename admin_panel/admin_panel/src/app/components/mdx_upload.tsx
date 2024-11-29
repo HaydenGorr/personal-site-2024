@@ -1,11 +1,28 @@
-import React, { useState, useRef, ChangeEvent, useEffect, use } from 'react';
+import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
 import { Url } from 'next/dist/shared/lib/router/router';
 import { upload_mdx } from '../../../api/mdx';
 import { api_return_schema, mdx } from '../../../api/api_interfaces';
-import { MDXEditor, UndoRedo, BoldItalicUnderlineToggles, toolbarPlugin, headingsPlugin } from '@mdxeditor/editor'
+import { 
+    MDXEditor,
+    imagePlugin,
+    linkPlugin,
+    linkDialogPlugin,
+    toolbarPlugin,
+    BlockTypeSelect,
+    BoldItalicUnderlineToggles,
+    CreateLink,
+    InsertImage,
+    UndoRedo,
+    headingsPlugin,
+    listsPlugin,
+    markdownShortcutPlugin,
+    thematicBreakPlugin,
+    tablePlugin,
+    diffSourcePlugin,
+    directivesPlugin
+} from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
-import path from 'path';
 
 interface props {
     className?: string;
@@ -30,11 +47,7 @@ const start_upload_mdx = () => {
         setError("You have not loaded an image")
         return
     }
-
-    console.log("LOKO", MDXText)
-
     
-
     upload_mdx(
         MDXText as string,
         (newMDX: mdx)=>{
@@ -236,21 +249,43 @@ return (
         {!Loading  && 
         <div className='border-neutral-700/30 border-2 rounded-lg'>
             <MDXEditor
-            className="max-h-[30rem] h-[30rem] dark-theme dark-editor"
-            markdown={MDXText}
-            onChange={(e: string)=>{set_MDXText(e)}}
-            plugins={[
-            toolbarPlugin({
-                toolbarClassName: 'my-classname',
-                toolbarContents: () => (
-                <>
-                    {' '}
-                    <UndoRedo />
-                    <BoldItalicUnderlineToggles />
-                </>
-                )
-            })
-            ]}
+                className="max-h-[30rem] h-[30rem] dark-theme dark-editor"
+                markdown={MDXText}
+                onChange={(e: string)=>{set_MDXText(e)}}
+                plugins={[
+                    // Core plugins
+                    markdownShortcutPlugin(),
+                    diffSourcePlugin(),
+                    
+                    // Feature plugins
+                    linkPlugin(),
+                    linkDialogPlugin(),
+                    imagePlugin({
+                        imageUploadHandler: async () => {
+                            // This is needed for the image plugin to work properly
+                            return Promise.reject()
+                        }
+                    }),
+                    tablePlugin(),
+                    headingsPlugin(),
+                    listsPlugin(),
+                    thematicBreakPlugin(),
+                    directivesPlugin(),
+                    
+                    // Toolbar should be last
+                    toolbarPlugin({
+                        toolbarClassName: 'my-classname',
+                        toolbarContents: () => (
+                            <>
+                                <UndoRedo />
+                                <BoldItalicUnderlineToggles />
+                                <InsertImage/>
+                                <CreateLink/>
+                                <BlockTypeSelect/>
+                            </>
+                        )
+                    })
+                ]}
             />
         </div>
         }
