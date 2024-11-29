@@ -5,7 +5,9 @@ import dbConnect from '../db_conn';
 export async function add_mdx(inFile: file_on_drive): Promise<api_return_schema<mdx_on_drive|null>>{
 
     const connection = await dbConnect(process.env.DB_IMAGES_NAME)
-  
+    
+    console.log("tyes")
+
     try {
         const mdx_model = mdx_schema(connection);
 
@@ -15,7 +17,8 @@ export async function add_mdx(inFile: file_on_drive): Promise<api_return_schema<
         }
 
         const newImage = new mdx_model({
-            file_name: inFile.file_name
+            file_name: inFile.file_name,
+            full_url: inFile.full_url
         });
 
         const saved = await newImage.save();

@@ -53,7 +53,7 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
     const response: api_return_schema<image_on_drive|null> = await add_image(save_file_api.data as file_on_drive)
 
     if (response.error.has_error){
-      res.status(500).json({data:"", error:{has_error: true, error_message: response.error.error_message}})
+      res.status(500).json({data:"", error:{has_error: true, error_message: response.error.error_message + "The item was written to drive, but not to database"}})
       return
     }
 

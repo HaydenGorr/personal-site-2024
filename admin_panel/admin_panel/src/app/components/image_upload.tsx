@@ -20,10 +20,6 @@ const [imagePreview, set_imagePreview] = useState<File | null>(null);
 const [previewURL, set_previewURL] = useState<string | null>(null);
 
 const start_upload_image = () => {
-    // if (image_set_from_db) {
-    //     set_error_msg("This image is already uploaded")
-    //     return
-    // }
 
     if (previewURL == null) {
         setError("You have not loaded an image")
@@ -99,10 +95,20 @@ const removeImage = () => {
     set_previewURL(null)
 };
 
+const get_saved_element = () => {
+    const is_unsaved = image_url != previewURL
+    const text = is_unsaved ? "unsaved" : "uploaded"
+
+    return(<div className={`${is_unsaved ? "bg-yellow-200" : "bg-green-300"} text-neutral-800 px-2 py-1 rounded-lg text-xs w-fit`}>{text}</div>)
+}
 
 return (
     <div className={`w-full ${className}`}>
-        <span className="text-base text-gray-400">{"Image"}</span>
+        <div className='flex justify-between items-center mb-1 h-7'>
+            <span className="text-base text-gray-400">{"Image"}</span>
+            {get_saved_element()}
+        </div>
+        
         <div
             className={`relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer
             ${error ? 'border-red-500' : 'border-gray-300 hover:border-gray-400'}`}

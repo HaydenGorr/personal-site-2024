@@ -10,8 +10,6 @@ app.post('/secure/upload_mdx', async (req: Request, res: Response) => {
 
         const { mdx_string } = req.body;
 
-        console.log(mdx_string)
-
         if (mdx_string.length == 0) {
             res.status(500).json({data:"", error:{has_error: true, error_message: "No text recieved"}})
         }

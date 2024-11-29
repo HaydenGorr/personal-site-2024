@@ -9,7 +9,7 @@ import ImageUpload from "@/app/components/image_upload";
 import MDXUpload from "@/app/components/mdx_upload";
 import { upload_image } from "../../../../../api/image";
 import ImageDropdown from "@/app/components/image_dropdown";
-import { submit_article_changes } from "../../../../../api/articles";
+import { submit_article_changes, submit_new_article } from "../../../../../api/articles";
 import { MDXEditor } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
 
@@ -22,12 +22,13 @@ const enum tabs{
 interface props {
     className?: string;
     on_close_click: ()=>void;
+    newArticle: Boolean;
     given_article?: article;
 }
 
 const empty_article: article = {
     title: "",
-    desc: "",
+    description: "",
     article: "",
     infoText: "",
     chips: [],
@@ -40,7 +41,7 @@ const empty_article: article = {
     image: ""
 }
 
-export default function ArticleInProgress({ className, on_close_click, given_article=empty_article }: props) {
+export default function ArticleInProgress({ className, on_close_click, newArticle, given_article=empty_article }: props) {
 
 const [image_url, set_image_url] = useState<string|null>(given_article.image ? given_article.image : null);
 const [mdx_url, set_mdx_url] = useState<string|null>(given_article.article ? given_article.article : null);
@@ -49,11 +50,14 @@ const [submit_success_message, set_submit_success_message] = useState<string|nul
 const [error_msg, set_error_msg] = useState<string|null>(null);
 const [article_under_edit, set_article_under_edit] = useState<article>(given_article);
 
-useEffect(()=>{
-    console.log("weed", given_article)
-},[])
+const [has_been_edited, set_has_been_edited] = useState<Boolean>(false);
+
 
 const handleArticleChange = (field: keyof article, value: any) => {
+
+    // If the article is changing then the previous submit success message doesn't apply.
+    set_submit_success_message(null)
+
     set_article_under_edit({
         ...article_under_edit,
         [field]: value
@@ -82,7 +86,7 @@ const getInput = (label: string, value:string)=> {
 
 const getCheckbox = (label: string, isChecked:Boolean, onChange:()=>void) => {
     return(
-        <label className="flex flex-col items-start space-x-2 cursor-pointer select-none">
+        <label className="flex flex-col items-center space-x-2 cursor-pointer select-none w-full">
             <span className="text-base text-gray-400">{label}</span>
 
             <div 
@@ -103,7 +107,7 @@ const isArticleReady = (): boolean => {
     if (!article_under_edit.category) return false
     if (article_under_edit.chips.length == 0) return false
     if (image_url === null) return false
-    if (article_under_edit.desc.length == 0) return false
+    if (article_under_edit.description.length == 0) return false
 
     return true
 }
@@ -111,11 +115,22 @@ const isArticleReady = (): boolean => {
 const submit_changes = () => {
     if (!isArticleReady()) return
 
-    submit_article_changes(
-        article_under_edit,
-        ()=>{ set_error_msg(null); set_submit_success_message("Sucessfully submitted!") },
-        (a: string)=>{ set_error_msg(a); set_submit_success_message(null) }
-    )
+    console.log("asd", newArticle)
+
+    if (!newArticle) {
+        submit_article_changes(
+            article_under_edit,
+            ()=>{ set_error_msg(null); set_submit_success_message("Sucessfully submitted!") },
+            (a: string)=>{ set_error_msg(a); set_submit_success_message(null) }
+        )
+    }
+    else{
+        submit_new_article(
+            article_under_edit,
+            ()=>{ set_error_msg(null); set_submit_success_message("Sucessfully submitted!") },
+            (a: string)=>{ set_error_msg(a); set_submit_success_message(null) }
+        )
+    }
 }
 
 return (
@@ -136,7 +151,7 @@ return (
                 <div className={`${mdx_url != null ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>mdx</div>
                 <div className={`${image_url != null ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>image</div>
                 <div className={`${article_under_edit.ready? 'bg-green-400' : 'bg-yellow-400'} w-fit px-4 py-2 rounded-full font-bold`}>published</div>
-                <div className={`${article_under_edit.desc.length > 0 ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>description</div>
+                <div className={`${article_under_edit.description.length > 0 ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>description</div>
                 <div className={`${article_under_edit.infoText.length > 0 ? 'bg-green-400' : 'bg-yellow-400'} w-fit px-4 py-2 rounded-full font-bold`}>info</div>
             </div>
         </div>
@@ -151,10 +166,10 @@ return (
         { error_msg && <p className="text-red-500">{error_msg}</p>}
 
         <div className="max-w-prose w-full space-y-4 mt-8">
-            {getCheckbox('publish', article_under_edit.ready, ()=>{handleArticleChange('ready', !article_under_edit.ready)})}
+            {getCheckbox('go live', article_under_edit.ready, ()=>{handleArticleChange('ready', !article_under_edit.ready)})}
 
             {getInput("title", article_under_edit.title)}
-            {getInput("desc", article_under_edit.desc)}
+            {getInput("description", article_under_edit.description)}
             {getInput("infoText", article_under_edit.infoText)}
 
             <CategoryDropdown
@@ -170,24 +185,27 @@ return (
                     handleArticleChange("chips" as keyof article, article_under_edit.chips.filter((val)=>val!=in_string))
                 }}/>
 
-            <ImageUpload 
-                image_url={image_url}
-                onImageUpload={(inurl: string|null)=>{
-                    handleArticleChange('image', inurl)
-                    set_image_url(inurl as string)
-                    }}/>
+            <div className="border-red-500 border-2 rounded-lg p-2">  
+                <ImageUpload 
+                    image_url={image_url}
+                    onImageUpload={(inurl: string|null)=>{
+                        handleArticleChange('image', inurl)
+                        set_image_url(inurl as string)
+                        }}/>
 
-            <ImageDropdown on_select={(path_string: string) => {
-                set_image_url(path_string);
-                handleArticleChange('image', path_string)
-            }} />
+                <ImageDropdown className="mt-4" on_select={(path_string: string) => {
+                    set_image_url(path_string);
+                    handleArticleChange('image', path_string)
+                }} />
+            </div>
 
-            {/* <MDXUpload
+
+            <MDXUpload
                 mdx_url={mdx_url}
                 onMDXUpload={(inurl: string|null)=>{
                     handleArticleChange('article', inurl)
                     set_mdx_url(inurl as string)
-            }}/> */}
+            }}/>
             
         </div>
 

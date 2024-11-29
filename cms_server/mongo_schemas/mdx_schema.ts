@@ -6,4 +6,4 @@ const mdxSchema = new mongoose.Schema({
     full_url: { type: String, required: true, unique: true },
 });
 
-export default (conn: mongoose.Connection) => conn.model('images', mdxSchema);
+export default (conn: mongoose.Connection) => conn.model('mdx', mdxSchema);

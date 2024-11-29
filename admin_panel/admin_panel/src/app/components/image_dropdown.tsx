@@ -48,13 +48,13 @@ useEffect(()=>{
 const get_dropdown_contents = () => {
     if (!loading) {
         return(
-            <div className="">
+            <div className="max-h-96 overflow-y-scroll grid grid-cols-3 rounded-lg mt-2">
                 {all_images.map((val, index)=> {
                     return(
-                        <div key={index} className={`${index%2==0 ? 'bg-neutral-600': 'bg-neutral-500'} px-4 py-2 hover:bg-neutral-700 cursor-pointer`}
-                        onClick={()=>{on_select(val.full_url)}}>
+                        <div key={index} className={`${index%2==0 ? 'bg-neutral-600': 'bg-neutral-500'} p-2 hover:bg-neutral-700 cursor-pointer flex justify-center items-center`}
+                        onClick={()=>{on_select(val.full_url); set_open(false)}}>
                             <Image
-                                className={"h-32 w-auto"}
+                                className={"h-fit w-auto rounded-lg"}
                                 width={150} height={150}
                                 alt=""
                                 src={val.full_url}/>
@@ -75,10 +75,10 @@ const get_dropdown_contents = () => {
 
 return (
 	<div className={`${className}`}>
-        <span className="text-base text-gray-400">{"Select an image already uploaded"}</span>
+        <span className="text-base text-gray-400">{"Select an image from the dropdown"}</span>
         {error_message && <p>{error_message}</p>}
-        <div className={`bg-neutral-800 px-4 py-2 cursor-pointer flex space-x-4`}>
-            <div onClick={()=>{set_open(!open)}}>open</div>
+        <div className={`bg-neutral-800 px-4 py-2 cursor-pointer flex space-x-4 rounded-lg justify-center w-full`}
+            onClick={()=>{set_open(!open)}}>{open? "close": "open"}
         </div>
         
         {open && get_dropdown_contents()}

@@ -30,8 +30,11 @@ export async function add_image(file: file_on_drive): Promise<api_return_schema<
             return { data: null, error: { has_error: true, error_message: "image with this name already exists. Serious issue. Look into this asap" } };
         }
 
+        console.log("this")
+
         const newImage = new images_model({
-            file_name: file.file_name
+            file_name: file.file_name,
+            full_url: file.full_url
         });
 
         const saved = await newImage.save();

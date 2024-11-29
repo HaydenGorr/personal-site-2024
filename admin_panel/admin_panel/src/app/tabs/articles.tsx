@@ -55,11 +55,11 @@ export default function Articles({ className }: props) {
 return (
 	<div className={`${className} max-w-prose w-full`}>
 
-        { edit_article>-1 && <ArticleInProgress given_article={articles[edit_article]} on_close_click={()=>{set_edit_article(-1)}}/>}
-        { create_new_article && <ArticleInProgress on_close_click={()=>{set_create_new_article(false)}}/>}
+        { edit_article>-1 && <ArticleInProgress newArticle={false} given_article={articles[edit_article]} on_close_click={()=>{set_edit_article(-1)}}/>}
+        { create_new_article && <ArticleInProgress newArticle={true} on_close_click={()=>{set_create_new_article(false)}}/>}
 
 
-        {edit_article == -1 && !loading && !fetch_error && <div className="space-y-4 w-full flex flex-col items-center">
+        {!(create_new_article || edit_article != -1) && !loading && !fetch_error && <div className="space-y-4 w-full flex flex-col items-center">
 
             <div className="w-full flex justify-around">
                 <button

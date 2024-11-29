@@ -13,7 +13,7 @@ export interface article {
     _id?: number;
     article: string;
     title: string;
-    desc: string;
+    description: string;
     infoText: string;
     chips: string[],
     category: string,

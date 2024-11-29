@@ -3,11 +3,10 @@ import mongoose from "mongoose";
 // Define the schema
 const articleSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    desc: { type: String, required: true },
+    description: { type: String, required: true },
     category: {type: String, required: false},
-    infoText: { type: String, required: true },
+    infoText: { type: String, required: false },
     chips: { type: [String], default: [] },
-    source: { type: String, required: true },
     views: { type: Number, default: 0 },
     publishDate: { type: Date, default: Date.now },
     ready: {type: Boolean, default: false},

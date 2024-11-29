@@ -123,6 +123,32 @@ export const update_article = async(updated_article: article): Promise<api_retur
     }
 }
 
+export const create_new_article = async(new_article: article): Promise<api_return_schema<article|null>> => {
+  const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+
+  try {
+      const articleModel = await article_schema(connection)
+
+      console.log("new_article", new_article)
+      
+      const art = new articleModel(new_article);
+
+      if (!art) throw Error()
+
+      await art.save();
+
+      return {data:null, error:{has_error: false, error_message:""}};
+  }
+  catch (err: unknown){
+    console.error('Full error:', {
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+      name: err instanceof Error ? err.name : undefined
+  });
+      return {data:null, error:{has_error: true, error_message:"Internal Server Error"}};
+  }
+}
+
 /**
  * Takes a new article in cms_data, validates it and adds it to the database
  * @param {String} article_dir_name - The name of the dir containing the article you're creating

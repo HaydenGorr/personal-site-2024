@@ -2,7 +2,7 @@ import { app, upload } from "../express";
 import { api_return_schema, article } from "../interfaces/interfaces"
 import { Request, Response } from 'express';
 import { get_all_ready_articles, create_article, get_all_articles, add_article, delete_article } from "../utils/mongo_utils/article";
-import { update_article, get_article } from "../utils/mongo_utils/article";
+import { update_article, get_article, create_new_article } from "../utils/mongo_utils/article";
 import { AddCategory } from "../utils/mongo_utils/category";
 import fs from 'fs'
 import path from "path";
@@ -51,6 +51,20 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
 	const edited_article: article = req.body.edited_article as article;
 	
 	const updated_result = await update_article(edited_article)
+
+	if (updated_result.error.has_error) {
+	res.status(500).json(updated_result)
+	return
+	}
+
+	res.status(200).json(updated_result)
+	return
+})
+
+app.post('/secure/create_new_article', upload.fields([{ name: 'new_article', maxCount: 1 }]), async (req: Request, res: Response) => {
+	const new_article: article = req.body.new_article as article;
+	
+	const updated_result = await create_new_article(new_article)
 
 	if (updated_result.error.has_error) {
 	res.status(500).json(updated_result)

@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
+import React, { useState, useRef, ChangeEvent, useEffect, use } from 'react';
 import { Upload, X } from 'lucide-react';
 import { Url } from 'next/dist/shared/lib/router/router';
 import { upload_mdx } from '../../../api/mdx';
@@ -19,17 +19,21 @@ const [error, setError] = useState<string | null>(null);
 const fileInputRef = useRef<HTMLInputElement>(null);
 const maxSizeBytes = 50;
 const maxSizeBits = maxSizeBytes*8e+6;
-const [MDXText, set_MDXText] = useState<string | null>(null);
+const [MDXText, set_MDXText] = useState<string>("");
+const [Loading, set_Loading] = useState<Boolean>(true);
 
-const parent_mdx_backup = useRef<string|null>(null)
+const parent_mdx_content_backup = useRef<string>("")
+const parent_mdx_url_backup = useRef<string|null>(mdx_url)
 
 const start_upload_mdx = () => {
-    if (MDXText == null) {
+    if (MDXText == "") {
         setError("You have not loaded an image")
         return
     }
 
     console.log("LOKO", MDXText)
+
+    
 
     upload_mdx(
         MDXText as string,
@@ -43,40 +47,44 @@ const start_upload_mdx = () => {
     )
 }
 
+const initialise_from_given_url = async (inurl: string | null) => {
+    set_Loading(true)
+
+    if (inurl == null){
+        set_Loading(false)
+        return
+    }
+
+    try {
+        const response = await fetch(inurl as string)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const blob = await response.blob()
+        const text = await new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(reader.result)
+            reader.onerror = reject
+            reader.readAsText(blob)
+        })
+
+        const content = text as string
+
+        set_MDXText(content)
+
+        parent_mdx_content_backup.current = content
+    }
+    catch(error){
+        setError(`${error}`)
+    }
+    finally {
+        set_Loading(false)
+    }
+}
+
 useEffect(() => {
-
-    const initialise_from_given_url = async (inurl: string) => {
-
-        try {
-
-            console.log("wtf", inurl)
-            const response = await fetch(inurl)
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`)
-            }
-
-            const blob = await response.blob()
-            const text = await new Promise((resolve, reject) => {
-                const reader = new FileReader()
-                reader.onload = () => resolve(reader.result)
-                reader.onerror = reject
-                reader.readAsText(blob)
-            })
-    
-            const content = text as string
-
-            set_MDXText(content)
-
-            parent_mdx_backup.current = content
-        }
-        catch(error){
-            setError(`${error}`)
-        }
-    }
-
-    if (mdx_url != null) {
-        initialise_from_given_url(mdx_url);
-    }
+    initialise_from_given_url(mdx_url);
 }, [mdx_url]);
 
 const validateFile = (file: File): boolean => {
@@ -161,19 +169,31 @@ const read_MDX = async (file: File): Promise<api_return_schema<string>> => {
 }
 
 const removeMDX = () => {
-    console.log("vic", parent_mdx_backup.current)
-    set_MDXText(parent_mdx_backup.current);
     setError(null);
     if (fileInputRef.current) {
         fileInputRef.current.value = '';
     }
-    onMDXUpload(parent_mdx_backup.current)
+    console.log("resetting", parent_mdx_url_backup.current)
+    set_MDXText("")
+    if (mdx_url) initialise_from_given_url(mdx_url);
+
 };
 
+const get_saved_element = () => {
+    const is_unsaved = parent_mdx_content_backup.current != MDXText
+    const text = is_unsaved ? "unsaved" : "uploaded"
+
+    return(<div className={`${is_unsaved ? "bg-yellow-200" : "bg-green-300"} text-neutral-800 px-2 py-1 rounded-lg text-xs w-fit`}>{text}</div>)
+}
 
 return (
     <div className={`w-full ${className}`}>
-        <span className="text-base text-gray-400">{"MDX"}</span>
+        
+        <div className='flex justify-between'>
+            <span className="text-base text-gray-400">{"MDX"}</span>
+            {get_saved_element()}
+        </div>
+        
         
         {MDXText==null && <div
             className={`relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer
@@ -201,18 +221,23 @@ return (
             <div className="mt-2 text-sm text-red-500">{error}</div>
         )}
 
-        {MDXText!=null && <div>
-            <button className='bg-blue-300 px-2 py-1 rounded-lg text-black mt-1' 
-                    onClick={()=>{start_upload_mdx()}}>upload</button>
+        {MDXText!=null &&
+        <div className='flex items-center justify-between mb-1'>
+            {parent_mdx_content_backup.current != MDXText && <div className=' space-x-4'>
+                <button className='bg-blue-300 px-2 py-1 rounded-lg text-black text-sm' 
+                        onClick={()=>{start_upload_mdx()}}>upload</button>
 
-            <button className='bg-blue-300 px-2 py-1 rounded-lg text-black mt-1' 
-                    onClick={()=>{removeMDX()}}>clear</button>
+                <button className='bg-blue-300 px-2 py-1 rounded-lg text-black text-sm' 
+                        onClick={()=>{removeMDX()}}>reset</button>
+
+            </div>}
         </div>}
 
-
-        <MDXEditor
-            className="max-h-96 dark-theme dark-editor"
-            markdown={MDXText || ""}
+        {!Loading  && 
+        <div className='border-neutral-700/30 border-2 rounded-lg'>
+            <MDXEditor
+            className="max-h-[30rem] h-[30rem] dark-theme dark-editor"
+            markdown={MDXText}
             onChange={(e: string)=>{set_MDXText(e)}}
             plugins={[
             toolbarPlugin({
@@ -226,7 +251,9 @@ return (
                 )
             })
             ]}
-        />
+            />
+        </div>
+        }
 
     </div>
 );

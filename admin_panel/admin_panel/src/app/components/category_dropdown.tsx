@@ -15,20 +15,6 @@ interface props {
     display_value: string;
 }
 
-const empty_article: article = {
-    title: "",
-    desc: "",
-    infoText: "",
-    chips: [],
-    category: "",
-    source: "",
-    views: 0,
-    publishDate: new Date(),
-    ready: false,
-    portfolioReady: false,
-    hasImage: false
-}
-
 export default function CategoryDropdown({ className, on_select, display_value }: props) {
 
 const [error_message, set_error_message] = useState<string|null>(null);
@@ -84,11 +70,15 @@ const get_dropdown_contents = () => {
 
 return (
 	<div className={`${className}`}>
+        
         <span className="text-base text-gray-400">{"category"}</span>
+
         {error_message && <p>{error_message}</p>}
+
         <div className={`bg-neutral-800 px-4 py-2 cursor-pointer`} onClick={()=>{set_open(!open)}}>
             {display_value}
         </div>
+
         {open && get_dropdown_contents()}
 
 	</div>
