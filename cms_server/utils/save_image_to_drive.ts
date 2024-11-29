@@ -2,7 +2,7 @@ import { images_dir, mdx_dir } from './path_consts';
 import { randomBytes } from 'crypto';
 import { mkdir, writeFile, access } from 'fs/promises';
 import path from 'path';
-import { api_return_schema, image_on_drive, mdx_on_drive } from '../interfaces/interfaces';
+import { api_return_schema, file_on_drive, mdx_on_drive } from '../interfaces/interfaces';
 
 interface SaveFileOptions {
     allowedTypes?: string[];
@@ -13,7 +13,7 @@ interface SaveFileOptions {
 export async function SaveFileToRandomDir(
     file: Express.Multer.File, 
     options: SaveFileOptions = {}
-): Promise<api_return_schema<image_on_drive|null>> {
+): Promise<api_return_schema<file_on_drive|null>> {
     const {
         allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'],
         maxSizeBytes = 50 * 1024 * 1024, // 5MB default
@@ -44,9 +44,8 @@ export async function SaveFileToRandomDir(
 
         // Construct and return the URL
         // const fileUrl = `images/${randomDirName}/${fileName}${fileExt}`;
-        const fileUrl:image_on_drive = {filename:fileName};
-
-        console.log("do this")
+        const fileUrl:file_on_drive = {file_name:fileName, full_url: new URL(`images/${fileName}`, process.env.HOST_URL).toString()};
+        
         return {data: fileUrl, error: {has_error: false, error_message: ""}};
 
     } catch (error) {
@@ -57,7 +56,7 @@ export async function SaveFileToRandomDir(
 export async function SaveStringToRandomDir(
     text: string, 
     options: SaveFileOptions = {}
-): Promise<api_return_schema<mdx_on_drive|null>> {
+): Promise<api_return_schema<file_on_drive|null>> {
     const {
         allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'],
         maxSizeBytes = 50 * 1024 * 1024, // 5MB default
@@ -78,7 +77,7 @@ export async function SaveStringToRandomDir(
 
         // Construct and return the URL
         // const fileUrl = `images/${randomDirName}/${fileName}${fileExt}`;
-        const fileUrl:mdx_on_drive = {file_name:fileName};
+        const fileUrl:file_on_drive = {file_name:fileName, full_url: new URL(`mdx/${fileName}`, process.env.HOST_URL).toString()};
         
         return {data: fileUrl, error: {has_error: false, error_message: ""}};
 
@@ -86,18 +85,3 @@ export async function SaveStringToRandomDir(
         return {data: null, error: {has_error: true, error_message: 'Error saving file:'}};
     }
 }
-
-// Usage example:
-/*
-const baseUrl = 'https://yourdomain.com/';
-try {
-    const fileUrl = await saveFileToRandomDir(uploadedFile, baseUrl, {
-        allowedTypes: ['image/jpeg', 'image/png'],
-        maxSizeBytes: 2 * 1024 * 1024, // 2MB
-        baseDir: '/custom/path/to/uploads'
-    });
-    console.log('File saved at:', fileUrl);
-} catch (error) {
-    console.error('Failed to save file:', error);
-}
-*/

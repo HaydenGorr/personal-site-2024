@@ -1,7 +1,7 @@
 import { app } from "../express";
 import { SaveFileToRandomDir } from "../utils/save_image_to_drive";
 import { add_image, delete_image } from "../utils/mongo_utils/images";
-import { api_return_schema, image, image_on_drive } from "../interfaces/interfaces";
+import { api_return_schema, image, file_on_drive, image_on_drive } from "../interfaces/interfaces";
 import { get_all_images } from "../utils/mongo_utils/images";
 import { Response, Request } from "express";
 import { upload } from "../express";
@@ -41,20 +41,23 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
         return 
     }
 
-    console.log("got file")
-
     const file = req.file;
   
-    const save_file_api: api_return_schema<image_on_drive|null> = await SaveFileToRandomDir(file)
+    const save_file_api: api_return_schema<file_on_drive|null> = await SaveFileToRandomDir(file)
 
     if (save_file_api.error.has_error) {
       res.status(500).json(save_file_api)
       return
     }
 
-    await add_image(save_file_api.data!.filename)
+    const response: api_return_schema<image_on_drive|null> = await add_image(save_file_api.data as file_on_drive)
 
-    res.status(200).json(save_file_api)
+    if (response.error.has_error){
+      res.status(500).json({data:"", error:{has_error: true, error_message: response.error.error_message}})
+      return
+    }
+
+    res.status(200).json(response)
     return
 
 

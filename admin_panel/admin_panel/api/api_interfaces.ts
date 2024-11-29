@@ -25,8 +25,9 @@ export interface article {
     image: string,
 }
 
-export interface file_in_cms_drive {
-    filename: string
+export interface file_on_drive {
+    file_name: string;
+    full_url: string;
 }
 
 export interface api_return_schema<T> {
@@ -34,14 +35,12 @@ export interface api_return_schema<T> {
     error: error
 }
 
-export interface image {
+export interface image  extends file_on_drive {
     _id?: number;
-    file_name: string;
 }
 
-export interface mdx {
+export interface mdx  extends file_on_drive {
     _id?: number;
-    file_name: string;
 }
 
 export interface error {

@@ -4,7 +4,6 @@ import { article, category, image, chip, api_return_schema } from "../../../api/
 import { get_all_images } from "../../../api/image";
 import Image from "next/image";
 import path from "path";
-import { full_image_path_from_image_object } from "../../../utils/path_utils";
 
 const enum tabs{
 	categories,
@@ -53,12 +52,12 @@ const get_dropdown_contents = () => {
                 {all_images.map((val, index)=> {
                     return(
                         <div key={index} className={`${index%2==0 ? 'bg-neutral-600': 'bg-neutral-500'} px-4 py-2 hover:bg-neutral-700 cursor-pointer`}
-                        onClick={()=>{on_select(val.file_name)}}>
+                        onClick={()=>{on_select(val.full_url)}}>
                             <Image
                                 className={"h-32 w-auto"}
                                 width={150} height={150}
                                 alt=""
-                                src={full_image_path_from_image_object(val)}/>
+                                src={val.full_url}/>
                         </div>
                     )
                 })}

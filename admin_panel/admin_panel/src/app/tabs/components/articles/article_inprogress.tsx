@@ -9,7 +9,6 @@ import ImageUpload from "@/app/components/image_upload";
 import MDXUpload from "@/app/components/mdx_upload";
 import { upload_image } from "../../../../../api/image";
 import ImageDropdown from "@/app/components/image_dropdown";
-import { full_image_path_from_filename } from "../../../../../utils/path_utils";
 import { submit_article_changes } from "../../../../../api/articles";
 import { MDXEditor } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
@@ -179,16 +178,16 @@ return (
                     }}/>
 
             <ImageDropdown on_select={(path_string: string) => {
-                set_image_url(full_image_path_from_filename(path_string));
-                handleArticleChange('image', full_image_path_from_filename(path_string))
+                set_image_url(path_string);
+                handleArticleChange('image', path_string)
             }} />
 
-            <MDXUpload
+            {/* <MDXUpload
                 mdx_url={mdx_url}
                 onMDXUpload={(inurl: string|null)=>{
                     handleArticleChange('article', inurl)
                     set_mdx_url(inurl as string)
-            }}/>
+            }}/> */}
             
         </div>
 

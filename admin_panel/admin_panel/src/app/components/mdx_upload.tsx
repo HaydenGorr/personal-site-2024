@@ -2,17 +2,18 @@ import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
 import { Url } from 'next/dist/shared/lib/router/router';
 import { upload_mdx } from '../../../api/mdx';
-import { api_return_schema } from '../../../api/api_interfaces';
+import { api_return_schema, mdx } from '../../../api/api_interfaces';
 import { MDXEditor, UndoRedo, BoldItalicUnderlineToggles, toolbarPlugin, headingsPlugin } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
+import path from 'path';
 
 interface props {
     className?: string;
-    onMDXUpload: (new_url: string|null) => void;
     mdx_url: string|null;
+    onMDXUpload: (new_url: string|null) => void;
 }
 
-export default function MDXUpload({ className, onMDXUpload, mdx_url }:props) {
+export default function MDXUpload({ className, mdx_url, onMDXUpload }:props) {
 const acceptedTypes = ['text/mdx', 'text/markdown', 'text/plain'];
 const [error, setError] = useState<string | null>(null);
 const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,30 +29,44 @@ const start_upload_mdx = () => {
         return
     }
 
+    console.log("LOKO", MDXText)
+
     upload_mdx(
         MDXText as string,
-        (newpath: string)=>{
+        (newMDX: mdx)=>{
             setError(null)
-            onMDXUpload(newpath)
+            onMDXUpload(newMDX.full_url)
         },
         (error_message: string)=>{
             setError(error_message)
         }
     )
-
 }
 
 useEffect(() => {
+
     const initialise_from_given_url = async (inurl: string) => {
 
         try {
+
+            console.log("wtf", inurl)
             const response = await fetch(inurl)
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)
             }
 
-            const content = await response.text()
+            const blob = await response.blob()
+            const text = await new Promise((resolve, reject) => {
+                const reader = new FileReader()
+                reader.onload = () => resolve(reader.result)
+                reader.onerror = reject
+                reader.readAsText(blob)
+            })
+    
+            const content = text as string
+
             set_MDXText(content)
+
             parent_mdx_backup.current = content
         }
         catch(error){
@@ -146,6 +161,7 @@ const read_MDX = async (file: File): Promise<api_return_schema<string>> => {
 }
 
 const removeMDX = () => {
+    console.log("vic", parent_mdx_backup.current)
     set_MDXText(parent_mdx_backup.current);
     setError(null);
     if (fileInputRef.current) {
@@ -194,9 +210,10 @@ return (
         </div>}
 
 
-        {MDXText!=null && <MDXEditor
+        <MDXEditor
             className="max-h-96 dark-theme dark-editor"
-            markdown={MDXText}
+            markdown={MDXText || ""}
+            onChange={(e: string)=>{set_MDXText(e)}}
             plugins={[
             toolbarPlugin({
                 toolbarClassName: 'my-classname',
@@ -209,7 +226,7 @@ return (
                 )
             })
             ]}
-        />}
+        />
 
     </div>
 );

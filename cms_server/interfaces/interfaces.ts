@@ -25,13 +25,17 @@ export interface article {
     image: string
 }
 
-export interface image_on_drive {
-    filename: string
+export interface file_on_drive {
+    file_name: string;
+    full_url: string;
 }
 
-export interface mdx_on_drive {
+export interface mdx_on_drive extends file_on_drive{
     _id?: number;
-    file_name: string;
+}
+
+export interface image_on_drive extends file_on_drive{
+    _id?: number;
 }
 
 export interface api_return_schema<T> {
