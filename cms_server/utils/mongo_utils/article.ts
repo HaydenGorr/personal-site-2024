@@ -128,8 +128,6 @@ export const create_new_article = async(new_article: article): Promise<api_retur
 
   try {
       const articleModel = await article_schema(connection)
-
-      console.log("new_article", new_article)
       
       const art = new articleModel(new_article);
 

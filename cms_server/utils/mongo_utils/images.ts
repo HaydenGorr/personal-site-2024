@@ -1,15 +1,19 @@
-import { image, api_return_schema, image_on_drive, file_on_drive } from "../../interfaces/interfaces";
+import { api_return_schema, image, file_on_drive } from "../../interfaces/interfaces";
 import images_schema from "../../mongo_schemas/images_schema";
 import dbConnect from '../db_conn';
 
-export async function get_all_images(): Promise<api_return_schema<image[]>> {
+export async function get_all_images(category?: string): Promise<api_return_schema<image[]>> {
 
     const connection = await dbConnect(process.env.DB_IMAGES_NAME)
 
     try {
-        const image_search_result: image[] = await images_schema(connection).find();
 
-        console.log(image_search_result)
+        const query = category ? { category: category } : {};
+        const image_search_result: image[] = await images_schema(connection)
+            .find(query)
+            .sort({ upload_date: -1 });
+
+        console.log("hind", image_search_result)
 
         return {data: image_search_result, error: { has_error: false, error_message:""}}
     } catch (error) {
@@ -17,8 +21,7 @@ export async function get_all_images(): Promise<api_return_schema<image[]>> {
     }
 }
 
-
-export async function add_image(file: file_on_drive): Promise<api_return_schema<image_on_drive|null>>{
+export async function add_image(file: image): Promise<api_return_schema<image|null>>{
 
     const connection = await dbConnect(process.env.DB_IMAGES_NAME)
   
@@ -30,16 +33,16 @@ export async function add_image(file: file_on_drive): Promise<api_return_schema<
             return { data: null, error: { has_error: true, error_message: "image with this name already exists. Serious issue. Look into this asap" } };
         }
 
-        console.log("this")
-
         const newImage = new images_model({
             file_name: file.file_name,
-            full_url: file.full_url
+            full_url: file.full_url,
+            category: file.category,
+            upload_date: file.upload_date
         });
 
         const saved = await newImage.save();
 
-        return {data: {...file, _id: parseInt(saved._id.toString())}, error:{has_error: false, error_message: ""}};
+        return {data: {...file, _id: saved._id}, error:{has_error: false, error_message: ""}};
     } catch (error) {
         return {data: null, error:{has_error: true, error_message: `${error}. Serious issue. Look into this asap`}};
     }

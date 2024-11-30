@@ -1,16 +1,19 @@
-import { api_return_schema, file_on_drive, image } from "./api_interfaces";
+import { api_return_schema, file_on_drive, image, image_type_enum } from "./api_interfaces";
 import path from "path";
 
 export async function upload_image(
     image:File,
     on_pass: (a: string) => void,
-    on_fail: (a: string) => void) {
+    on_fail: (a: string) => void,
+    category: image_type_enum) {
     try {
+
+        var path_construction = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/upload_image?category=${category}`
 
         const formData = new FormData()
         formData.append('image', image)
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/upload_image`, {
+        const response = await fetch(path_construction, {
             method: 'POST',
             credentials: 'include',
             body: formData,
@@ -34,15 +37,20 @@ export async function upload_image(
         }
 
     } catch (error) {
-        on_fail ("could not establish connection to CMS")
+        on_fail (`${error}`)
     }
 }
 
-export async function get_all_images(on_pass: (a: image[]) => void, on_fail: (a: string) => void) {
+export async function get_all_images(on_pass: (a: image[]) => void, on_fail: (a: string) => void, category?: image_type_enum) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_images`, {
+
+        var path_construction = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_images`
+
+        if (category) path_construction = `${path_construction}?category=${category}`
+
+        const response = await fetch(path_construction, {
             method: 'GET',
-            credentials: 'include'
+            credentials: 'include',
         });
 
         const json_result: api_return_schema<image[]> = await response.json();

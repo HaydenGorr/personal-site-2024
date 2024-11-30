@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useRef } from "react";
-import { api_return_schema, article, category, chip } from "../../../../../api/api_interfaces";
+import { api_return_schema, article, category, chip, image_type_enum } from "../../../../../api/api_interfaces";
 import { submit_category } from "../../../../../api/categories";
 import CategoryDropdown from "@/app/components/category_dropdown";
 import ChipDropdown from "@/app/components/chips_dropdown";
@@ -186,7 +186,8 @@ return (
                 }}/>
 
             <div className="border-red-500 border-2 rounded-lg p-2">  
-                <ImageUpload 
+                <ImageUpload
+                    category={image_type_enum.container}
                     image_url={image_url}
                     onImageUpload={(inurl: string|null)=>{
                         handleArticleChange('image', inurl)

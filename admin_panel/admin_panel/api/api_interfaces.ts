@@ -37,6 +37,8 @@ export interface api_return_schema<T> {
 
 export interface image  extends file_on_drive {
     _id?: number;
+    upload_date: Date;
+    category: image_type_enum;
 }
 
 export interface mdx  extends file_on_drive {
@@ -51,4 +53,9 @@ export interface error {
 export interface jwt_api {
     new_token: string;
     logged_in: Boolean;
+}
+
+export enum image_type_enum {
+    container="container",
+    in_article="in_article",
 }

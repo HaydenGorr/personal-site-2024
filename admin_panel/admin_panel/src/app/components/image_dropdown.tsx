@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useRef } from "react";
-import { article, category, image, chip, api_return_schema } from "../../../api/api_interfaces";
+import { article, category, image, chip, api_return_schema, image_type_enum } from "../../../api/api_interfaces";
 import { get_all_images } from "../../../api/image";
 import Image from "next/image";
 import path from "path";
@@ -36,7 +36,8 @@ useEffect(()=>{
                 set_all_images([])
                 set_loading(false)
                 set_error_message(res)
-            }
+            },
+            image_type_enum.container
         )
         
     }

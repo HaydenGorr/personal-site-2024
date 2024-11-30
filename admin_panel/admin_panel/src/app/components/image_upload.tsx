@@ -2,14 +2,16 @@ import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
 import { Url } from 'next/dist/shared/lib/router/router';
 import { upload_image } from '../../../api/image';
+import { image_type_enum } from '../../../api/api_interfaces';
 
 interface props {
     className?: string;
     onImageUpload: (new_url: string|null) => void;
     image_url: string|null;
+    category: image_type_enum;
 }
 
-export default function ImageUpload({ className, onImageUpload, image_url }:props) {
+export default function ImageUpload({ className, onImageUpload, image_url, category }:props) {
 const acceptedTypes = ['image/jpeg', 'image/png', 'image/gif'];
 // const [preview, setPreview] = useState<string | null>(null);
 const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,8 @@ const start_upload_image = () => {
         },
         (error_message: string)=>{
             setError(error_message)
-        }
+        },
+        category
     )
 
 }

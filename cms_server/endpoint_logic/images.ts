@@ -1,13 +1,16 @@
 import { app } from "../express";
 import { SaveFileToRandomDir } from "../utils/save_image_to_drive";
 import { add_image, delete_image } from "../utils/mongo_utils/images";
-import { api_return_schema, image, file_on_drive, image_on_drive } from "../interfaces/interfaces";
+import { api_return_schema, image, file_on_drive } from "../interfaces/interfaces";
 import { get_all_images } from "../utils/mongo_utils/images";
 import { Response, Request } from "express";
 import { upload } from "../express";
 
 app.get('/secure/get_all_images', async (req: Request, res: Response)  => {
-  const mongo_api_response: api_return_schema<image[]> = await get_all_images();
+
+  const category: string | null = req.query.category as string ?? null;
+
+  const mongo_api_response: api_return_schema<image[]> = await get_all_images(category ?? undefined);
 
   if (mongo_api_response.error.has_error) { 
     res.status(500).json(mongo_api_response)
@@ -37,12 +40,21 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
 
   try {
     if (!req.file) {
-        res.status(400).json({ data:"", error: {has_error: true, error_message: 'No image file provided'} });
-        return 
+      res.status(400).json({ data:"", error: {has_error: true, error_message: 'No image file provided'} });
+      return 
     }
 
+    if (!req.query.category) {
+      res.status(400).json({ data:"", error: {has_error: true, error_message: 'No category provided'} });
+      return 
+    } 
+
     const file = req.file;
-  
+    const category = req.query.category as string
+
+    console.log("category", category)
+
+
     const save_file_api: api_return_schema<file_on_drive|null> = await SaveFileToRandomDir(file)
 
     if (save_file_api.error.has_error) {
@@ -50,7 +62,10 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
       return
     }
 
-    const response: api_return_schema<image_on_drive|null> = await add_image(save_file_api.data as file_on_drive)
+    // Props
+    const image_conversion: image = {...save_file_api.data as file_on_drive, category: category, upload_date: new Date()}
+
+    const response: api_return_schema<image|null> = await add_image(image_conversion)
 
     if (response.error.has_error){
       res.status(500).json({data:"", error:{has_error: true, error_message: response.error.error_message + "The item was written to drive, but not to database"}})

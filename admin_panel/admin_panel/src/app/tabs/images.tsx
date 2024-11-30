@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from "react";
 import { get_all_images, delete_image } from "../../../api/image";
-import { image } from "../../../api/api_interfaces";
+import { image, image_type_enum } from "../../../api/api_interfaces";
 import Image from "next/image";
 import path from "path";
 import ImageUpload from "../components/image_upload";
@@ -22,6 +22,7 @@ export default function Images({ className }: props) {
     const [loading, set_loading] = useState<Boolean>(false);
     const [error_message, set_error_message] = useState<string|null>(null);
     const [image_url_for_uploading, set_image_url_for_uploading] = useState<string|null>(null);
+    const [category_search, set_category_search] = useState<image_type_enum>(image_type_enum.container);
 
 
     const fetch_page_data = async () => {
@@ -36,7 +37,8 @@ export default function Images({ className }: props) {
             (res: string) => {
                 set_images([])
                 set_error_message(res)
-            }
+            },
+            category_search
         )
         
         set_loading(false)
@@ -44,7 +46,7 @@ export default function Images({ className }: props) {
 
     useEffect(()=>{
         fetch_page_data()
-    },[])
+    },[category_search])
 
     const onDelete = (inImg: image) => {
         console.log("deleting ", inImg)
@@ -62,10 +64,15 @@ export default function Images({ className }: props) {
 return (
 	<div className={`${className} flex flex-col items-center max-w-prose w-full`}>
         <div className="space-y-4 w-full">
-            <ImageUpload image_url={image_url_for_uploading} onImageUpload={(inurl: string|null)=>{
+            <ImageUpload category={category_search} image_url={image_url_for_uploading} onImageUpload={(inurl: string|null)=>{
                     set_image_url_for_uploading(null)
                     fetch_page_data()
                 }}/>
+
+            <div className="w-full flex justify-between">
+                <button className={`px-2 py-1 rounded-lg text-neutral-800 ${category_search==image_type_enum.container ?  "bg-green-400" : "bg-green-400/50 hover:bg-green-500"}`} onClick={()=>{set_category_search(image_type_enum.container)}}>Category Pics</button>
+                <button className={`px-2 py-1 rounded-lg text-neutral-800 ${category_search==image_type_enum.in_article ? "bg-green-400" : "bg-green-400/50 hover:bg-green-500"}`} onClick={()=>{set_category_search(image_type_enum.in_article)}}>In Article Pics</button>
+            </div>
             {images.map((val: image, index: number) => {
                 return(
                     <div key={index} className="bg-neutral-900 rounded-lg px-4 py-2">

@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface category {
     _id?: number;
     name: string;
@@ -30,11 +32,13 @@ export interface file_on_drive {
     full_url: string;
 }
 
-export interface mdx_on_drive extends file_on_drive{
-    _id?: number;
+export interface image extends file_on_drive {
+    _id?: Types.ObjectId;
+    upload_date: Date;
+    category: string;
 }
 
-export interface image_on_drive extends file_on_drive{
+export interface mdx extends file_on_drive {
     _id?: number;
 }
 
@@ -52,16 +56,6 @@ export interface user {
     _id?: number;
     username: string;
     password: string;
-}
-
-export interface image {
-    _id?: number;
-    file_name: string;
-}
-
-export interface mdx {
-    _id?: number;
-    file_name: string;
 }
 
 import { JwtPayload } from "jsonwebtoken";
