@@ -37,7 +37,7 @@ export interface api_return_schema<T> {
 
 export interface image  extends file_on_drive {
     _id?: number;
-    upload_date: Date;
+    upload_date: string;
     category: image_type_enum;
 }
 

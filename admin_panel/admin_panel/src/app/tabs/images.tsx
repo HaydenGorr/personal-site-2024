@@ -5,6 +5,7 @@ import { image, image_type_enum } from "../../../api/api_interfaces";
 import Image from "next/image";
 import path from "path";
 import ImageUpload from "../components/image_upload";
+import YesNoPopup from "../components/yesno_popup";
 
 const enum tabs{
 	categories,
@@ -17,6 +18,19 @@ interface props {
 }
 
 export default function Images({ className }: props) {
+
+    const get_formatted_date = (datestr: string) => {
+        const date = new Date(datestr);
+        const formatted = date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit', 
+        year: '2-digit'
+        }).replace(/\//g, '/');
+        return formatted
+    }
+
+
+    const [open_confirm_popup, set_open_confirm_popup] = useState<Boolean>(false);
 
     const [images, set_images] = useState<image[]>([]);
     const [loading, set_loading] = useState<Boolean>(false);
@@ -62,7 +76,8 @@ export default function Images({ className }: props) {
     }
 
 return (
-	<div className={`${className} flex flex-col items-center max-w-prose w-full`}>
+	<div className={`${className} flex flex-col items-center w-full`}>
+
         <div className="space-y-4 w-full">
             <ImageUpload category={category_search} image_url={image_url_for_uploading} onImageUpload={(inurl: string|null)=>{
                     set_image_url_for_uploading(null)
@@ -73,18 +88,23 @@ return (
                 <button className={`px-2 py-1 rounded-lg text-neutral-800 ${category_search==image_type_enum.container ?  "bg-green-400" : "bg-green-400/50 hover:bg-green-500"}`} onClick={()=>{set_category_search(image_type_enum.container)}}>Category Pics</button>
                 <button className={`px-2 py-1 rounded-lg text-neutral-800 ${category_search==image_type_enum.in_article ? "bg-green-400" : "bg-green-400/50 hover:bg-green-500"}`} onClick={()=>{set_category_search(image_type_enum.in_article)}}>In Article Pics</button>
             </div>
-            {images.map((val: image, index: number) => {
-                return(
-                    <div key={index} className="bg-neutral-900 rounded-lg px-4 py-2">
-                        <p>{val.file_name}</p>
-                        <Image
-                            className={'h-48 w-auto rounded-lg'} width={300} height={300} alt="" src={path.join(process.env.NEXT_PUBLIC_USER_ACCESS_CMS as string,'images',`${val.file_name}`).toString()}/>
-                        <button
-                            className="bg-neutral-800 text-neutral-500 hover:bg-red-700 hover:text-red-400 mt-2 rounded-full h-10 w-10 text-center"
-                            onClick={()=>{ onDelete(val) }}>X</button>
-                    </div>
-                )
-            })}
+            <div className="w-full grid grid-cols-3 gap-4">
+                {images.map((val: image, index: number) => {
+                    return(
+                        <div key={index} className="bg-neutral-900 rounded-lg p-2 w-full flex flex-col items-center space-y-2">
+                            <div className="flex justify-between w-full items-center">
+                                <p className="text-xs text-white/50">{`${get_formatted_date(val.upload_date)} - ${val.file_name}`}</p>
+                                <button
+                                    className="bg-neutral-800 text-neutral-500 hover:bg-red-700 hover:text-red-400 rounded-full h-5 w-5 text-center"
+                                    onClick={()=>{ onDelete(val) }}>X</button>
+                            </div>
+
+                            <Image
+                                className={'max-h-48 w-auto rounded-lg'} width={300} height={300} alt="" src={val.full_url}/>
+                        </div>
+                    )
+                })}
+            </div>
         </div>
 
 	</div>

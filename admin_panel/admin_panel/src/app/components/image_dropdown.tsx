@@ -14,9 +14,10 @@ const enum tabs{
 interface props {
     className?: string;
     on_select: (a:string)=>void;
+    image_type: image_type_enum;
 }
 
-export default function ImageDropdown({ className, on_select }: props) {
+export default function ImageDropdown({ className, on_select, image_type }: props) {
 
 const [all_images, set_all_images] = useState<image[]>([]);
 const [loading, set_loading] = useState<Boolean>(false);
@@ -37,7 +38,7 @@ useEffect(()=>{
                 set_loading(false)
                 set_error_message(res)
             },
-            image_type_enum.container
+            image_type
         )
         
     }

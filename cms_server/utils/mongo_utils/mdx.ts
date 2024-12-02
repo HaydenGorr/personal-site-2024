@@ -1,8 +1,8 @@
-import { api_return_schema, mdx, file_on_drive, mdx_on_drive } from "../../interfaces/interfaces";
+import { api_return_schema, mdx, file_on_drive } from "../../interfaces/interfaces";
 import mdx_schema from "../../mongo_schemas/mdx_schema";
 import dbConnect from '../db_conn';
 
-export async function add_mdx(inFile: file_on_drive): Promise<api_return_schema<mdx_on_drive|null>>{
+export async function add_mdx(inFile: file_on_drive): Promise<api_return_schema<mdx|null>>{
 
     const connection = await dbConnect(process.env.DB_IMAGES_NAME)
     

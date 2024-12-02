@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: process.env.ENV_FILE });
 
 const PORT: number = parseInt(process.env.PORT!, 10);
-import { app  } from './express';
+import { app } from './express';
 
 import './endpoint_logic/accounts'
 import './endpoint_logic/articles'

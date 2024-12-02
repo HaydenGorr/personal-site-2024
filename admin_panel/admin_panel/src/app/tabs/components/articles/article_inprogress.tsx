@@ -165,7 +165,7 @@ return (
 
         { error_msg && <p className="text-red-500">{error_msg}</p>}
 
-        <div className="max-w-prose w-full space-y-4 mt-8">
+        <div className="w-full space-y-4 mt-8">
             {getCheckbox('go live', article_under_edit.ready, ()=>{handleArticleChange('ready', !article_under_edit.ready)})}
 
             {getInput("title", article_under_edit.title)}
@@ -194,7 +194,7 @@ return (
                         set_image_url(inurl as string)
                         }}/>
 
-                <ImageDropdown className="mt-4" on_select={(path_string: string) => {
+                <ImageDropdown className="mt-4" image_type={image_type_enum.container} on_select={(path_string: string) => {
                     set_image_url(path_string);
                     handleArticleChange('image', path_string)
                 }} />

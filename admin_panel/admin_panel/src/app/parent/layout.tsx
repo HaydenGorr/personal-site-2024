@@ -49,5 +49,5 @@ export default function Parent({ children }: Readonly<ParentProps>) {
     return <div>Loading...</div>;
   }
 
-  return <div>{children}</div>;
+  return <div className="flex justify-center">{children}</div>;
 }

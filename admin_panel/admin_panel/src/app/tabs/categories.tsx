@@ -63,19 +63,10 @@ export default function Categories({ className }: props) {
     }, [])
 
 return (
-	<div className={`${className} w-full max-w-prose`}>
-        {!loading && !fetch_error && <div className="space-y-4 w-full max-w-prose flex flex-col items-center">
+	<div className={`${className} w-full`}>
+        {!loading && !fetch_error && <div className="space-y-4 w-full flex flex-col items-center">
 
-            <div className="w-full flex justify-around">
-                <button 
-                    className="bg-green-400 hover:bg-green-700 rounded-full p-2 w-fit"
-                    onClick={()=>{set_category_in_progress({name:"default name"})}}>add</button>
-                {category_in_progress && <button 
-                    className="bg-red-400 hover:bg-red-700 rounded-full p-2 w-fit"
-                    onClick={()=>{set_category_in_progress(null)}}>stop</button>}
-            </div>
-
-            {category_in_progress && <CategoryInProgress refresh={()=>fetch_page_data()}/>}
+            <CategoryInProgress refresh={()=>fetch_page_data()}/>
 
             {categories.map((cat_iter) => {
                 return(

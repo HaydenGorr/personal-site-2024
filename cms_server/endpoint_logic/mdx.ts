@@ -1,6 +1,6 @@
 import { app } from "../express";
 import { Response, Request } from "express";
-import { api_return_schema, mdx_on_drive, mdx, file_on_drive } from "../interfaces/interfaces";
+import { api_return_schema, mdx, file_on_drive } from "../interfaces/interfaces";
 import { SaveStringToRandomDir } from "../utils/save_image_to_drive";
 import { add_mdx, get_all_mdx } from "../utils/mongo_utils/mdx";
 
@@ -21,7 +21,7 @@ app.post('/secure/upload_mdx', async (req: Request, res: Response) => {
             return
         }
 
-        const response: api_return_schema<mdx_on_drive|null> = await add_mdx(save_file_api.data as file_on_drive)
+        const response: api_return_schema<mdx|null> = await add_mdx(save_file_api.data as file_on_drive)
 
         if (response.error.has_error){
             res.status(500).json({data:"", error:{has_error: true, error_message: response.error.error_message}})

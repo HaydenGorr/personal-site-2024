@@ -53,7 +53,7 @@ export default function Articles({ className }: props) {
     }, [create_new_article, edit_article])
 
 return (
-	<div className={`${className} max-w-prose w-full`}>
+	<div className={`${className} w-full`}>
 
         { edit_article>-1 && <ArticleInProgress newArticle={false} given_article={articles[edit_article]} on_close_click={()=>{set_edit_article(-1)}}/>}
         { create_new_article && <ArticleInProgress newArticle={true} on_close_click={()=>{set_create_new_article(false)}}/>}
@@ -63,13 +63,13 @@ return (
 
             <div className="w-full flex justify-around">
                 <button
-                    className="bg-green-400 hover:bg-green-700 rounded-lg p-2 max-w-prose w-full"
+                    className="bg-green-400 hover:bg-green-700 rounded-lg p-2 w-full"
                     onClick={()=>{set_create_new_article(true)}}>add</button>
             </div>
 
             {articles.map((art_iter, index) => {
                 return(
-                    <div key={art_iter._id} className="flex space-x-4 w-full max-w-prose">
+                    <div key={art_iter._id} className="flex space-x-4 w-full">
                         <button className="bg-purple-300 hover:bg-purple-400 rounded-lg px-2 text-neutral-900" onClick={()=>{set_edit_article(index)}}>edit</button>
                         <ArticleContainer art={art_iter}/>
                         <button className="bg-red-500 hover:bg-red-700 rounded-lg px-2" onClick={() => {}}>delete</button>
