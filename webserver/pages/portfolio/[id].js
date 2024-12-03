@@ -108,6 +108,7 @@ export async function getStaticProps(context) {
 
     // const source_folder = id.match(/^[a-zA-Z0-9]+/)[0]
 
+    // I HAVE REMOVED THIS ENDPOINT
     const article_meta = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_article_meta?articlesrc=${source_folder}`);
 
     if (!article_meta.ok) {

@@ -13,16 +13,21 @@ function generateRandomString(length: number) {
     return result;
 }
 
-export async function get_article(article_dir_name:string){
+export async function get_article(id:string): Promise<api_return_schema<article|null>> {
 
     const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
 
     try {
-        const article = await article_schema(connection).find({source: article_dir_name});
-        return article
+      const article_model = article_schema(connection);
+
+      const existingArticle = await article_model.findOne({ _id: id }) as article;
+      if (!existingArticle) {
+          return { data: null, error: { has_error: true, error_message: `An article with the id ${id} doesn't exist` } };
+      }
+
+        return {data: existingArticle, error: {has_error:false, error_message:""}}
     } catch (error) {
-        console.error('Error:', error);
-        return 'Internal server error'
+        return {data: null, error: {has_error:false, error_message:'Internal server error'}}
     }
 }
 

@@ -37,7 +37,7 @@ export async function add_image(file: image): Promise<api_return_schema<image|nu
             file_name: file.file_name,
             full_url: file.full_url,
             category: file.category,
-            upload_date: file.upload_date
+            upload_date: new Date()
         });
 
         const saved = await newImage.save();

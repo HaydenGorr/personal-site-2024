@@ -3,14 +3,14 @@ import { Types } from "mongoose";
 export interface category {
     _id?: Types.ObjectId;
     name: string;
-    submit_date: Date;
+    submit_date: Date|string;
 }
 
 export interface chip {
     _id?: Types.ObjectId;
     name: string;
     description: string;
-    submit_date: Date;
+    submit_date: Date|string;
 }
 
 export interface article {
@@ -22,7 +22,7 @@ export interface article {
     category: string,
     source: string;
     views: number;
-    publishDate: Date,
+    publishDate: Date|string,
     ready: Boolean,
     portfolioReady: Boolean,
     hasImage: Boolean,
@@ -32,7 +32,7 @@ export interface article {
 export interface file_on_drive {
     file_name: string;
     full_url: string;
-    upload_date: string;
+    upload_date?: string|Date;
 }
 
 export interface image extends file_on_drive {

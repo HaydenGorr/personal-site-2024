@@ -63,7 +63,7 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
     }
 
     // Props
-    const image_conversion: image = {...save_file_api.data as file_on_drive, category: category, upload_date: new Date()}
+    const image_conversion: image = {...save_file_api.data as file_on_drive, category: category}
 
     const response: api_return_schema<image|null> = await add_image(image_conversion)
 

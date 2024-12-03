@@ -134,25 +134,26 @@ function getHeaders(text){
 export async function getStaticProps(context) {
     const { id } = context.params;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/mdx/${id}.mdx`);
+    const article_info = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_article?article_id=${id}`);
+    const article_info_JSON = await article_info.json()
 
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/mdx/${id}.mdx`);
+    const res = await fetch(article_info_JSON.data.article);
     const mdxContent = await res.text()
 
     console.log(mdxContent)
     console.log("id", id)
+    console.log("article_info_JSON", article_info_JSON)
 
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
-    const chips = res_JSON.data.chips
-    const title = res_JSON.data.title
-    const publishDate = res_JSON.data.publishDate
-    // const wordCount = countWordsInMDX(mdxContent)
-    const wordCount = 100
-    // const headers = getHeaders(mdxContent)
-    const headers = []
+    const chips = article_info_JSON.data.chips
+    const title = article_info_JSON.data.title
+    const publishDate = article_info_JSON.data.publishDate
+    const wordCount = countWordsInMDX(mdxContent)
+    // const wordCount = 100
+    const headers = getHeaders(mdxContent)
+    // const headers = []
 
     return { props: { mdxSource, title, chips, publishDate, wordCount, headers }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
@@ -163,25 +164,24 @@ export async function getStaticPaths() {
         const homePostsResponse = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_articles`);
     
         if (!homePostsResponse.ok) {
-          console.error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);
-          throw new Error(`Failed to fetch from CMS: ${homePostsResponse.statusText}`);
+          console.error(`A: Failed to fetch from CMS: ${homePostsResponse.statusText}`);
+          throw new Error(`A: Failed to fetch from CMS: ${homePostsResponse.statusText}`);
         }
     
-        const hprJSONs = await homePostsResponse.json();
-        const hprJSON = hprJSONs.data;
-        
-        if (!Array.isArray(hprJSON)) {
-          console.error('Expected an array from the CMS response');
-          throw new Error('Invalid format for home_posts response.');
+        const hprJSON = await homePostsResponse.json();
+
+        if (hprJSON.error.has_error){
+          console.error(`B: Failed to fetch from CMS: ${homePostsResponse.statusText}`);
+          throw new Error(`B: Failed to fetch from CMS: ${homePostsResponse.statusText}`);
         }
-    
-        const paths = hprJSON.map(article => {
+
+        const paths = hprJSON.data.map(article => {
           const filename = article.article.split('/').pop();
           return {
-            params: { id: filename },
+            params: { id: article._id },
           };
         })
-    
+
         return { paths, fallback: 'blocking' };
       } catch (error) {
         console.error(`Error in getStaticPaths: ${error.message}`);

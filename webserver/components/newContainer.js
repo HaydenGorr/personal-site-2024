@@ -9,10 +9,10 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
     const [hasImage, setHasImage] = useState(false);
     const [randomColor, setRandomColor] = useState('');
 
-    const go_to_article = (url) => {
-      console.log("dualsense", url)
-      const filename = url.split('/').pop();
-      if (filename != "") router.push(`/article/${filename}`)
+    const go_to_article = (id) => {
+      // console.log("dualsense", url)
+      // const filename = url.split('/').pop();
+      if (id != "") router.push(`/article/${id}`)
       else {
           router.push(`/missingArticle`)
       }
@@ -20,7 +20,7 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
 
     useEffect(() => {
       const checkImage = async () => {
-        const url = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`;
+        const url = home_post_obj.image;
   
         try {
           const response = await fetch(url);
@@ -70,7 +70,7 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
 
                 <button
                     className={`z-50 self-center rounded-xl w-fit px-6 text-center ${randomColor.textColor700} text-sm font-medium ${randomColor.bgColor200}`}
-                    onClick={() => {go_to_article(home_post_obj.source)}}>
+                    onClick={() => {go_to_article(home_post_obj._id)}}>
                       <div className="my-1 mt-2">READ</div>
                 </button>
             </div>
