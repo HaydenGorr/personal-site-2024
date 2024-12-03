@@ -78,7 +78,7 @@ return (
                 <button className={`px-2 py-1 rounded-lg text-neutral-800 ${category_search==image_type_enum.container ?  "bg-green-400" : "bg-green-400/50 hover:bg-green-500"}`} onClick={()=>{set_category_search(image_type_enum.container)}}>Category Pics</button>
                 <button className={`px-2 py-1 rounded-lg text-neutral-800 ${category_search==image_type_enum.in_article ? "bg-green-400" : "bg-green-400/50 hover:bg-green-500"}`} onClick={()=>{set_category_search(image_type_enum.in_article)}}>In Article Pics</button>
             </div>
-            <div className="w-full grid grid-cols-3 gap-4">
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {images.map((val: image, index: number) => {
                     return(
                         <div key={index} className="bg-neutral-900 rounded-lg p-2 w-full flex flex-col items-center space-y-2">

@@ -109,11 +109,11 @@ return (
                 set_error={(e:string)=> {set_error_message(e)}}
                 submit_category={(in_cat: category)=>go_submit_category(in_cat)}/>
 
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
             {categories.map((cat_iter) => {
                 return(
-                    <div key={cat_iter._id} className="flex space-x-4 bg-neutral-800 px-2 py-1 rounded-lg w-full items-center">
+                    <div key={cat_iter._id} className="flex space-x-4 bg-neutral-800 px-2 py-1 rounded-lg w-full items-center justify-between">
                         <p className="text-lg">{cat_iter.name}</p>
                         <button className="bg-red-300 text-black rounded-lg p-2 hover:bg-red-500 text-xs w-6 h-6 flex items-center justify-center"
                         onClick={() => set_item_to_delete(cat_iter)}>X</button>

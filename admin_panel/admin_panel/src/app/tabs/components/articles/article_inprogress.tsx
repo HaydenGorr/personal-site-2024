@@ -130,7 +130,7 @@ const submit_changes = () => {
 }
 
 return (
-	<div className={`${className} min-h-screen w-full p-8 relative flex flex-col items-center`}>
+	<div className={`${className} min-h-screen w-full py-8 relative flex flex-col items-center`}>
 
         <button className="bg-zinc-900 text-zinc-600 px-2 py-1 rounded-full top-0 right-4 absolute" onClick={()=>{on_close_click()}}>close</button>
 

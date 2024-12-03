@@ -75,7 +75,7 @@ return (
 
             <ChipInProgress refresh={()=>{fetch_page_data()}} set_error={(e:string)=> {set_error_message(e)}}/>
 
-            <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
 
             {chips.map((cat_iter: chip) => {
                 return(
