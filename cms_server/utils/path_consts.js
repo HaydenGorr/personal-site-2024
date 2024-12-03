@@ -7,7 +7,7 @@ const __dirname = dirname(__filename);
 
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../..', 'cms_data');
 
-const MONGODB_BASE = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@localhost:${process.env.MONGO_PORT}`;
+const MONGODB_BASE = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_PATH}`;
 const MONOGDB_ARTICLES = MONGODB_BASE + '/articles?authSource=<authenticationDatabase>';
 const MONOGDB_CHIPS = MONGODB_BASE + '/chips?authSource=<authenticationDatabase>';
 const MONOGDB_USERS = MONGODB_BASE + '/users?authSource=<authenticationDatabase>';

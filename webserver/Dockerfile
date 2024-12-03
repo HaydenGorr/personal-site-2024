@@ -8,21 +8,24 @@ RUN npm install
 
 COPY . .
 
-# Define build-time variables
-ARG LOCAL_ACCESS_CMS
-ARG USER_ACCESS_CMS
-ARG LOCAL_ACCESS_AI
-ARG USER_ACCESS_AI
-ARG REVALIDATE_TIME_SECS
-ARG VERSION
+RUN npm run build
 
-# Use build-time variable to create an environment variable
-ENV LOCAL_ACCESS_CMS=$LOCAL_ACCESS_CMS
-ENV USER_ACCESS_CMS=$USER_ACCESS_CMS
-ENV LOCAL_ACCESS_AI=$LOCAL_ACCESS_AI
-ENV USER_ACCESS_AI=$USER_ACCESS_AI
-ENV REVALIDATE_TIME_SECS=$REVALIDATE_TIME_SECS
-ENV VERSION=$VERSION
+EXPOSE 3000
+
+CMD ["npm", "start"]
+
+
+FROM node:22.9.0-alpine
+
+# Set initial workdir for main dependencies
+WORKDIR /app
+
+# Install main dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy all source files
+COPY . .
 
 RUN npm run build
 

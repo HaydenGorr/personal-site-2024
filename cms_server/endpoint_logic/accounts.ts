@@ -49,7 +49,7 @@ app.post('/login', async (req: Request, res: Response) => {
 	res.cookie('token', token, {
 		httpOnly: true,
 		secure: true,
-		domain: process.env.NODE_ENV === 'DEVELOPMENT' ? 'localhost' : '.haydengorringe.com',
+		domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.haydengorringe.com',
 		sameSite: 'none',
 		path: '/'
 	});

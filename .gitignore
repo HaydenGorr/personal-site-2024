@@ -129,3 +129,6 @@ dist
 .pnp.*
 
 docker-compose.yml
+api_proxy_server/.env.development
+cms_server/.env.development
+webserver/.env.development
