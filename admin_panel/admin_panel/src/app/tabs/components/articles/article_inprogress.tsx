@@ -102,8 +102,8 @@ const isArticleReady = (): boolean => {
     if (article_under_edit.chips.length == 0) return false
     if (image_url === null) return false
     if (article_under_edit.description.length == 0) return false
-    if (article_under_edit.article.length == 0) return false
-    if (article_under_edit.image.length == 0) return false
+    if (article_under_edit.article && article_under_edit.article.length == 0) return false
+    if (article_under_edit.image && article_under_edit.image.length == 0) return false
 
     return true
 }
