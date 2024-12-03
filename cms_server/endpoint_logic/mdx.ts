@@ -1,7 +1,7 @@
 import { app } from "../express";
 import { Response, Request } from "express";
 import { api_return_schema, mdx, file_on_drive } from "../interfaces/interfaces";
-import { SaveStringToRandomDir } from "../utils/save_image_to_drive";
+import { SaveStringToRandomDir, OverwriteFile } from "../utils/save_image_to_drive";
 import { add_mdx, get_all_mdx } from "../utils/mongo_utils/mdx";
 
 app.post('/secure/upload_mdx', async (req: Request, res: Response) => {
@@ -29,6 +29,33 @@ app.post('/secure/upload_mdx', async (req: Request, res: Response) => {
         }
 
         res.status(200).json(response)
+        return
+
+
+    } catch {
+        res.status(500).json({data:"", error:{has_error: true, error_message: "Internal Server Error"}})
+        return
+    }
+})
+
+app.post('/secure/update_mdx', async (req: Request, res: Response) => {
+
+    try {
+
+        const { mdx_string, filename } = req.body;
+
+        if (mdx_string.length == 0 || filename.length == 0 ) {
+            res.status(500).json({data:"", error:{has_error: true, error_message: "No text recieved"}})
+        }
+
+        const save_file_api: api_return_schema<file_on_drive|null> = await OverwriteFile(filename, mdx_string)
+
+        if (save_file_api.error.has_error) {
+            res.status(500).json(save_file_api)
+            return
+        }
+
+        res.status(200).json({data:"", error:{has_error: false, error_message: ""}})
         return
 
 

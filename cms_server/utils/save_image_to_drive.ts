@@ -85,3 +85,33 @@ export async function SaveStringToRandomDir(
         return {data: null, error: {has_error: true, error_message: 'Error saving file:'}};
     }
 }
+
+export async function OverwriteFile(
+    filename: string,
+    newText: string,
+    options: SaveFileOptions = {}
+): Promise<api_return_schema<file_on_drive|null>> {
+    const {
+        baseDir = path.join(mdx_dir)
+    } = options;
+
+    try {
+        const filePath = path.join(baseDir, filename);
+        
+        // Verify file exists
+        await access(filePath);
+        
+        // Overwrite file
+        await writeFile(filePath, newText, 'utf8');
+
+        const fileUrl: file_on_drive = {
+            file_name: filename,
+            full_url: new URL(`mdx/${filename}`, process.env.HOST_URL).toString()
+        };
+        
+        return {data: fileUrl, error: {has_error: false, error_message: ""}};
+
+    } catch (error) {
+        return {data: null, error: {has_error: true, error_message: 'Error overwriting file'}};
+    }
+}

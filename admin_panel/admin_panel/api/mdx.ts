@@ -29,6 +29,36 @@ export async function upload_mdx(
     }
 }
 
+export async function update_mdx(
+    mdx_string: string,
+    filename: string,
+    on_pass:(e: mdx)=>void,
+    on_fail:(e: string)=>void) {
+
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/update_mdx`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ mdx_string: mdx_string, filename: filename }),
+        });
+
+        const json_result: api_return_schema<mdx> = await response.json();
+
+        if(response.ok) {
+            on_pass(json_result.data)
+            return
+        }
+
+        else on_fail(json_result.error.error_message)
+
+    } catch (error) {
+        on_fail ("could not connect to CMS")
+    }
+}
+
 export async function get_all_mdx(on_pass: (a: mdx[]) => void, on_fail: (a: string) => void) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_images`, {

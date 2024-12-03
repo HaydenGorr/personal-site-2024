@@ -11,14 +11,31 @@ import { promises as fss } from 'fs';
 
 app.get('/get_all_ready_articles', async (req: Request, res: Response) => {
 
-	console.log("getting all articles marked ready")
+	const response = await get_all_ready_articles()
+
+	if (response.error.has_error) {
+		res.status(500).json(response)
+		return
+	}
+
+	console.log(response.data)
+
+	res.status(200).json(response);
+
+});
+
+app.get('/get_article', async (req: Request, res: Response) => {
 
 	const response = await get_all_ready_articles()
 
-	// console.log(`${response.data.length} ready articles retrieved`)
-	console.log(response)
+	if (response.error.has_error) {
+		res.status(500).json(response)
+		return
+	}
 
-	res.json(response);
+	console.log(response.data)
+
+	res.status(200).json(response);
 
 });
 

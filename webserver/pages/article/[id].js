@@ -18,6 +18,7 @@ import StyleCustomiser from '../../components/pop_up_settings/content/style_cust
 import StyleCustomiserHeader from '../../components/pop_up_settings/headers/style_customiser_header';
 import ArticleIndexHeader from '../../components/pop_up_settings/headers/article_index_header';
 import ArticleIndex from '../../components/pop_up_settings/content/article_index'
+import { Read_MDX_file } from '../../utils/read_mdx'
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
@@ -132,26 +133,26 @@ function getHeaders(text){
 
 export async function getStaticProps(context) {
     const { id } = context.params;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/CMS/articles/${id}/article.mdx`);
-    const mdxContent = await res.text();
-    
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/mdx/${id}.mdx`);
+
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/mdx/${id}.mdx`);
+    const mdxContent = await res.text()
+
+    console.log(mdxContent)
+    console.log("id", id)
+
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
-    const article_meta = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_article_meta?articlesrc=${id}`);
-
-    if (!article_meta.ok) {
-      console.error(`Failed to fetch from CMS: ${article_meta.statusText}`);
-      throw new Error(`Failed to fetch from CMS: ${article_meta.statusText}`);
-    }
-
-    const Article_Meta_JSON = await article_meta.json();
-
-    const chips = Article_Meta_JSON.chips
-    const title = Article_Meta_JSON.title
-    const publishDate = Article_Meta_JSON.publishDate
-    const wordCount = countWordsInMDX(mdxContent)
-    const headers = getHeaders(mdxContent)
+    const chips = res_JSON.data.chips
+    const title = res_JSON.data.title
+    const publishDate = res_JSON.data.publishDate
+    // const wordCount = countWordsInMDX(mdxContent)
+    const wordCount = 100
+    // const headers = getHeaders(mdxContent)
+    const headers = []
 
     return { props: { mdxSource, title, chips, publishDate, wordCount, headers }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
@@ -175,11 +176,9 @@ export async function getStaticPaths() {
         }
     
         const paths = hprJSON.map(article => {
-          if (!article.source) {
-            console.warn('Article without a source detected.');
-          }
+          const filename = article.article.split('/').pop();
           return {
-            params: { id: article.source ? article.source.toString() : '' },
+            params: { id: filename },
           };
         })
     
@@ -193,6 +192,8 @@ export async function getStaticPaths() {
   }
 
 function countWordsInMDX(content) {
+  console.log("\n\n\n\n\n\n", content)
+
   // Remove lines that are code (import statements, JSX tags, etc.)
   const codeLinePattern = /^\s*(import|<.*>|{|})/;
   const lines = content.split('\n');

@@ -9,11 +9,13 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
     const [hasImage, setHasImage] = useState(false);
     const [randomColor, setRandomColor] = useState('');
 
-    const go_to_article = (title) => {
-        if (title != "") router.push(`/article/${title}`)
-        else {
-            router.push(`/missingArticle`)
-        }
+    const go_to_article = (url) => {
+      console.log("dualsense", url)
+      const filename = url.split('/').pop();
+      if (filename != "") router.push(`/article/${filename}`)
+      else {
+          router.push(`/missingArticle`)
+      }
     }
 
     useEffect(() => {
@@ -43,11 +45,11 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
         <div className={`relative font-Josefin ${randomColor.textColor200}`}>
             <div className="relative rounded-2xl overflow-hidden w-80 h-128">
                 {hasImage && (<Image
-                    src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`}
+                    src={home_post_obj.image}
                     alt="Description of image"
                     fill
                     className="object-cover cursor-pointer"
-                    onClick={() => { go_to_article(home_post_obj.source) }}
+                    onClick={() => { go_to_article(home_post_obj.article) }}
                 />)}
                 {/** Gradient */}
                 <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-95 ${randomColor.fromColor700}`} />
@@ -63,7 +65,7 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
 
             <div className="absolute inset-0 flex-col flex space-y-4 justify-end my-4 px-4">
                 <span className="text-sm font-medium line-clamp-4">
-                    {home_post_obj.desc}
+                    {home_post_obj.description}
                 </span>
 
                 <button

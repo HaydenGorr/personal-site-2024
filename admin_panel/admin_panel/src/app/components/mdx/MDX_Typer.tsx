@@ -28,9 +28,10 @@ interface props {
     mdx_text?: string;
     set_text: (s: string) => void;
     append_text: (callback: (prevText: string) => string) => void;
+    refresh: Boolean
 }
 
-export default function MDX_Typer({ className, mdx_text, set_text, append_text }:props) {
+export default function MDX_Typer({ className, mdx_text, set_text, append_text, refresh }:props) {
 const [editorKey, setEditorKey] = useState<number>(0);
 const [error_message, set_error_message] = useState<string>("");
 
@@ -58,12 +59,16 @@ const handleImageInsert = () => {
     });
 }; 
 
+useEffect(()=>{
+    refresh_MDX()
+}, [refresh])
+
 return (
     <div className={`w-full ${className}`}>
         <p className='text-red-600'>{error_message}</p>
         <MDXEditor
             key={editorKey}
-            className="h-96 w-full overflow-auto dark-theme dark-editor"
+            className="h-[40rem] w-full overflow-auto dark-theme dark-editor"
             markdown={mdx_text}
             onChange={(e: string) => set_text(e)} // Ensure state updates are handled
             plugins={[

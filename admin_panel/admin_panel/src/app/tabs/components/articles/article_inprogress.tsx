@@ -4,7 +4,7 @@ import { article, image_type_enum } from "../../../../../api/api_interfaces";
 import CategoryDropdown from "@/app/components/category_dropdown";
 import ChipDropdown from "@/app/components/chips_dropdown";
 import ImageUpload from "@/app/components/image_upload";
-import MDXUpload from "@/app/components/mdx_upload";
+import MDXUpload from "@/app/components/mdx/mdx_upload";
 import ImageDropdown from "@/app/components/image_dropdown";
 import { submit_article_changes, submit_new_article } from "../../../../../api/articles";
 import '@mdxeditor/editor/style.css'
@@ -46,9 +46,6 @@ const [mdx_url, set_mdx_url] = useState<string|null>(given_article.article ? giv
 const [submit_success_message, set_submit_success_message] = useState<string|null>(null);
 const [error_msg, set_error_msg] = useState<string|null>(null);
 const [article_under_edit, set_article_under_edit] = useState<article>(given_article);
-
-const [has_been_edited, set_has_been_edited] = useState<Boolean>(false);
-
 
 const handleArticleChange = (field: keyof article, value: any) => {
 
@@ -105,6 +102,8 @@ const isArticleReady = (): boolean => {
     if (article_under_edit.chips.length == 0) return false
     if (image_url === null) return false
     if (article_under_edit.description.length == 0) return false
+    if (article_under_edit.article.length == 0) return false
+    if (article_under_edit.image.length == 0) return false
 
     return true
 }

@@ -12,23 +12,18 @@ import { getFormattedDate } from '../utils/date_utils';
 export async function getStaticProps() {
   try {
     const home_posts_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_articles`);
-    const unique_chips_response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_unique_chips`);
 
-    if (!home_posts_response.ok || !unique_chips_response.ok) {
+    if (!home_posts_response.ok) {
       	throw new Error('Failed to connect to cms');
     }
 
     const home_posts_JSON = await home_posts_response.json();
-    const unique_chips_JSON = await unique_chips_response.json();
 
-    if (home_posts_JSON.error != "" || unique_chips_JSON.error != ""){
-      	throw new Error(home_posts_JSON.error + " " + unique_chips_JSON.error);
+    if (home_posts_JSON.error.has_error){
+      	throw new Error(home_posts_JSON.error.error_message);
     }
 
     var home_posts_DATA = home_posts_JSON.data;
-    var unique_chips_DATA = unique_chips_JSON.data;
-
-    const chips = unique_chips_DATA.map( (item, index) => {return item.name} )
 
 	var organised_content = {}
 
@@ -40,10 +35,12 @@ export async function getStaticProps() {
 		organised_content[category].push(post);
 	});
     
+	console.log("\n\n\n\n\n", home_posts_DATA)
+
     return {
 		props: {
 			home_posts: home_posts_DATA,
-			unique_chips: chips,
+			unique_chips: [],
 			organised_content: organised_content
 		},
       	revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS),

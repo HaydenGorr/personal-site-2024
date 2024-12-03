@@ -38,14 +38,14 @@ export async function get_all_articles(): Promise<api_return_schema<article[]>>{
 }
 
 export async function get_all_ready_articles(){
-  const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
-
   try {
-    const articles = await article_schema(connection).find({ ready: true }).sort({ publishDate: -1 });
-    return {"error": "", "data":articles}
-  } catch (error) {
-    return {"error": "Could not fetch Article data from DB", "data":[]}
-  }
+    const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+    const articles: any[] = await article_schema(connection).find({ ready: true }).sort({ publishDate: -1 });
+    return {data: articles, error:{has_error: false, error_message: ""}}
+} catch (error) {
+    console.error('Error:', error);
+    return {data: [], error:{has_error: true, error_message: `${error}`}}
+}
 }
 
 export async function add_article(): Promise<api_return_schema<article|null>>{
