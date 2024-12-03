@@ -46,7 +46,16 @@ app.post('/login', async (req: Request, res: Response) => {
 	// Create Token
 	const token = await create_jwt_token(user._id as number) 
 
-	res.status(200).json({data:token, error: {has_error: false, error_message: ``} });
+	res.cookie('token', token, {
+		httpOnly: true,
+		secure: true,
+		domain: process.env.NODE_ENV === 'DEVELOPMENT' ? 'localhost' : '.haydengorringe.com',
+		sameSite: 'none',
+		path: '/'
+	});
+    res.status(200).json({ data: "Login successful", error: { has_error: false, error_message: '' } });
+
+	// res.status(200).json({data:token, error: {has_error: false, error_message: ``} });
 
 	return 
 

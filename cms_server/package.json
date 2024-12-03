@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsc",
     "start:dev": "cross-env DOTENV_CONFIG_PATH=.env.local tsx watch --require dotenv/config ./app.ts",
-    "start:prod": "cross-env DOTENV_CONFIG_PATH=.env.prod tsx --require dotenv/config ./app.ts",
+    "start:prod": "cross-env DOTENV_CONFIG_PATH=.env.local tsx --require dotenv/config ./app.ts",
     "build:prod": "tsc && cross-env DOTENV_CONFIG_PATH=.env.prod node -r dotenv/config dist/app.js"
   },
   "author": "",
