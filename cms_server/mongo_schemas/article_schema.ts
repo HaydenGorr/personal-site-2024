@@ -8,7 +8,7 @@ const articleSchema = new mongoose.Schema({
     infoText: { type: String, required: false },
     chips: { type: [String], default: [] },
     views: { type: Number, default: 0 },
-    publishDate: { type: Date, default: Date.now },
+    publishDate: { type: Date, required: true, default: Date.now },
     ready: {type: Boolean, default: false},
     portfolioReady: {type: Boolean, default: false},
     type: {type: String, default: "misc."},

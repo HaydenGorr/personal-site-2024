@@ -1,6 +1,5 @@
 import { api_return_schema, mdx } from "./api_interfaces";
 
-
 export async function upload_mdx(
     mdx_string: string,
     on_pass:(e: mdx)=>void,

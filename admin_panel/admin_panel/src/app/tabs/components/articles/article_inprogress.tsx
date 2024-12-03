@@ -1,17 +1,14 @@
 'use client'
 import { useEffect, useState, useRef } from "react";
-import { api_return_schema, article, category, chip, image_type_enum } from "../../../../../api/api_interfaces";
-import { submit_category } from "../../../../../api/categories";
+import { article, image_type_enum } from "../../../../../api/api_interfaces";
 import CategoryDropdown from "@/app/components/category_dropdown";
 import ChipDropdown from "@/app/components/chips_dropdown";
-import Image from "next/image";
 import ImageUpload from "@/app/components/image_upload";
 import MDXUpload from "@/app/components/mdx_upload";
-import { upload_image } from "../../../../../api/image";
 import ImageDropdown from "@/app/components/image_dropdown";
 import { submit_article_changes, submit_new_article } from "../../../../../api/articles";
-import { MDXEditor } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
+import MDX_Editor from "@/app/components/mdx/MDX_Typer";
 
 const enum tabs{
 	categories,

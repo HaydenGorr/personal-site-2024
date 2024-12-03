@@ -7,7 +7,7 @@ export async function get_all_categories(): Promise<api_return_schema<category[]
     const connection = await dbConnect(process.env.DB_CATEGORIES_NAME)
 
     try {
-        const category_search_result: category[] = await category_schema(connection).find();
+        const category_search_result: category[] = await category_schema(connection).find().sort({ submit_date: -1 });
         return {data: category_search_result, error: { has_error: false, error_message:""}}
     } catch (error) {
         return {data: [], error: { has_error: true, error_message:`${error}`}}
@@ -28,7 +28,8 @@ export async function AddCategory(category_name: string): Promise<api_return_sch
         }
 
         const newCat = new CategoryModel({
-            name: category_name
+            name: category_name,
+            submit_date: new Date()
         });
 
         const saved = await newCat.save();

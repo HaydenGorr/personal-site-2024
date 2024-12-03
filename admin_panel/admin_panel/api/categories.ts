@@ -59,12 +59,12 @@ export async function delete_category(
 
 
 export async function submit_category(
-    category_name: string,
+    in_category: category,
     on_pass:()=>void,
     on_fail:(e: string)=>void) {
 
     const formData = new FormData();
-    formData.append('category_name', category_name);
+    formData.append('category_name', in_category.name);
 
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/add_category`, {
@@ -73,7 +73,7 @@ export async function submit_category(
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ category_name: category_name }),
+            body: JSON.stringify({ category_name: in_category.name }),
         });
 
         const json_result: api_return_schema<Boolean> = await response.json();

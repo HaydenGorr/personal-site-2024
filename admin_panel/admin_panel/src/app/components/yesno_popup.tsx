@@ -1,18 +1,19 @@
 interface props {
-    isOpen: boolean;
-    setIsOpen: (value: boolean) => void;
+    isOpen: Boolean;
+    setIsOpen: (value: Boolean) => void;
     onConfirm: () => void;
     message: string;
+    styled_item: string;
   }
   
-  export default function YesNoPopup({ isOpen, setIsOpen, onConfirm, message }: props) {
+  export default function YesNoPopup({ isOpen, setIsOpen, onConfirm, message, styled_item }: props) {
     if (!isOpen) return null;
   
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm">
-          <p className="mb-4">{message}</p>
-          <div className="flex justify-end gap-2">
+      <div className="fixed inset-0 bg-black/70 flex items-center justify-center">
+        <div className=" bg-neutral-900 p-6 rounded-lg shadow-lg max-w-sm">
+          <p className="mb-4">{`${message} `}<span className="text-neutral-300 font-semibold bg-neutral-800 px-2 py-1 rounded-lg">{`${styled_item}`}</span></p>
+          <div className="flex justify-between">
             <button
               onClick={() => setIsOpen(false)}
               className="px-4 py-2 border rounded-md hover:bg-gray-100"

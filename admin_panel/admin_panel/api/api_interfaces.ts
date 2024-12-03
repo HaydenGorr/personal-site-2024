@@ -1,12 +1,14 @@
 export interface category {
     _id?: number;
     name: string;
+    submit_date?: Date;
 }
 
 export interface chip {
     _id?: number;
     name: string;
     description: string;
+    submit_date?: string;
 }
 
 export interface article {
@@ -28,6 +30,7 @@ export interface article {
 export interface file_on_drive {
     file_name: string;
     full_url: string;
+    upload_date?: string;
 }
 
 export interface api_return_schema<T> {
@@ -37,7 +40,6 @@ export interface api_return_schema<T> {
 
 export interface image  extends file_on_drive {
     _id?: number;
-    upload_date: string;
     category: image_type_enum;
 }
 

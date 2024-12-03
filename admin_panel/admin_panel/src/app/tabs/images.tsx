@@ -6,6 +6,7 @@ import Image from "next/image";
 import path from "path";
 import ImageUpload from "../components/image_upload";
 import YesNoPopup from "../components/yesno_popup";
+import { get_formatted_date } from "../../../utils/date_utils";
 
 const enum tabs{
 	categories,
@@ -18,17 +19,6 @@ interface props {
 }
 
 export default function Images({ className }: props) {
-
-    const get_formatted_date = (datestr: string) => {
-        const date = new Date(datestr);
-        const formatted = date.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit', 
-        year: '2-digit'
-        }).replace(/\//g, '/');
-        return formatted
-    }
-
 
     const [open_confirm_popup, set_open_confirm_popup] = useState<Boolean>(false);
 
@@ -99,7 +89,7 @@ return (
                                     onClick={()=>{ onDelete(val) }}>X</button>
                             </div>
 
-                            <Image
+                            <img
                                 className={'max-h-48 w-auto rounded-lg'} width={300} height={300} alt="" src={val.full_url}/>
                         </div>
                     )

@@ -11,7 +11,7 @@ interface props {
     className: string;
 }
 
-export default function Chips({ className }: props) {
+export default function Articles({ className }: props) {
 
     const [item_to_delete, set_item_to_delete] = useState<chip|null>(null);
 

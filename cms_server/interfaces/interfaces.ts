@@ -1,14 +1,16 @@
 import { Types } from "mongoose";
 
 export interface category {
-    _id?: number;
+    _id?: Types.ObjectId;
     name: string;
+    submit_date: Date;
 }
 
 export interface chip {
-    _id?: number;
+    _id?: Types.ObjectId;
     name: string;
     description: string;
+    submit_date: Date;
 }
 
 export interface article {
@@ -30,11 +32,11 @@ export interface article {
 export interface file_on_drive {
     file_name: string;
     full_url: string;
+    upload_date: string;
 }
 
 export interface image extends file_on_drive {
     _id?: Types.ObjectId;
-    upload_date: Date;
     category: string;
 }
 
