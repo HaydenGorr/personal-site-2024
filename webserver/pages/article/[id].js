@@ -140,10 +140,6 @@ export async function getStaticProps(context) {
     const res = await fetch(article_info_JSON.data.article);
     const mdxContent = await res.text()
 
-    console.log(mdxContent)
-    console.log("id", id)
-    console.log("article_info_JSON", article_info_JSON)
-
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
@@ -151,9 +147,7 @@ export async function getStaticProps(context) {
     const title = article_info_JSON.data.title
     const publishDate = article_info_JSON.data.publishDate
     const wordCount = countWordsInMDX(mdxContent)
-    // const wordCount = 100
     const headers = getHeaders(mdxContent)
-    // const headers = []
 
     return { props: { mdxSource, title, chips, publishDate, wordCount, headers }, revalidate: Number(process.env.NEXT_PUBLIC_REVALIDATE_TIME_SECS), }; 
 }
@@ -162,7 +156,7 @@ export async function getStaticPaths() {
 
     try {
         const homePostsResponse = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_all_ready_articles`);
-    
+
         if (!homePostsResponse.ok) {
           console.error(`A: Failed to fetch from CMS: ${homePostsResponse.statusText}`);
           throw new Error(`A: Failed to fetch from CMS: ${homePostsResponse.statusText}`);
