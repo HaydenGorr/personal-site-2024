@@ -83,7 +83,7 @@ return (
                     return(
                         <div key={index} className="bg-neutral-900 rounded-lg p-2 w-full flex flex-col items-center space-y-2">
                             <div className="flex justify-between w-full items-center">
-                                <p className="text-xs text-white/50">{`${get_formatted_date(val.upload_date)} - ${val.file_name}`}</p>
+                                <p className="text-xs text-white/50">{`${get_formatted_date(val.upload_date!)} - ${val.file_name}`}</p>
                                 <button
                                     className="bg-neutral-800 text-neutral-500 hover:bg-red-700 hover:text-red-400 rounded-full h-5 w-5 text-center"
                                     onClick={()=>{ onDelete(val) }}>X</button>
