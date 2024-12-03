@@ -19,7 +19,7 @@ export default function Container({ chips=null, home_post_obj, btnAction = () =>
     useEffect(() => {
 
         const checkImage = async () => {
-          const url = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`;
+          const url = home_post_obj.image;
     
           try {
             const response = await fetch(url);
@@ -44,7 +44,7 @@ export default function Container({ chips=null, home_post_obj, btnAction = () =>
             </div>
 
             {hasImage && <Image className="rounded-md overflow-hidden cursor-pointer"
-                src={`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/CMS/articles/${home_post_obj["source"]}/container.png`}
+                src={home_post_obj.image}
                 unoptimized={true}
                 alt=""
                 width={200}

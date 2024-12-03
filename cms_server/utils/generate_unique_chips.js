@@ -1,5 +1,5 @@
-const path = require('path');
-const fs = require('fs')
+import path from 'path';
+import fs from 'fs';
 
 function generate_non_repeating_list_of_chips_from_home_posts(posts) {
     const allChips = posts.flatMap(post => post.chips);
@@ -18,19 +18,19 @@ function generate_non_repeating_list_of_chips_from_home_posts(posts) {
  */
 async function generate_unique_chips(save_directory, home_posts_path){
 
-    const home_posts = require(home_posts_path)
+    // const home_posts = require(home_posts_path)
 
-    const data = generate_non_repeating_list_of_chips_from_home_posts(home_posts);
+    // const data = generate_non_repeating_list_of_chips_from_home_posts(home_posts);
 
-    const dataString = JSON.stringify(data, null, 2);
+    // const dataString = JSON.stringify(data, null, 2);
 
-    try {
+    // try {
 
-        await fs.writeFileSync(path.join(save_directory, "unique_chips.json"), dataString);
-        console.log('JSON data is saved.');
-    } catch (error) {
-        console.error('Error writing file:', error);
-    }
+    //     await fs.writeFileSync(path.join(save_directory, "unique_chips.json"), dataString);
+    //     console.log('JSON data is saved.');
+    // } catch (error) {
+    //     console.error('Error writing file:', error);
+    // }
 }
 
 module.exports = { generate_unique_chips };

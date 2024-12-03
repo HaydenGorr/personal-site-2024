@@ -1,9 +1,11 @@
 {
+  "type": "module",
   "name": "cms_server",
   "version": "1.0.0",
   "description": "",
   "main": "api.js",
   "dependencies": {
+    "@typegoose/typegoose": "^12.9.1",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -16,9 +18,25 @@
     "multer": "^1.4.5-lts.1"
   },
   "scripts": {
-    "start:dev": "cross-env ENV_FILE=.env.local node app.js",
-    "start:prod": "cross-env ENV_FILE=.env.prod node app.js"
+    "build": "tsc",
+    "start:dev": "cross-env DOTENV_CONFIG_PATH=.env.local tsx watch --require dotenv/config ./app.ts",
+    "start:prod": "cross-env DOTENV_CONFIG_PATH=.env.prod tsx --require dotenv/config ./app.ts",
+    "build:prod": "tsc && cross-env DOTENV_CONFIG_PATH=.env.prod node -r dotenv/config dist/app.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/mongodb": "^4.0.6",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.9.3",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
 }

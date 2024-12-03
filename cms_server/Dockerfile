@@ -1,18 +1,40 @@
-FROM node:18
+# Stage 1: Build Stage
+FROM node:18-alpine AS builder
 
+# Set the working directory
 WORKDIR /app
 
+# Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
 
+# Install all dependencies (including devDependencies)
 RUN npm install
 
+# Copy the rest of your application code
 COPY . .
 
-# Use build-time variable to create an environment variable
-ENV PORT=$PORT
-# DATA_DIR is not used when running locally. This ENV VAR makes the code use the storage volume
-ENV DATA_DIR=$DATA_DIR
+# Build the application
+RUN npm run build
+RUN ls -la dist/  # Add this line to verify build output
 
-EXPOSE $PORT
+# Stage 2: Production Stage
+FROM node:18-alpine
 
-CMD ["npm", "run", "start:prod"]
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to install production dependencies
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm install --only=production
+
+# Copy the built application from the builder stage
+COPY --from=builder /app/dist ./dist
+RUN ls -la dist/  # Add this line to verify copied files
+
+# Expose the port your app runs on
+EXPOSE 3002
+
+# Set the command to run your application
+CMD ["node", "--experimental-specifier-resolution=node", "dist/app.js"]

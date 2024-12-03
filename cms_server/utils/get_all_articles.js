@@ -1,5 +1,5 @@
-const fs = require('fs').promises;
-const path = require('path')
+import { promises as fs } from 'fs';
+import path from 'path';
 
 const { articles_dir, metas_dir, temp_meta_dir, svg_dir, temp_unique_chips_path, unique_chips_path, temp_home_posts_path, home_posts_path, temp_chip_definition_path, chip_definition_path } = require('./path_consts')
 

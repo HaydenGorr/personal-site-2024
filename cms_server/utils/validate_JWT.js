@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-async function validate_JWT(token) {
+export async function validate_JWT(token) {
     if (!token) {
         return {success: false, message: "No token provided", errorcode: 401};
     }
@@ -9,18 +9,11 @@ async function validate_JWT(token) {
         const decoded = await jwt.verify(token, process.env.SECRETKEY);
         const userId = await decoded.userId;
 
-        console.log("U authenticated")
         return {success: true, message: "User is authenticated", errorcode: 200, userId: userId};
     } catch (error) {
-        console.log("U UNauthenticated", error)
         if (error instanceof jwt.JsonWebTokenError) {
             return {success: false, message: "Invalid token", errorcode: 401};
         }
         return {success: false, message: "Internal server error", errorcode: 500};
     }
 }
-
-module.exports = {
-    validate_JWT
-};
-  
