@@ -90,7 +90,16 @@ app.get('/loggedIn', protectedRouter, async (req: Request, res: Response) => {
 
 				if (decoded_expired_token && decoded_expired_token.userId) {
 					const newToken = await create_jwt_token(parseInt(decoded_expired_token.userId))
-					res.status(200).json({ data: {new_token: newToken, logged_in: true },  error: {  has_error: false,  error_message: "" } })
+
+					res.cookie('token', newToken, {
+						httpOnly: true,
+						secure: true,
+						domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.haydengorringe.com',
+						sameSite: 'none',
+						path: '/'
+					});
+
+					res.status(200).json({ data: null,  error: {  has_error: false,  error_message: "" } })
 					return
 				}
 
