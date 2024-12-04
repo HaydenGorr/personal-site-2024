@@ -24,3 +24,6 @@
 *.json
 !package.json
 !package-lock.json
+
+# Permit tsconfig
+!tsconfig.json
