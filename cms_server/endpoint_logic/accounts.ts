@@ -54,6 +54,8 @@ app.post('/login', async (req: Request, res: Response) => {
 		sameSite: 'none',
 		path: '/'
 	});
+
+	console.log("logging in")
     res.status(200).json({ data: "Login successful", error: { has_error: false, error_message: '' } });
 
 	return 
@@ -97,6 +99,8 @@ app.get('/loggedIn', protectedRouter, async (req: Request, res: Response) => {
 						sameSite: 'none',
 						path: '/'
 					});
+
+					console.log("is logged in")
 
 					res.status(200).json({ data: null,  error: {  has_error: false,  error_message: "" } })
 					return
