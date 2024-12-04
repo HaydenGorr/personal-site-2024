@@ -1,7 +1,7 @@
 'use client'
 import Image from "next/image";
 import { useState } from "react";
-import { send_login_request } from "../../../api/sign_in";
+import { log_out } from "../../../api/sign_in";
 import { useRouter } from 'next/navigation';
 import Categories from "../tabs/categories";
 import MDX from "../tabs/MDX";
@@ -27,7 +27,9 @@ return (
 	<div className="p-4 w-full flex flex-col items-center relative max-w-[95ch]">
 		<button 
 		className="bg-neutral-900 text-neutral-500 px-2 py-1 rounded-full top-2 right-2 absolute"
-		onClick={async ()=>{await Cookies.remove('token'); router.push('/')}}>log out</button>
+		onClick={async ()=>{
+			await log_out(()=>{router.push('/login')},
+			()=>{}); }}>log out</button>
 
 		<h1 className="font-black text-4xl">Admin Panel</h1>
 

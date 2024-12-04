@@ -158,3 +158,14 @@ app.post('/signup', async (req: Request, res: Response) => {
 		return
 	}
 })
+
+app.post('/logout', (req, res) => {
+	res.clearCookie('token', {
+		httpOnly: true,
+		secure: true,
+		domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.haydengorringe.com',
+		sameSite: 'none',
+		path: '/'
+	});
+	res.status(200).json({data:true, error:{has_error: false, error_message: ""}});
+  });
