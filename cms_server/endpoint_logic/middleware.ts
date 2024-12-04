@@ -33,7 +33,8 @@ export const JWTMiddleware: RequestHandler = (req: Request, res: Response, next)
 
 export const cors_middleware = cors({
     origin: function(origin: any, callback: any) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        const normalizedOrigin = origin?.replace(/\/$/, '');
+        if (!origin || allowedOrigins.includes(normalizedOrigin)) {
         callback(null, true);
         } else {
         callback(new Error('Not allowed by CORS: ' + origin));
