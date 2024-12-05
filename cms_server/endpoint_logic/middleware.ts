@@ -3,7 +3,7 @@ import cors from 'cors';
 import { validate_JWT } from '../utils/validate_JWT';
 import { Request, Response } from 'express';
 
-const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com', 'http://localhost:3004', 'https://admin.haydengorringe.com'];
+const allowedOrigins = ['http://localhost:3000', 'https://www.haydengorringe.com', 'http://localhost:3009', 'https://admin.haydengorringe.com'];
 
 export const JWTMiddleware: RequestHandler = (req: Request, res: Response, next) => {
     const token = req.cookies.token;
@@ -33,6 +33,9 @@ export const JWTMiddleware: RequestHandler = (req: Request, res: Response, next)
 
 export const cors_middleware = cors({
     origin: function(origin: any, callback: any) {
+
+        console.log("ASDADS")
+
         const normalizedOrigin = origin?.replace(/\/$/, '');
         if (!origin || allowedOrigins.includes(normalizedOrigin)) {
         callback(null, true);

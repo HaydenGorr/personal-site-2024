@@ -29,7 +29,7 @@ return (
 		className="bg-neutral-900 text-neutral-500 px-2 py-1 rounded-full top-2 right-2 absolute"
 		onClick={async ()=>{
 			await log_out(()=>{router.push('/login')},
-			()=>{}); }}>log out</button>
+			()=>{}); }}>logs out</button>
 
 		<h1 className="font-black text-4xl">Admin Panel</h1>
 
