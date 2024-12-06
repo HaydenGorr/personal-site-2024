@@ -17,6 +17,7 @@ export const send_login_request = async (username: string, password: string, on_
             const res: api_return_schema<string> = await response.json();
             on_pass()
         } else {
+            console.log("failed")
             on_fail(`Sign in error: ${response.statusText}`)
         }
     } catch (e: any) {

@@ -12,15 +12,15 @@ app.post('/login', async (req: Request, res: Response) => {
 	const { username, password } = req.body;
 
 	if (username.length < 1 || password.length < 1) {
-	res.status(401).json({data:"", error: {has_error: true, error_message: `Missing username or password`} });
-	return
+		res.status(401).json({data:"", error: {has_error: true, error_message: `Missing username or password`} });
+		return
 	}
 
 	const mongo_response: api_return_schema<user|null> = await get_user_by_username(username)
 	
 	if (mongo_response.error.has_error) {
-	res.status(500).json(mongo_response);
-	return
+		res.status(500).json(mongo_response);
+		return
 	}
 
 	if (mongo_response.data == null) {

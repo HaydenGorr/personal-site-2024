@@ -38,9 +38,7 @@ export default function Parent({ children }: Readonly<ParentProps>) {
       }
     };
 
-    setTimeout(()=>{
-      checkAuth();
-    }, 5000)
+    checkAuth();
 
     return () => {
       isMounted = false;
