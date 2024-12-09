@@ -1,0 +1,140 @@
+version: '3.8'
+
+services:
+
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: pass
+      MONGO_INITDB_DATABASE: users
+    ports:
+      - "${MONGODB_PORT}:${MONGODB_PORT}"
+    volumes:
+      - mongodb_data:/data/db
+
+  admin_panel:
+    build:
+        context: ./admin_panel
+        dockerfile: Dockerfile.dev
+        args:
+            - LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
+            - NEXT_PUBLIC_USER_ACCESS_CMS=http://localhost:${CMS_PORT}
+            - LOCAL_ACCESS_AI=http://ai_api:${AI_API_PORT}
+            - NEXT_PUBLIC_USER_ACCESS_AI=http://localhost:${AI_API_PORT}
+            - PORT=${ADMIN_PANEL_PORT}
+    ports:
+        - "${ADMIN_PANEL_PORT}:${ADMIN_PANEL_PORT}"
+    environment:
+        - REVALIDATE_TIME_SECS=5
+        - LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
+        - NEXT_PUBLIC_USER_ACCESS_CMS=http://localhost:${CMS_PORT}
+        - LOCAL_ACCESS_AI=http://ai_api:${AI_API_PORT}
+        - NEXT_PUBLIC_USER_ACCESS_AI=http://localhost:${AI_API_PORT}
+        - VERSION=1
+        - NODE_ENV=development
+        - WATCHPACK_POLLING=true
+    volumes:
+        - ./admin_panel:/app/admin_panel
+    depends_on:
+        - cms_server
+    restart: unless-stopped
+    
+  webserver:
+    build:
+      context: ./webserver
+      dockerfile: Dockerfile
+    ports:
+      - "${WEBSERVER_PORT}:${WEBSERVER_PORT}"
+    environment:
+      - NEXT_PUBLIC_REVALIDATE_TIME_SECS=5
+      - NEXT_PUBLIC_LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
+      - USER_ACCESS_CMS=http://localhost:${CMS_PORT}
+      - LOCAL_ACCESS_AI=http://localhost:${AI_API_PORT}
+      - USER_ACCESS_AI=http://localhost:${AI_API_PORT}
+      - VERSION=1
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./webserver:/app
+      - webserver_node_modules:/app/node_modules
+    depends_on:
+      - cms_server
+    restart: unless-stopped
+
+  ai_api:
+    build:
+      context: ./api_proxy_server
+      dockerfile: Dockerfile
+    ports:
+      - "${AI_API_PORT}:${AI_API_PORT}"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - CMS_ROUTE=http://cms_server:${CMS_PORT}
+      - PORT=${AI_API_PORT}
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./api_proxy_server:/app
+      - ai_api_node_modules:/app/node_modules
+    depends_on:
+      - cms_server
+    restart: unless-stopped
+
+  cms_server:
+    build:
+      context: ./cms_server
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${CMS_PORT}
+        - PORT=${CMS_PORT}
+        - MONGO_HOST=mongodb
+        - MONGO_PATH=mongodb:${MONGODB_PORT}
+        - ADMIN_ROUTE=http://admin_panel:${ADMIN_PANEL_PORT}
+        - DB_ARTICLES_NAME=articles
+        - DB_CHIPS_NAME=chips
+        - DB_USERS_NAME=users
+        - DB_CATEGORIES_NAME=categories
+        - DB_IMAGES_NAME=images
+        - MONGO_USER=user
+        - MONGO_PASS=pass
+        - SECRETKEY=${SECRETKEY}
+        - REG_KEY=admin
+        - HOST_URL=http://cms_server:${CMS_PORT}
+        - NODE_ENV=development
+    ports:
+      - "${CMS_PORT}:${CMS_PORT}"
+    environment:
+      - PORT=${CMS_PORT}
+      - MONGO_HOST=mongodb
+      - MONGO_PATH=mongodb:${MONGODB_PORT}
+      - ADMIN_ROUTE=http://admin_panel:${ADMIN_PANEL_PORT}
+      - DB_ARTICLES_NAME=articles
+      - DB_CHIPS_NAME=chips
+      - DB_USERS_NAME=users
+      - DB_CATEGORIES_NAME=categories
+      - DB_IMAGES_NAME=images
+      - MONGO_USER=user
+      - MONGO_PASS=pass
+      - SECRETKEY=${SECRETKEY}
+      - REG_KEY=admin
+      - HOST_URL=http://cms_server:${CMS_PORT}
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./cms_server:/app/cms_server
+      - /app/cms_server/node_modules
+      - server_data:/app/cms_data
+      - /app/cms_data/CMS
+      - /app/cms_data/images
+      - /app/cms_data/mdx
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+  admin_panel_node_modules:
+  webserver_node_modules:
+  ai_api_node_modules:
+  cms_server_node_modules:
+  server_data:

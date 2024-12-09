@@ -1,6 +1,6 @@
-import { category, api_return_schema } from "../../interfaces/interfaces";
-import category_schema from "../../mongo_schemas/category_schema";
-import dbConnect from '../db_conn';
+import { category, api_return_schema } from "../../interfaces/interfaces.js";
+import category_schema from "../../mongo_schemas/category_schema.js";
+import dbConnect from '../db_conn.js';
 
 export async function get_all_categories(): Promise<api_return_schema<category[]>> {
 

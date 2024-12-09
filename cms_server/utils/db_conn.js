@@ -1,7 +1,7 @@
 // lib/dbConnect.js
 import mongoose from 'mongoose';
-import { MONGODB_BASE } from './path_consts';
-import Response from './response_obj'
+import { MONGODB_BASE } from './path_consts.js';
+import Response from './response_obj.js'
 
 const DB_ARTICLES = process.env.DB_ARTICLES_NAME;
 const DB_CHIPS = process.env.DB_CHIPS_NAME;
@@ -40,6 +40,7 @@ export default async function dbConnect(dbName) {
   const opts = {
     bufferCommands: true,
     dbName: dbName,
+    authSource: 'admin'
   };
 
   try {

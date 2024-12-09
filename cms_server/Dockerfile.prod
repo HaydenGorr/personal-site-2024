@@ -15,10 +15,13 @@ COPY . .
 
 # Build the application
 RUN npm run build
-RUN ls -la dist/  # Add this line to verify build output
+RUN ls -la dist/
 
 # Stage 2: Production Stage
 FROM node:18-alpine
+
+ARG PORT
+ENV PORT=$PORT
 
 # Set the working directory
 WORKDIR /app
@@ -27,14 +30,14 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm install --only=production
+RUN npm install
 
 # Copy the built application from the builder stage
 COPY --from=builder /app/dist ./dist
 RUN ls -la dist/  # Add this line to verify copied files
 
 # Expose the port your app runs on
-EXPOSE 3002
+EXPOSE ${PORT}
 
 # Set the command to run your application
-CMD ["node", "--experimental-specifier-resolution=node", "dist/app.js"]
+CMD ["npm", "run", "start-docker:prod"]

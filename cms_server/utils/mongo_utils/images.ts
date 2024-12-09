@@ -1,6 +1,6 @@
-import { api_return_schema, image, file_on_drive } from "../../interfaces/interfaces";
-import images_schema from "../../mongo_schemas/images_schema";
-import dbConnect from '../db_conn';
+import { api_return_schema, image, file_on_drive } from "../../interfaces/interfaces.js";
+import images_schema from "../../mongo_schemas/images_schema.js";
+import dbConnect from '../db_conn.js';
 
 export async function get_all_images(category?: string): Promise<api_return_schema<image[]>> {
 

@@ -1,7 +1,6 @@
-import { article, api_return_schema, image, error } from "../../interfaces/interfaces";
-import article_schema from "../../mongo_schemas/article_schema";
-import { MONOGDB_ARTICLES } from '../path_consts.js'
-import dbConnect from '../db_conn';
+import { article, api_return_schema, image, error } from "../../interfaces/interfaces.js";
+import article_schema from "../../mongo_schemas/article_schema.js";
+import dbConnect from '../db_conn.js';
 
 function generateRandomString(length: number) {
     let result = '';

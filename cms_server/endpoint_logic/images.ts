@@ -1,10 +1,10 @@
-import { app } from "../express";
-import { SaveFileToRandomDir } from "../utils/save_image_to_drive";
-import { add_image, delete_image } from "../utils/mongo_utils/images";
-import { api_return_schema, image, file_on_drive } from "../interfaces/interfaces";
-import { get_all_images } from "../utils/mongo_utils/images";
+import { app } from "../express.js";
+import { SaveFileToRandomDir } from "../utils/save_image_to_drive.js";
+import { add_image, delete_image } from "../utils/mongo_utils/images.js";
+import { api_return_schema, image, file_on_drive } from "../interfaces/interfaces.js";
+import { get_all_images } from "../utils/mongo_utils/images.js";
 import { Response, Request } from "express";
-import { upload } from "../express";
+import { upload } from "../express.js";
 
 app.get('/secure/get_all_images', async (req: Request, res: Response)  => {
 

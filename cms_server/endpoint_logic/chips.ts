@@ -1,10 +1,10 @@
-import { app, upload } from "../express";
+import { app, upload } from "../express.js";
 import { Request, Response } from "express";
-import { api_return_schema, chip } from "../interfaces/interfaces";
-import { svg_dir } from "../utils/path_consts";
+import { api_return_schema, chip } from "../interfaces/interfaces.js";
+import { svg_dir } from "../utils/path_consts.js";
 import path from "path";
 import fs from 'fs'
-import { AddChip, DeleteChip, get_chip, get_unique_chips } from "../utils/mongo_utils/chips";
+import { AddChip, DeleteChip, get_chip, get_unique_chips } from "../utils/mongo_utils/chips.js";
 
 
 app.get('/get_all_chips', async (req: Request, res: Response) => {

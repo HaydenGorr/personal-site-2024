@@ -1,6 +1,6 @@
-import { api_return_schema, mdx, file_on_drive } from "../../interfaces/interfaces";
-import mdx_schema from "../../mongo_schemas/mdx_schema";
-import dbConnect from '../db_conn';
+import { api_return_schema, mdx, file_on_drive } from "../../interfaces/interfaces.js";
+import mdx_schema from "../../mongo_schemas/mdx_schema.js";
+import dbConnect from '../db_conn.js';
 
 export async function add_mdx(inFile: file_on_drive): Promise<api_return_schema<mdx|null>>{
 
