@@ -54,7 +54,6 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
 
     console.log("category", category)
 
-
     const save_file_api: api_return_schema<file_on_drive|null> = await SaveFileToRandomDir(file)
 
     if (save_file_api.error.has_error) {

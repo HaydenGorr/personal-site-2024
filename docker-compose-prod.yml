@@ -1,0 +1,79 @@
+services:
+  mongodb:
+    image: mongo:8.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+      MONGO_INITDB_DATABASE: PORTFOLIO
+    ports:
+      - "${MONGODB_PORT}:${MONGODB_PORT}"
+    volumes:
+      - mongodb_data:/data/db
+    command: ["--auth"]
+
+  cms_server:
+    build:
+      context: ./cms_server
+      dockerfile: Dockerfile.prod
+      args:
+        - PORT=${CMS_PORT}
+    ports:
+      - "${CMS_PORT}:${CMS_PORT}"
+    environment:
+      - PORT=${CMS_PORT}
+      - MONGO_HOST=mongodb
+      - MONGO_PATH=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/PORTFOLIO
+      - ADMIN_ROUTE="http://admin_panel:${ADMIN_PANEL_PORT}"
+      - DB_ARTICLES_NAME=articles
+      - DB_CHIPS_NAME=chips
+      - DB_USERS_NAME=users
+      - DB_CATEGORIES_NAME=categories
+      - DB_IMAGES_NAME=images
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASS=${MONGO_PASS}
+      - SECRETKEY=${SECRETKEY}
+      - REG_KEY=${REG_KEY}
+      - HOST_URL=http://localhost:${CMS_PORT}
+      - NODE_ENV=${ENVIRONMENT}
+      - WATCHPACK_POLLING=true
+    volumes:
+      - cms_data:/app/cms_data
+      - cms_images:/app/cms_data/images
+      - cms_mdx:/app/cms_data/mdx
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  admin_panel:
+    build:
+        context: ./admin_panel
+        dockerfile: Dockerfile.prod
+        args:
+            - LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
+            - NEXT_PUBLIC_USER_ACCESS_CMS=http://localhost:${CMS_PORT}
+            - LOCAL_ACCESS_AI=http://ai_api:${AI_API_PORT}
+            - NEXT_PUBLIC_USER_ACCESS_AI=https://www.haydengorringe.com/ai
+            - PORT=${ADMIN_PANEL_PORT}
+    ports:
+        - "${ADMIN_PANEL_PORT}:${ADMIN_PANEL_PORT}"
+    environment:
+        - REVALIDATE_TIME_SECS=5
+        - LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
+        - NEXT_PUBLIC_USER_ACCESS_CMS=http://localhost:${CMS_PORT}
+        - LOCAL_ACCESS_AI=http://ai_api:${AI_API_PORT}
+        - NEXT_PUBLIC_USER_ACCESS_AI=https://www.haydengorringe.com/ai
+        - VERSION=1
+        - NODE_ENV=${ENVIRONMENT}
+    depends_on:
+        - cms_server
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+  admin_panel_node_modules:
+  webserver_node_modules:
+  ai_api_node_modules:
+  cms_server_node_modules:
+  cms_data:
+  cms_images:
+  cms_mdx:

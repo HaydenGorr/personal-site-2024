@@ -13,8 +13,6 @@ export async function get_all_images(category?: string): Promise<api_return_sche
             .find(query)
             .sort({ upload_date: -1 });
 
-        console.log("hind", image_search_result)
-
         return {data: image_search_result, error: { has_error: false, error_message:""}}
     } catch (error) {
         return {data: [], error: { has_error: true, error_message:`${error}`}}

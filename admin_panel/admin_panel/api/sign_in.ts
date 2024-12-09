@@ -6,11 +6,11 @@ export const send_login_request = async (username: string, password: string, on_
     try{
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/login`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
             'Content-Type': 'application/json',
             },
             body: JSON.stringify({ username, password }),
-            credentials: 'include'
         });
 
         if (response.ok) {
@@ -31,6 +31,7 @@ export const send_sign_up_request = async (username: string, password: string, r
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/signup`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
             'Content-Type': 'application/json',
             },
