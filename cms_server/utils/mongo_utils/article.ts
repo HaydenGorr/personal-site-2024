@@ -41,7 +41,7 @@ export async function get_all_articles(): Promise<api_return_schema<article[]>>{
   }
 }
 
-export async function get_all_ready_articles(){
+export async function get_all_ready_articles(): Promise<api_return_schema<article[]>>{
   try {
     const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
     const articles: any[] = await article_schema(connection).find({ ready: true }).sort({ publishDate: -1 });

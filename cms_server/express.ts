@@ -7,11 +7,15 @@ import cookieParser from 'cookie-parser';
 import { DATA_DIR, images_dir, mdx_dir } from './utils/path_consts.js';
 import { cors_middleware, JWTMiddleware } from './endpoint_logic/middleware.js';
 import multer from 'multer';
+import Anthropic from '@anthropic-ai/sdk';
 
 export const app = express();
 
 export const storage = multer.memoryStorage();
 export const upload = multer({ storage: storage });
+export const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
 app.use(express.json());
 app.use(cookieParser());

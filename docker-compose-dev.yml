@@ -1,17 +1,16 @@
-version: '3.8'
-
 services:
 
   mongodb:
-    image: mongo:latest
+    image: mongo:8.0
     environment:
-      MONGO_INITDB_ROOT_USERNAME: user
-      MONGO_INITDB_ROOT_PASSWORD: pass
-      MONGO_INITDB_DATABASE: users
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+      MONGO_INITDB_DATABASE: PORTFOLIO
     ports:
       - "${MONGODB_PORT}:${MONGODB_PORT}"
     volumes:
       - mongodb_data:/data/db
+    command: ["--auth"]
 
   admin_panel:
     build:
@@ -19,40 +18,49 @@ services:
         dockerfile: Dockerfile.dev
         args:
             - LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
-            - NEXT_PUBLIC_USER_ACCESS_CMS=http://localhost:${CMS_PORT}
+            - NEXT_PUBLIC_USER_ACCESS_CMS=${PUBLIC_CMS_URL}
             - LOCAL_ACCESS_AI=http://ai_api:${AI_API_PORT}
-            - NEXT_PUBLIC_USER_ACCESS_AI=http://localhost:${AI_API_PORT}
+            - NEXT_PUBLIC_USER_ACCESS_AI=${PUBLIC_AI_API_URL}
             - PORT=${ADMIN_PANEL_PORT}
     ports:
         - "${ADMIN_PANEL_PORT}:${ADMIN_PANEL_PORT}"
     environment:
         - REVALIDATE_TIME_SECS=5
         - LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
-        - NEXT_PUBLIC_USER_ACCESS_CMS=http://localhost:${CMS_PORT}
+        - NEXT_PUBLIC_USER_ACCESS_CMS=${PUBLIC_CMS_URL}
         - LOCAL_ACCESS_AI=http://ai_api:${AI_API_PORT}
-        - NEXT_PUBLIC_USER_ACCESS_AI=http://localhost:${AI_API_PORT}
+        - NEXT_PUBLIC_USER_ACCESS_AI=${PUBLIC_AI_API_URL}
         - VERSION=1
-        - NODE_ENV=development
+        - NODE_ENV=${ENVIRONMENT}
         - WATCHPACK_POLLING=true
     volumes:
         - ./admin_panel:/app/admin_panel
     depends_on:
         - cms_server
     restart: unless-stopped
-    
+
   webserver:
     build:
       context: ./webserver
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${WEBSERVER_PORT}
+        - REVALIDATE_TIME_SECS=${REVALIDATE_TIME_SECS}
+        - LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
+        - USER_ACCESS_CMS=${PUBLIC_CMS_URL}
+        - LOCAL_ACCESS_AI=http://ai_api:${AI_API_PORT}
+        - USER_ACCESS_AI=${PUBLIC_AI_API_URL}
+        - VERSION=2.5
     ports:
       - "${WEBSERVER_PORT}:${WEBSERVER_PORT}"
     environment:
-      - NEXT_PUBLIC_REVALIDATE_TIME_SECS=5
-      - NEXT_PUBLIC_LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
-      - USER_ACCESS_CMS=http://localhost:${CMS_PORT}
-      - LOCAL_ACCESS_AI=http://localhost:${AI_API_PORT}
-      - USER_ACCESS_AI=http://localhost:${AI_API_PORT}
-      - VERSION=1
+      - PORT=${WEBSERVER_PORT}
+      - REVALIDATE_TIME_SECS=${REVALIDATE_TIME_SECS}
+      - LOCAL_ACCESS_CMS=http://cms_server:${CMS_PORT}
+      - USER_ACCESS_CMS=${PUBLIC_CMS_URL}
+      - LOCAL_ACCESS_AI=http://ai_api:${AI_API_PORT}
+      - USER_ACCESS_AI=${PUBLIC_AI_API_URL}
+      - VERSION=2.5
       - WATCHPACK_POLLING=true
     volumes:
       - ./webserver:/app
@@ -70,7 +78,7 @@ services:
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - CMS_ROUTE=http://cms_server:${CMS_PORT}
+      - CMS_ROUTE=${PUBLIC_CMS_URL}
       - PORT=${AI_API_PORT}
       - WATCHPACK_POLLING=true
     volumes:
@@ -79,46 +87,35 @@ services:
     depends_on:
       - cms_server
     restart: unless-stopped
-
+    
   cms_server:
     build:
       context: ./cms_server
       dockerfile: Dockerfile.dev
       args:
         - PORT=${CMS_PORT}
-        - PORT=${CMS_PORT}
-        - MONGO_HOST=mongodb
-        - MONGO_PATH=mongodb:${MONGODB_PORT}
-        - ADMIN_ROUTE=http://admin_panel:${ADMIN_PANEL_PORT}
-        - DB_ARTICLES_NAME=articles
-        - DB_CHIPS_NAME=chips
-        - DB_USERS_NAME=users
-        - DB_CATEGORIES_NAME=categories
-        - DB_IMAGES_NAME=images
-        - MONGO_USER=user
-        - MONGO_PASS=pass
-        - SECRETKEY=${SECRETKEY}
-        - REG_KEY=admin
-        - HOST_URL=http://cms_server:${CMS_PORT}
-        - NODE_ENV=development
     ports:
       - "${CMS_PORT}:${CMS_PORT}"
     environment:
       - PORT=${CMS_PORT}
       - MONGO_HOST=mongodb
-      - MONGO_PATH=mongodb:${MONGODB_PORT}
-      - ADMIN_ROUTE=http://admin_panel:${ADMIN_PANEL_PORT}
+      - MONGO_PATH=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/PORTFOLIO
+      - ADMIN_ROUTE="http://admin_panel:${ADMIN_PANEL_PORT}"
       - DB_ARTICLES_NAME=articles
       - DB_CHIPS_NAME=chips
       - DB_USERS_NAME=users
       - DB_CATEGORIES_NAME=categories
       - DB_IMAGES_NAME=images
-      - MONGO_USER=user
-      - MONGO_PASS=pass
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASS=${MONGO_PASS}
       - SECRETKEY=${SECRETKEY}
-      - REG_KEY=admin
-      - HOST_URL=http://cms_server:${CMS_PORT}
-      - NODE_ENV=development
+      - REG_KEY=${REG_KEY}
+      - HOST_URL=${PUBLIC_CMS_URL}
+      - NODE_ENV=${ENVIRONMENT}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_MODE_LIGHT=${ANTHROPIC_MODE_LIGHT}
+      - ANTHROPIC_MODEL_MID=${ANTHROPIC_MODEL_MID}
+      - ANTHROPIC_MODEL_HEAVY=${ANTHROPIC_MODEL_HEAVY}
       - WATCHPACK_POLLING=true
     volumes:
       - ./cms_server:/app/cms_server

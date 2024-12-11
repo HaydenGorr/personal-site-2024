@@ -20,7 +20,6 @@ export interface article {
     infoText: string;
     chips: chip[],
     category: string,
-    source: string;
     views: number;
     publishDate: Date|string,
     ready: Boolean,
