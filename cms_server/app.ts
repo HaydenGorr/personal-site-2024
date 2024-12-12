@@ -12,6 +12,9 @@ import './endpoint_logic/chips.js'
 import './endpoint_logic/misc.js'
 import './endpoint_logic/images.js'
 import './endpoint_logic/mdx.js'
+import './endpoint_logic/ai.js'
+
+console.log(process.env)
 
 app.listen(PORT, '::', () => {
     console.log(`Server running on port ${PORT}`);

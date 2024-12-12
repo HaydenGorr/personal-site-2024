@@ -68,25 +68,6 @@ services:
     depends_on:
       - cms_server
     restart: unless-stopped
-
-  ai_api:
-    build:
-      context: ./api_proxy_server
-      dockerfile: Dockerfile
-    ports:
-      - "${AI_API_PORT}:${AI_API_PORT}"
-    environment:
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - CMS_ROUTE=${PUBLIC_CMS_URL}
-      - PORT=${AI_API_PORT}
-      - WATCHPACK_POLLING=true
-    volumes:
-      - ./api_proxy_server:/app
-      - ai_api_node_modules:/app/node_modules
-    depends_on:
-      - cms_server
-    restart: unless-stopped
     
   cms_server:
     build:

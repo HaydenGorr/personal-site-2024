@@ -57,9 +57,14 @@ app.post('/ai/chat_bot', async (req, res) => {
             ]
         });
 
+        console.log()
+
         res.status(200).json(response); // Send the API response back to the frontend
     } catch (error) {
         console.error('Error proxying request:', error);
+
+        if (error)
+
         res.status(500).json({ message: 'Internal server error' });
     }
 });

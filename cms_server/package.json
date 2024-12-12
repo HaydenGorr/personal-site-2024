@@ -20,8 +20,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start-local:dev": "cross-env DOTENV_CONFIG_PATH=.env.development tsx watch --require dotenv/config ./src/app.ts",
-    "start-local:prod": "cross-env DOTENV_CONFIG_PATH=.env.production tsx --require dotenv/config ./src/app.ts",
+    "start-local:dev": "cross-env DOTENV_CONFIG_PATH=.env.development tsx watch --require dotenv/config ./app.ts",
+    "start-local:prod": "cross-env DOTENV_CONFIG_PATH=.env.production tsx --require dotenv/config ./app.ts",
     "start-docker:dev": "tsx --require dotenv/config ./app.ts",
     "start-docker:prod": "node ./dist/app.js"
   },
