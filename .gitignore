@@ -131,3 +131,6 @@ dist
 api_proxy_server/.env.development
 cms_server/.env.development
 webserver/.env.development
+
+
+.cms_data
