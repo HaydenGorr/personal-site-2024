@@ -4,6 +4,7 @@ import { get_all_ready_articles } from "../utils/mongo_utils/article.js";
 import { api_return_schema, article, chip } from "../interfaces/interfaces.js";
 import { get_chat_bot_system_prompt, get_tag_finder_system_prompt } from '../utils/ai_utils.js'
 import { get_unique_chips } from "../utils/mongo_utils/chips.js";
+import Anthropic, { AnthropicError } from "@anthropic-ai/sdk";
 
 
 app.post('/ai/chat_bot', async (req, res) => {
@@ -57,15 +58,18 @@ app.post('/ai/chat_bot', async (req, res) => {
             ]
         });
 
-        console.log()
-
         res.status(200).json(response); // Send the API response back to the frontend
-    } catch (error) {
-        console.error('Error proxying request:', error);
+    } catch (error: any) {
 
-        if (error)
+        console.log(error.error)
+        if (error?.error?.error?.message && error?.status) {
+            res.status(error.status).json({ data:"", error:{has_error: true, error_message: error.error.error.message} });
+            return
+        }
+        else  {
+            res.status(500).json({ message: 'Internal server error' });
+        }
 
-        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
@@ -100,8 +104,16 @@ app.post('/ai/tag_finder', async (req, res) => {
         });
 
         res.json(response); // Send the API response back to the frontend
-    } catch (error) {
-        console.error('Error proxying request:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    } catch (error: any) {
+
+        console.log(error.error)
+
+        if (error?.error?.error?.message && error?.status) {
+            res.status(error.status).json({ data:"", error:{has_error: true, error_message: error.error.error.message} });
+            return
+        }
+        else  {
+            res.status(500).json({ message: 'Internal server error' });
+        }
     }
 });
