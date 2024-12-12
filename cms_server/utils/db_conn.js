@@ -1,13 +1,13 @@
 // lib/dbConnect.js
 import mongoose from 'mongoose';
-import { MONGODB_BASE } from './path_consts';
-import Response from './response_obj'
+import { MONGODB_BASE } from './path_consts.js';
+import Response from './response_obj.js'
 
 const DB_ARTICLES = process.env.DB_ARTICLES_NAME;
 const DB_CHIPS = process.env.DB_CHIPS_NAME;
 
-if (!process.env.MONGO_PORT) {
-  throw new Error('Please define the MONGO_PORT environment variable.');
+if (!process.env.MONGO_PATH) {
+  throw new Error('Please define the MONGO_PATH environment variable.');
 }
 
 if (!process.env.DB_ARTICLES_NAME) {
@@ -40,6 +40,7 @@ export default async function dbConnect(dbName) {
   const opts = {
     bufferCommands: true,
     dbName: dbName,
+    authSource: 'admin'
   };
 
   try {

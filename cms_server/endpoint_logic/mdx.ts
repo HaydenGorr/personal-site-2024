@@ -1,8 +1,8 @@
-import { app } from "../express";
+import { app } from "../express.js";
 import { Response, Request } from "express";
-import { api_return_schema, mdx, file_on_drive } from "../interfaces/interfaces";
-import { SaveStringToRandomDir, OverwriteFile } from "../utils/save_image_to_drive";
-import { add_mdx, get_all_mdx } from "../utils/mongo_utils/mdx";
+import { api_return_schema, mdx, file_on_drive } from "../interfaces/interfaces.js";
+import { SaveStringToRandomDir, OverwriteFile } from "../utils/save_image_to_drive.js";
+import { add_mdx, get_all_mdx } from "../utils/mongo_utils/mdx.js";
 
 app.post('/secure/upload_mdx', async (req: Request, res: Response) => {
 

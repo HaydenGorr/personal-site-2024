@@ -5,7 +5,7 @@ export const get_response = async ({ai, message}) => {
     }
 
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_AI}/api/${ai}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/ai/chat_bot`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

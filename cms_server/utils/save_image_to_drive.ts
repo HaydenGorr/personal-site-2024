@@ -1,8 +1,8 @@
-import { images_dir, mdx_dir } from './path_consts';
+import { images_dir, mdx_dir } from './path_consts.js';
 import { randomBytes } from 'crypto';
 import { mkdir, writeFile, access } from 'fs/promises';
 import path from 'path';
-import { api_return_schema, file_on_drive } from '../interfaces/interfaces';
+import { api_return_schema, file_on_drive } from '../interfaces/interfaces.js';
 
 interface SaveFileOptions {
     allowedTypes?: string[];
@@ -39,8 +39,21 @@ export async function SaveFileToRandomDir(
         const fileName = `${randomBytes(4).toString('hex')}${fileExt}`;
         const filePath = path.join(baseDir, fileName);
 
+        console.log(fileName)
+        console.log(filePath)
+        console.log(process.env.HOST_URL)
+
         // Write the file
         await writeFile(filePath, file.buffer);
+
+        console.log("creating URL")
+
+        try {
+            new URL(`images/${fileName}`, process.env.HOST_URL).toString()
+        }
+        catch(e) {
+            console.log(`trial. ${e}`)
+        }
 
         // Construct and return the URL
         // const fileUrl = `images/${randomDirName}/${fileName}${fileExt}`;
@@ -49,7 +62,7 @@ export async function SaveFileToRandomDir(
         return {data: fileUrl, error: {has_error: false, error_message: ""}};
 
     } catch (error) {
-        return {data: null, error: {has_error: true, error_message: 'Error saving file:'}};
+        return {data: null, error: {has_error: true, error_message: `${error}`}};
     }
 }
 

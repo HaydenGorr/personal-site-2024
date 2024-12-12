@@ -1,7 +1,6 @@
-import { article, api_return_schema, image, error } from "../../interfaces/interfaces";
-import article_schema from "../../mongo_schemas/article_schema";
-import { MONOGDB_ARTICLES } from '../path_consts.js'
-import dbConnect from '../db_conn';
+import { article, api_return_schema, image, error } from "../../interfaces/interfaces.js";
+import article_schema from "../../mongo_schemas/article_schema.js";
+import dbConnect from '../db_conn.js';
 
 function generateRandomString(length: number) {
     let result = '';
@@ -42,7 +41,7 @@ export async function get_all_articles(): Promise<api_return_schema<article[]>>{
   }
 }
 
-export async function get_all_ready_articles(){
+export async function get_all_ready_articles(): Promise<api_return_schema<article[]>>{
   try {
     const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
     const articles: any[] = await article_schema(connection).find({ ready: true }).sort({ publishDate: -1 });

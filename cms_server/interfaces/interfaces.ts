@@ -15,18 +15,18 @@ export interface chip {
 
 export interface article {
     _id?: number;
-    title: string;
-    desc: string;
-    infoText: string;
-    chips: chip[],
+    title: string,
+    description: string,
     category: string,
-    source: string;
-    views: number;
-    publishDate: Date|string,
+    infoText: string,
+    chips: string[],
+    views: Number,
+    publishDate: Date,
     ready: Boolean,
     portfolioReady: Boolean,
-    hasImage: Boolean,
-    image: string
+    type: string,
+    image: string,
+    article: string,
 }
 
 export interface file_on_drive {
@@ -63,4 +63,9 @@ export interface user {
 import { JwtPayload } from "jsonwebtoken";
 export interface userId_JWTPayload extends JwtPayload {
     userId: string;
+}
+
+export enum AI_type_enum {
+    chat_bot,
+    tag_finder,
 }

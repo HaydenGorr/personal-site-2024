@@ -1,7 +1,4 @@
-const mongoose = require('mongoose');
-const { MONOGDB_CHIPS } = require('../path_consts')
-const Chip = require('../../mongo_schemas/chip_schema');
-const { get_article } = require('./get_article')
+
 
 async function compare_meta_to_DB_entry(article_meta_json, DB_entry){
     

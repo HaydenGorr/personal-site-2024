@@ -130,3 +130,9 @@ dist
 
 docker-compose.yml
 cms_server/.env.development
+api_proxy_server/.env.development
+cms_server/.env.development
+webserver/.env.development
+
+
+.cms_data

@@ -1,0 +1,36 @@
+FROM node:22.9.0-alpine
+
+# Accept build arguments
+ARG LOCAL_ACCESS_CMS
+ARG NEXT_PUBLIC_USER_ACCESS_CMS
+ARG LOCAL_ACCESS_AI
+ARG NEXT_PUBLIC_USER_ACCESS_AI
+ARG PORT
+
+# Set environment variables
+ENV LOCAL_ACCESS_CMS=${LOCAL_ACCESS_CMS}
+ENV NEXT_PUBLIC_USER_ACCESS_CMS=${NEXT_PUBLIC_USER_ACCESS_CMS}
+ENV LOCAL_ACCESS_AI=${LOCAL_ACCESS_AI}
+ENV NEXT_PUBLIC_USER_ACCESS_AI=${NEXT_PUBLIC_USER_ACCESS_AI}
+ENV PORT=${PORT}
+
+# Set the working directory to the nested admin_panel
+WORKDIR /app/admin_panel
+
+COPY ./admin_panel/package*.json ./
+
+RUN npm ci
+
+WORKDIR /app/admin_panel/admin_panel
+
+COPY ./admin_panel/package*.json ./
+
+RUN npm ci
+
+WORKDIR /app/admin_panel/admin_panel
+
+# Expose the development port
+EXPOSE ${PORT}
+
+# Start the Next.js development server
+CMD npm run dev-docker -- -p ${PORT}

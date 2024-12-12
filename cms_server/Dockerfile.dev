@@ -1,0 +1,48 @@
+# Stage 1: Build Stage
+FROM node:18-alpine AS builder
+
+ARG PORT
+ARG MONGO_HOST
+ARG MONGO_PATH
+ARG ADMIN_ROUTE
+ARG DB_ARTICLES_NAME
+ARG DB_CHIPS_NAME
+ARG DB_USERS_NAME
+ARG DB_CATEGORIES_NAME
+ARG DB_IMAGES_NAME
+ARG MONGO_USER
+ARG MONGO_PASS
+ARG SECRETKEY
+ARG REG_KEY
+ARG HOST_URL
+ARG NODE_ENV
+
+ENV PORT=${PORT}
+ENV MONGO_HOST=${MONGO_HOST}
+ENV MONGO_PATH=${MONGO_PATH}
+ENV ADMIN_ROUTE=${ADMIN_ROUTE}
+ENV DB_ARTICLES_NAME=${DB_ARTICLES_NAME}
+ENV DB_CHIPS_NAME=${DB_CHIPS_NAME}
+ENV DB_USERS_NAME=${DB_USERS_NAME}
+ENV DB_CATEGORIES_NAME=${DB_CATEGORIES_NAME}
+ENV DB_IMAGES_NAME=${DB_IMAGES_NAME}
+ENV MONGO_USER=${MONGO_USER}
+ENV MONGO_PASS=${MONGO_PASS}
+ENV SECRETKEY=${SECRETKEY}
+ENV REG_KEY=${REG_KEY}
+ENV HOST_URL=${HOST_URL}
+ENV NODE_ENV=${NODE_ENV}
+ENV PORT=${PORT}
+
+# Set the working directory
+WORKDIR /app/cms_server
+
+COPY ./package*.json ./
+
+# running npmci here because there's a node module on my dev machine that downloaded the windows fork.We need the linux fork so we reinstall them from the container
+RUN npm ci
+
+EXPOSE ${PORT}
+
+# Set the command to run your application
+CMD npm run start-docker:dev

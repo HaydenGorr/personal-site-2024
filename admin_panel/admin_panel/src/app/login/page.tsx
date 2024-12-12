@@ -7,10 +7,10 @@ import { useRouter } from 'next/navigation';
 export default function Login() {
   const router = useRouter();
 
-  const [failedMessage, setFailedMessage] = useState('');
   const [Uusername, setUsername] = useState('');
   const [Upassword, setPassword] = useState('');
   const [mKey, setmKey] = useState('');
+  const [error_message, set_error_message] = useState('');
 
   const handleUsernameChange = (event: any) => {
       setUsername(event.target.value);
@@ -30,6 +30,7 @@ const handleMasterKeyChange = (event: any) => {
 
   const on_fail_to_login = (e: string) => {
     console.log("failed", e)
+    set_error_message(e)
   }
 
   const on_signup = () => {
@@ -39,7 +40,7 @@ const handleMasterKeyChange = (event: any) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="p-8 bg-white rounded shadow-md">
-                {failedMessage&& <div className="text-center">{failedMessage}</div>}
+                {error_message&& <div className="text-center text-sm text-black mb-2 rounded-lg bg-red-600 px-2 py-1">{error_message}</div>}
                 <form className="space-y-4">
                     <div>
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -85,7 +86,10 @@ const handleMasterKeyChange = (event: any) => {
                     <button
                             type="button"
                             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-3"
-                            onClick={() => {send_login_request(Uusername, Upassword, on_login, on_fail_to_login)}}
+                            onClick={() => {
+                                set_error_message("");
+                                send_login_request(Uusername, Upassword, on_login, on_fail_to_login)
+                            }}
                         >
                             Login
                         </button>
