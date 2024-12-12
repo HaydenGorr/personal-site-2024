@@ -20,7 +20,7 @@ export default function Parent({ children }: Readonly<ParentProps>) {
       await are_we_logged_in(
         () => {
           if (isMounted) {
-            if (pathname == "/") router.push("/admin");
+            if (pathname == "/" || pathname == "/login") router.push("/admin");
           }
         },
         () => {

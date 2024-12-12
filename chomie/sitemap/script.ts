@@ -1,19 +1,10 @@
-require('dotenv').config({ path: process.env.ENV_FILE });
-const cron = require('node-cron');
 const { create } = require('xmlbuilder2')
 const fs = require('fs');
 const path = require('path');
 const { assert } = require('console');
 const fsPromises = require('fs/promises');
 
-// Run once a day
-cron.schedule('30 2 * * * ', async () => {
-
-    await run_xml_generation_and_saving_process()
-
-});
-
-const run_xml_generation_and_saving_process = async () => {
+export const run_xml_generation_and_saving_process = async () => {
 
     if (await !check_connection()) {
         console.log("failed to establish connection to CMS. Aborting")
@@ -47,15 +38,20 @@ const check_connection = async () => {
     return success
 }
 
+interface asd {
+    url: string,
+    lastmod: Date
+}
+
 const create_the_xml = async () => {
     try {
         const res = await fetch(`${process.env.LOCAL_ACCESS_CMS}/get_all_ready_articles`);
         const json_result = await res.json();
-        const data = json_result.data.length > process.env.SITEMAP_ARTICLE_LIMIT ? json_result.data.slice(0, 9) : json_result.data
+        const data = json_result.data.length > process.env.SITEMAP_ARTICLE_LIMIT! ? json_result.data.slice(0, 9) : json_result.data
         
-        const formatted_data = data.map((article, index) => {
+        const formatted_data:asd[] = data.map((article: any, index: number) => {
             return {
-                url: `${process.env.DOMAIN_URL}/article/${article.source}`,
+                url: data.data.article,
                 lastmod: format_date_for_sitemap(article.publishDate)
             }
         })
@@ -86,7 +82,7 @@ const create_the_xml = async () => {
 
 };
 
-const save_the_XML = async (xmlContent) => {
+const save_the_XML = async (xmlContent: any) => {
     try {
         const abs_public_folder_path = path.resolve(__dirname, process.env.WEBSERVER_PUBLIC_FOLDER_URL);
         const xml_file_path = path.resolve(abs_public_folder_path, "sitemap.xml");
@@ -99,17 +95,14 @@ const save_the_XML = async (xmlContent) => {
 
         console.log(`Sitemap saved successfully at ${xml_file_path}`);
         return true;
-    } catch (err) {
+    } catch (err: any) {
         console.error(`Error: ${err.message}`);
         return false;
     }
 };
 
-function format_date_for_sitemap(dateString) {
+function format_date_for_sitemap(dateString: string) {
     const date = new Date(dateString);
     // Extract the date portion (YYYY-MM-DD)
     return date.toISOString().split('T')[0];
 }
-
-// This ensure it runs once on start up immedaitely
-run_xml_generation_and_saving_process()

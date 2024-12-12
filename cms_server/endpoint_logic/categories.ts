@@ -1,6 +1,6 @@
-import { app } from "../express";
-import { api_return_schema, category } from "../interfaces/interfaces";
-import { get_all_categories, DeleteCategory, AddCategory } from "../utils/mongo_utils/category";
+import { app } from "../express.js";
+import { api_return_schema, category } from "../interfaces/interfaces.js";
+import { get_all_categories, DeleteCategory, AddCategory } from "../utils/mongo_utils/category.js";
 import { Response, Request } from "express";
 
 

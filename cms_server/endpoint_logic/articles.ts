@@ -1,12 +1,12 @@
-import { app, upload } from "../express";
-import { api_return_schema, article } from "../interfaces/interfaces"
+import { app, upload } from "../express.js";
+import { api_return_schema, article } from "../interfaces/interfaces.js"
 import { Request, Response } from 'express';
-import { get_all_ready_articles, create_article, get_all_articles, add_article, delete_article } from "../utils/mongo_utils/article";
-import { update_article, get_article, create_new_article } from "../utils/mongo_utils/article";
-import { AddCategory } from "../utils/mongo_utils/category";
+import { get_all_ready_articles, create_article, get_all_articles, add_article, delete_article } from "../utils/mongo_utils/article.js";
+import { update_article, get_article, create_new_article } from "../utils/mongo_utils/article.js";
+import { AddCategory } from "../utils/mongo_utils/category.js";
 import fs from 'fs'
 import path from "path";
-import { DATA_DIR } from "../utils/path_consts";
+import { DATA_DIR } from "../utils/path_consts.js";
 import { promises as fss } from 'fs';
 
 app.get('/get_all_ready_articles', async (req: Request, res: Response) => {

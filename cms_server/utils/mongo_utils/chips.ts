@@ -1,7 +1,6 @@
-import { chip, api_return_schema } from "../../interfaces/interfaces";
-import Chip_Schema from "../../mongo_schemas/chip_schema"
-import { MONOGDB_CHIPS } from '../path_consts.js'
-import dbConnect from '../db_conn';
+import { chip, api_return_schema } from "../../interfaces/interfaces.js";
+import Chip_Schema from "../../mongo_schemas/chip_schema.js"
+import dbConnect from '../db_conn.js';
 
 
 export async function get_chip(inName: string): Promise<api_return_schema<chip[]>> {

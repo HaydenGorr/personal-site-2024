@@ -1,8 +1,8 @@
-import { app, upload } from "../express";
+import { app, upload } from "../express.js";
 import { Request, Response } from "express";
-import { SaveFileToRandomDir } from "../utils/save_image_to_drive";
-import { api_return_schema, file_on_drive } from "../interfaces/interfaces";
-import { add_image } from "../utils/mongo_utils/images";
+import { SaveFileToRandomDir } from "../utils/save_image_to_drive.js";
+import { api_return_schema, file_on_drive } from "../interfaces/interfaces.js";
+import { add_image } from "../utils/mongo_utils/images.js";
 
 app.get('/add_view', async (req: Request, res: Response) => {})
 

@@ -1,6 +1,6 @@
-import dbConnect from '../db_conn';
-import user_schema from "../../mongo_schemas/user_schema"
-import { api_return_schema, user } from '../../interfaces/interfaces';
+import dbConnect from '../db_conn.js';
+import user_schema from "../../mongo_schemas/user_schema.js"
+import { api_return_schema, user } from '../../interfaces/interfaces.js';
 import { MongoServerError } from 'mongodb';
 
 export async function add_user(username:string, password:string): Promise<api_return_schema<string|null>> {

@@ -1,6 +1,6 @@
-import { api_return_schema, image, file_on_drive } from "../../interfaces/interfaces";
-import images_schema from "../../mongo_schemas/images_schema";
-import dbConnect from '../db_conn';
+import { api_return_schema, image, file_on_drive } from "../../interfaces/interfaces.js";
+import images_schema from "../../mongo_schemas/images_schema.js";
+import dbConnect from '../db_conn.js';
 
 export async function get_all_images(category?: string): Promise<api_return_schema<image[]>> {
 
@@ -12,8 +12,6 @@ export async function get_all_images(category?: string): Promise<api_return_sche
         const image_search_result: image[] = await images_schema(connection)
             .find(query)
             .sort({ upload_date: -1 });
-
-        console.log("hind", image_search_result)
 
         return {data: image_search_result, error: { has_error: false, error_message:""}}
     } catch (error) {
