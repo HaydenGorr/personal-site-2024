@@ -12,6 +12,20 @@ services:
       - mongodb_data:/data/db
     command: ["--auth"]
 
+  my_sql_db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./initialize_database.sql:/docker-entrypoint-initdb.d/initialize_database.sql
+
   admin_panel:
     build:
         context: ./admin_panel
@@ -79,23 +93,37 @@ services:
       - "${CMS_PORT}:${CMS_PORT}"
     environment:
       - PORT=${CMS_PORT}
+      
       - MONGO_HOST=mongodb
       - MONGO_PATH=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/PORTFOLIO
+      
+      - MYSQL_PATH=my_sql_db
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASS=${MYSQL_PASS}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
       - ADMIN_ROUTE="http://admin_panel:${ADMIN_PANEL_PORT}"
+      
       - DB_ARTICLES_NAME=articles
       - DB_CHIPS_NAME=chips
       - DB_USERS_NAME=users
       - DB_CATEGORIES_NAME=categories
       - DB_IMAGES_NAME=images
+      
       - MONGO_USER=${MONGO_USER}
       - MONGO_PASS=${MONGO_PASS}
+      
       - SECRETKEY=${SECRETKEY}
       - REG_KEY=${REG_KEY}
+      
       - HOST_URL=${PUBLIC_CMS_URL}
+      
       - NODE_ENV=${ENVIRONMENT}
+      
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - ANTHROPIC_MODE_LIGHT=${ANTHROPIC_MODE_LIGHT}
       - ANTHROPIC_MODEL_MID=${ANTHROPIC_MODEL_MID}
+      
       - ANTHROPIC_MODEL_HEAVY=${ANTHROPIC_MODEL_HEAVY}
       - WATCHPACK_POLLING=true
     volumes:
@@ -116,3 +144,4 @@ volumes:
   ai_api_node_modules:
   cms_server_node_modules:
   server_data:
+  mysql_data:
