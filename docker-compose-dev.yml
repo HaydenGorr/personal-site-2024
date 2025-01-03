@@ -82,6 +82,7 @@ services:
       - MONGO_HOST=mongodb
       - MONGO_PATH=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/PORTFOLIO
       - ADMIN_ROUTE="http://admin_panel:${ADMIN_PANEL_PORT}"
+      - ADMIN_PANEL_PORT=${ADMIN_PANEL_PORT}
       - DB_ARTICLES_NAME=articles
       - DB_CHIPS_NAME=chips
       - DB_USERS_NAME=users

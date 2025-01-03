@@ -6,15 +6,14 @@ import { Request, Response } from 'express';
 const allowedOrigins = [
     'http://localhost:3000',
     'https://www.haydengorringe.com',
-    'http://localhost:3004',
+    `http://localhost:${process.env.ADMIN_PANEL_PORT}`,
     'https://admin.haydengorringe.com',
-    'http://admin_panel:3004'];
+    `http://admin_panel:${process.env.ADMIN_PANEL_PORT}`];
 
 export const JWTMiddleware: RequestHandler = (req: Request, res: Response, next) => {
     const token = req.cookies.token;
 
     if (!token) {
-    console.log("User did not provide a token");
     res.status(401).json({
         data: false,
         error: {

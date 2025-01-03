@@ -29,7 +29,7 @@ export default function Layout({ children, home, stickyHeader=true, setBackgroun
   }, [headerPtr]);
 
   return (
-    <div className=''>
+    <div>
       {/** The modal for downloading my cv. hidden by default. Shown on a button click*/}
       <CVDownloadModal></CVDownloadModal>
 
@@ -64,7 +64,7 @@ export default function Layout({ children, home, stickyHeader=true, setBackgroun
         
       </header> */}
 
-      <main className='max-w-7xl mx-auto'>{children}</main>
+      <main>{children}</main>
 
     </div>
   );
