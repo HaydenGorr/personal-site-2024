@@ -82,7 +82,7 @@ export async function add_article(): Promise<api_return_schema<article|null>>{
 
 }
 
-export async function delete_article(articleId: number) {
+export async function delete_article(articleId: number): Promise<api_return_schema<Boolean>> {
     try {
       const connection = await dbConnect(process.env.DB_ARTICLES_NAME);
       console.log("AH!")
@@ -91,11 +91,11 @@ export async function delete_article(articleId: number) {
       const result = await Article.findByIdAndDelete(articleId);
       console.log("\ndeleted")
       if (!result) {
-        return { success: false, message: "Article not found" };
+        return {data: false, error:{has_error: true, error_message:"Article not found"} };
       }
-      return { success: true, message: "Article deleted successfully" };
+      return {data: true, error:{has_error: false, error_message:"Article not found"}};
     } catch (error) {
-      return { success: false, message: "could not delete article" };
+      return {data: true, error:{has_error: false, error_message:"Could not delete article"}};
     }
   }
 
@@ -127,7 +127,7 @@ export const update_article = async(updated_article: article): Promise<api_retur
     }
 }
 
-export const create_new_article = async(new_article: article): Promise<api_return_schema<article|null>> => {
+export const create_new_article = async(new_article: article): Promise<api_return_schema<any>> => {
   const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
 
   try {
@@ -137,9 +137,9 @@ export const create_new_article = async(new_article: article): Promise<api_retur
 
       if (!art) throw Error()
 
-      await art.save();
+        const ret_obj = await art.save();
 
-      return {data:null, error:{has_error: false, error_message:""}};
+      return {data:ret_obj, error:{has_error: false, error_message:""}};
   }
   catch (err: unknown){
     console.error('Full error:', {

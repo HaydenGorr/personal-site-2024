@@ -55,7 +55,7 @@ app.post('/secure/update_mdx', async (req: Request, res: Response) => {
             return
         }
 
-        res.status(200).json({data:"", error:{has_error: false, error_message: ""}})
+        res.status(200).json(save_file_api)
         return
 
 

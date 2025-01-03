@@ -16,7 +16,7 @@ export async function SaveFileToRandomDir(
 ): Promise<api_return_schema<file_on_drive|null>> {
     const {
         allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'],
-        maxSizeBytes = 50 * 1024 * 1024, // 5MB default
+        maxSizeBytes = 500 * 1024 * 1024, // 50MB default
         baseDir = path.join(images_dir)
     } = options;
 
@@ -72,12 +72,11 @@ export async function SaveStringToRandomDir(
 ): Promise<api_return_schema<file_on_drive|null>> {
     const {
         allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'],
-        maxSizeBytes = 50 * 1024 * 1024, // 5MB default
+        maxSizeBytes = 500 * 1024 * 1024, // 50MB default
         baseDir = path.join(mdx_dir)
     } = options;
 
     try {
-
         await access(baseDir);
 
         // Get file extension and create filename

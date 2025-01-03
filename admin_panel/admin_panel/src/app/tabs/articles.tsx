@@ -5,6 +5,8 @@ import { api_return_schema, article } from "../../../api/api_interfaces";
 import ArticleContainer from "./components/articles/article_container"
 import CategoryInProgress from "./components/categories/category_inprogress";
 import ArticleInProgress from "./components/articles/article_inprogress";
+import ArticleThumbnail from "./components/articles/article_thumbnail";
+import { delete_article } from "../../../api/articles";
 
 const enum tabs{
 	categories,
@@ -52,6 +54,20 @@ export default function Articles({ className }: props) {
         fetch_page_data()
     }, [create_new_article, edit_article])
 
+    const send_delete_article_request = async (article_id: number) => {
+        await delete_article(
+            article_id,
+            () => {
+                console.log("successful")
+                fetch_page_data()
+            },
+            (res: string) => {
+                console.log(res)
+                fetch_page_data()
+            }
+        )
+    }
+
 return (
 	<div className={`${className} w-full`}>
 
@@ -72,7 +88,7 @@ return (
                     <div key={art_iter._id} className="flex space-x-4 w-full">
                         <button className="bg-purple-300 hover:bg-purple-400 rounded-lg px-2 text-neutral-900" onClick={()=>{set_edit_article(index)}}>edit</button>
                         <ArticleContainer art={art_iter}/>
-                        <button className="bg-red-500 hover:bg-red-700 rounded-lg px-2" onClick={() => {}}>delete</button>
+                        <button className="bg-red-500 hover:bg-red-700 rounded-lg px-2" onClick={() => {send_delete_article_request(art_iter._id!)}}>delete</button>
 
                     </div>
                 )

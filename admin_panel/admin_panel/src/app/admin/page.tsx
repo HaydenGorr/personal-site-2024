@@ -31,7 +31,7 @@ return (
 			await log_out(()=>{router.push('/login')},
 			()=>{}); }}>logs out</button>
 
-		<h1 className="font-black text-4xl">Admin Panel</h1>
+		<h1 className="font-black text-4xl">Lorelai</h1>
 
 		<div className="mt-8 flex justify-between w-full overflow-x-scroll space-x-4 scrollbar-none">
 			

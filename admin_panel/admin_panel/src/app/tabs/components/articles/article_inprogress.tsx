@@ -46,6 +46,7 @@ const [mdx_url, set_mdx_url] = useState<string|null>(given_article.article ? giv
 const [submit_success_message, set_submit_success_message] = useState<string|null>(null);
 const [error_msg, set_error_msg] = useState<string|null>(null);
 const [article_under_edit, set_article_under_edit] = useState<article>(given_article);
+const [is_new_article, set_is_new_article] = useState<Boolean>(newArticle);
 
 const handleArticleChange = (field: keyof article, value: any) => {
 
@@ -104,6 +105,7 @@ const isArticleReady = (): boolean => {
     if (article_under_edit.description.length == 0) return false
     if (article_under_edit.article && article_under_edit.article.length == 0) return false
     if (article_under_edit.image && article_under_edit.image.length == 0) return false
+    if (!is_new_article && !article_under_edit._id) return false
 
     return true
 }
@@ -111,9 +113,9 @@ const isArticleReady = (): boolean => {
 const submit_changes = () => {
     if (!isArticleReady()) return
 
-    console.log("asd", newArticle)
+    console.log("asd", is_new_article)
 
-    if (!newArticle) {
+    if (!is_new_article) {
         submit_article_changes(
             article_under_edit,
             ()=>{ set_error_msg(null); set_submit_success_message("Sucessfully submitted!") },
@@ -123,7 +125,11 @@ const submit_changes = () => {
     else{
         submit_new_article(
             article_under_edit,
-            ()=>{ set_error_msg(null); set_submit_success_message("Sucessfully submitted!") },
+            (db_article: article)=>{ 
+                set_error_msg(null); set_submit_success_message("Sucessfully submitted!")
+                set_is_new_article(false)
+                article_under_edit._id = db_article._id;
+            },
             (a: string)=>{ set_error_msg(a); set_submit_success_message(null) }
         )
     }
@@ -134,10 +140,11 @@ return (
 
         <button className="bg-zinc-900 text-zinc-600 px-2 py-1 rounded-full top-0 right-4 absolute" onClick={()=>{on_close_click()}}>close</button>
 
-        <h1 className="text-3xl font-bold self-center mb-8">Editing Article</h1>
+        <h1 className="text-3xl font-bold self-center mb-8">{`${is_new_article ? 'Creating new article' : 'Editing article' }`}</h1>
 
         <div className="w-full max-w-52 flex flex-col space-y-4 items-center text-black">
             <div className="flex space-x-2">
+                <div className={`${article_under_edit._id ? 'bg-green-400' : ' stroke-red-500 stroke-2  border-dashed border-blue-400 border-2 text-blue-400'} w-fit px-4 py-2 rounded-full font-bold`}>id</div>
                 <div className={`${article_under_edit.title.length > 0 ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>title</div>
                 <div className={`${article_under_edit.category? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>category</div>
                 <div className={`${article_under_edit.chips.length > 0 ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>chips</div>
@@ -157,7 +164,7 @@ return (
         <button
             disabled={!isArticleReady()}
             className={`mt-4 ${isArticleReady() ? 'bg-green-200 hover:bg-green-300' : 'bg-neutral-600 opacity-70'} px-2 py-1 rounded-lg text-neutral-800 font-bold ${isArticleReady() ? 'cursor-pointer' : 'cursor-not-allowed select-none' }`}
-            onClick={()=>{submit_changes()}}>Submit</button>
+            onClick={()=>{submit_changes()}}>{`${is_new_article ? 'Submit' : 'Update'}`}</button>
 
         { error_msg && <p className="text-red-500">{error_msg}</p>}
 
