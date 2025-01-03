@@ -5,7 +5,6 @@ import { api_return_schema, article } from "../../../api/api_interfaces";
 import ArticleContainer from "./components/articles/article_container"
 import CategoryInProgress from "./components/categories/category_inprogress";
 import ArticleInProgress from "./components/articles/article_inprogress";
-import ArticleThumbnail from "./components/articles/article_thumbnail";
 import { delete_article } from "../../../api/articles";
 
 const enum tabs{
