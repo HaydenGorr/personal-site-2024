@@ -35,8 +35,6 @@ export async function getStaticProps() {
 		organised_content[category].push(post);
 	});
     
-	console.log("\n\n\n\n\n", home_posts_DATA)
-
     return {
 		props: {
 			home_posts: home_posts_DATA,

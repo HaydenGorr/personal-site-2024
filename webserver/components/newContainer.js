@@ -34,9 +34,10 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
     }, [home_post_obj, selectedKeywords]);
 
     useEffect(() => {
-      const random_number = Math.floor(Math.random() * 5)
 
-      setRandomColor(colourClasses[random_number])
+      const determined_index = parseInt(new Date(home_post_obj.publishDate).getMilliseconds()) % colourClasses.length
+
+      setRandomColor(colourClasses[determined_index])
 
     }, []);
 
