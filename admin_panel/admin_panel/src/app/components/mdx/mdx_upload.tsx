@@ -92,6 +92,7 @@ const start_update_mdx = () => {
             MDX_master_Text as string,
             filename!,
             (newMDX: mdx)=>{
+                console.log("newMDX", newMDX)
                 set_error_message("")
                 onMDXUpload(newMDX.full_url)
                 initialise_from_given_url(mdx_url)

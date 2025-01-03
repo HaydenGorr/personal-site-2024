@@ -83,11 +83,11 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
 app.post('/secure/create_new_article', upload.fields([{ name: 'new_article', maxCount: 1 }]), async (req: Request, res: Response) => {
 	const new_article: article = req.body.new_article as article;
 	
-	const updated_result = await create_new_article(new_article)
+	const updated_result:api_return_schema<article> = await create_new_article(new_article) as api_return_schema<article>
 
 	if (updated_result.error.has_error) {
-	res.status(500).json(updated_result)
-	return
+		res.status(500).json(updated_result)
+		return
 	}
 
 	res.status(200).json(updated_result)
@@ -95,18 +95,24 @@ app.post('/secure/create_new_article', upload.fields([{ name: 'new_article', max
 })
 
 app.post('/secure/delete_article', async (req: Request, res: Response) => {
-	const { databaseID, source } = req.body;
-
 	try {
-	console.log("look")
-	await delete_article(databaseID);
-	// await fs.promises.rm(path.join(DATA_DIR, "CMS", "articles", source), { recursive: true });
+		const article_id: number = req.body.article_id;
 
-	res.status(200).json({ message: 'Chip uploaded successfully' });
-	return
+		const updated_result: api_return_schema<Boolean> = await delete_article(article_id)
+
+		if (updated_result.error.has_error){
+			res.status(500).json(updated_result);
+			return
+		}
+
+		res.status(200).json({ message: 'Chip uploaded successfully' });
+		return
 	}
-	catch {
-	res.status(500).json({ message: 'Failed' });
-	return
+	catch{
+		res.status(500).json({ message: 'article id NaN or not present' });
+		return
 	}
+	
+	
+
 })
