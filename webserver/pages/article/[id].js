@@ -8,17 +8,13 @@ import ImageWrapper from '../../components/image_wrapper';
 import dynamic from 'next/dynamic';
 import getDate from '../../utils/date_utils'
 import { useEffect, useRef, useState } from 'react';
-import TableOfContentsButton from '../../components/table_of_contents_button';
-import ChangeStyle from '../../components/change_style'
-import { getPrimaryColour, getSecondaryColour, getTextColour, getTirtaryColour, getDarkerColour } from '../../utils/colour';
-import LineBreak from '../../components/line_break';
+import { getTextColour, getTirtaryColour, getDarkerColour } from '../../utils/colour';
 import PopUpMain from '../../components/pop_up_settings/pop_up_main';
 import Cookies from 'js-cookie'
 import StyleCustomiser from '../../components/pop_up_settings/content/style_customiser';
 import StyleCustomiserHeader from '../../components/pop_up_settings/headers/style_customiser_header';
 import ArticleIndexHeader from '../../components/pop_up_settings/headers/article_index_header';
 import ArticleIndex from '../../components/pop_up_settings/content/article_index'
-import { Read_MDX_file } from '../../utils/read_mdx'
 
 const CustomLink = dynamic(() => import('../../components/custom_link'), {
   ssr: false,
@@ -134,18 +130,23 @@ function getHeaders(text){
 export async function getStaticProps(context) {
     const { id } = context.params;
 
+	// Get the article
     const article_info = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_article?article_id=${id}`);
-    const article_info_JSON = await article_info.json()
+    const article_res = await article_info.json()
+	const article_info_JSON = article_res.data
+	console.log("exaasds", article_info_JSON.mdx._id)
 
-    const res = await fetch(article_info_JSON.data.article);
-    const mdxContent = await res.text()
+	// Get the MDX
+	const mdx_info = await fetch(article_info_JSON.mdx.full_url);
+	const blob = await mdx_info.blob()
+	const mdxContent = await blob.text();
 
     // Serialize the MDX content only
     const mdxSource = await serialize(mdxContent);
 
-    const chips = article_info_JSON.data.chips
-    const title = article_info_JSON.data.title
-    const publishDate = article_info_JSON.data.publishDate
+    const chips = article_info_JSON.chips
+    const title = article_info_JSON.title
+    const publishDate = article_info_JSON.publishDate
     const wordCount = countWordsInMDX(mdxContent)
     const headers = getHeaders(mdxContent)
 
@@ -186,7 +187,6 @@ export async function getStaticPaths() {
   }
 
 function countWordsInMDX(content) {
-  console.log("\n\n\n\n\n\n", content)
 
   // Remove lines that are code (import statements, JSX tags, etc.)
   const codeLinePattern = /^\s*(import|<.*>|{|})/;

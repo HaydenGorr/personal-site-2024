@@ -1,13 +1,12 @@
 import { app, upload } from "../express.js";
-import { api_return_schema, article } from "../interfaces/interfaces.js"
+import { api_return_schema, article, mdx } from "../interfaces/interfaces.js"
 import { Request, Response } from 'express';
 import { get_all_ready_articles, create_article, get_all_articles, add_article, delete_article } from "../utils/mongo_utils/article.js";
 import { update_article, get_article, create_new_article } from "../utils/mongo_utils/article.js";
-import { AddCategory } from "../utils/mongo_utils/category.js";
-import fs from 'fs'
-import path from "path";
-import { DATA_DIR } from "../utils/path_consts.js";
-import { promises as fss } from 'fs';
+import { get_selected_mdx } from "../utils/mongo_utils/mdx.js";
+import { assert } from "console";
+import { article_WID } from "../interfaces/interfaces.js";
+import { db_mdx } from "../interfaces/mdx_interfaces.js";
 
 app.get('/get_all_ready_articles', async (req: Request, res: Response) => {
 
@@ -28,16 +27,15 @@ app.get('/get_article', async (req: Request, res: Response) => {
 
 	const { article_id } = req.query;
 
-	const response = await get_article(article_id!.toString())
+	const response: api_return_schema<article|null> = await get_article(article_id!.toString())
 
 	if (response.error.has_error) {
 		res.status(500).json(response)
 		return
 	}
 
-	console.log("get_Article", response)
-
 	res.status(200).json(response);
+	return
 
 });
 
@@ -67,7 +65,9 @@ app.get('/secure/get_all_articles', async (req: Request, res: Response) => {
 })
 
 app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'mdx', maxCount: 1 }, { name: 'best_mdx', maxCount: 1 }]), async (req: Request, res: Response) => {
-	const edited_article: article = req.body.edited_article as article;
+	const edited_article: article_WID = req.body.edited_article as article_WID;
+
+	console.log(edited_article)
 	
 	const updated_result = await update_article(edited_article)
 
@@ -81,17 +81,33 @@ app.post('/secure/update_article', upload.fields([{ name: 'image', maxCount: 1 }
 })
 
 app.post('/secure/create_new_article', upload.fields([{ name: 'new_article', maxCount: 1 }]), async (req: Request, res: Response) => {
-	const new_article: article = req.body.new_article as article;
-	
-	const updated_result:api_return_schema<article> = await create_new_article(new_article) as api_return_schema<article>
+	const new_article: article_WID = req.body.new_article as article_WID;
 
-	if (updated_result.error.has_error) {
-		res.status(500).json(updated_result)
+	try {
+		if (!("full_url" in new_article)) return
+
+		// Make sure the mdx file exists
+		const mdx_entry: api_return_schema<db_mdx[]> = await get_selected_mdx({_id: new_article.mdx})
+
+		if (mdx_entry.error.has_error || mdx_entry.data.length == 0) {
+			res.status(500).json(mdx_entry)
+			return
+		}
+
+		const updated_result:api_return_schema<article> = await create_new_article(new_article) as api_return_schema<article>
+
+		if (updated_result.error.has_error) {
+			res.status(500).json(updated_result)
+			return
+		}
+	
+		res.status(200).json(updated_result)
 		return
 	}
-
-	res.status(200).json(updated_result)
-	return
+	catch(e) {
+		res.status(500).json({ message: "Internal server error", e });
+		return
+	}
 })
 
 app.post('/secure/delete_article', async (req: Request, res: Response) => {

@@ -1,18 +1,11 @@
 'use client'
 import { useState, useEffect } from "react";
 import { get_all_images, delete_image } from "../../../api/image";
-import { image, image_type_enum } from "../../../api/api_interfaces";
-import Image from "next/image";
-import path from "path";
+import { db_image } from "../../../api/interfaces/image_interfaces";
+import { image_type_enum } from "../../../api/interfaces/enums";
 import ImageUpload from "../components/image_upload";
-import YesNoPopup from "../components/yesno_popup";
 import { get_formatted_date } from "../../../utils/date_utils";
 
-const enum tabs{
-	categories,
-	articles,
-	chips
-}
 
 interface props {
     className: string;
@@ -20,9 +13,7 @@ interface props {
 
 export default function Images({ className }: props) {
 
-    const [open_confirm_popup, set_open_confirm_popup] = useState<Boolean>(false);
-
-    const [images, set_images] = useState<image[]>([]);
+    const [images, set_images] = useState<db_image[]>([]);
     const [loading, set_loading] = useState<Boolean>(false);
     const [error_message, set_error_message] = useState<string|null>(null);
     const [image_url_for_uploading, set_image_url_for_uploading] = useState<string|null>(null);
@@ -33,7 +24,7 @@ export default function Images({ className }: props) {
         set_loading(true)
 
         await get_all_images(
-            (res: image[]) => {
+            (res: db_image[]) => {
                 set_error_message(null)
                 set_images(res)
                 console.log("image res", res)
@@ -52,7 +43,7 @@ export default function Images({ className }: props) {
         fetch_page_data()
     },[category_search])
 
-    const onDelete = (inImg: image) => {
+    const onDelete = (inImg: db_image) => {
         console.log("deleting ", inImg)
         delete_image(
             inImg,
@@ -78,8 +69,8 @@ return (
                 <button className={`px-2 py-1 rounded-lg text-neutral-800 ${category_search==image_type_enum.container ?  "bg-green-400" : "bg-green-400/50 hover:bg-green-500"}`} onClick={()=>{set_category_search(image_type_enum.container)}}>Category Pics</button>
                 <button className={`px-2 py-1 rounded-lg text-neutral-800 ${category_search==image_type_enum.in_article ? "bg-green-400" : "bg-green-400/50 hover:bg-green-500"}`} onClick={()=>{set_category_search(image_type_enum.in_article)}}>In Article Pics</button>
             </div>
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {images.map((val: image, index: number) => {
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 no-scrollbar">
+                {images.map((val: db_image, index: number) => {
                     return(
                         <div key={index} className="bg-neutral-900 rounded-lg p-2 w-full flex flex-col items-center space-y-2">
                             <div className="flex justify-between w-full items-center">

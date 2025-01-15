@@ -5,7 +5,7 @@ import dbConnect from '../db_conn.js';
 
 export async function get_chip(inName: string): Promise<api_return_schema<chip[]>> {
 
-    const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
   
     try {
         const chips: chip[] = await Chip_Schema(connection).find({name: inName});
@@ -17,7 +17,7 @@ export async function get_chip(inName: string): Promise<api_return_schema<chip[]
 
 export async function AddChip(inChip: chip): Promise<api_return_schema<Boolean>>{
 
-    const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
   
     try {
         const ChipModel = Chip_Schema(connection);
@@ -45,7 +45,7 @@ export async function AddChip(inChip: chip): Promise<api_return_schema<Boolean>>
 export async function DeleteChip(inChip: chip) : Promise<api_return_schema<Boolean>> {
     try {
         console.log("deleting chip")
-        const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+        const connection = await dbConnect(process.env.DB_PRIME_NAME)
         const ChipModel = await Chip_Schema(connection);
         const result = await ChipModel.findByIdAndDelete(inChip._id);
         
@@ -79,7 +79,7 @@ export async function DeleteChip(inChip: chip) : Promise<api_return_schema<Boole
 export async function get_unique_chips(): Promise<api_return_schema<chip[]>>{
 
     console.log("inside get_unique_chips")
-    const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
     console.log("got response")
     try {
         const chips:chip[] = await Chip_Schema(connection).find().sort({ submit_date: -1 });

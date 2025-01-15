@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useRouter } from 'next/router'
 import { getDaysAgo } from '../utils/date_utils'
 import { useState, useEffect } from "react";
+import PrecacheImages from "./pre_cache_images";
 
 export default function NewContainer({ home_post_obj, colour="bg-transparent", selectedKeywords}) {
     const router = useRouter();
@@ -19,6 +20,8 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
     }
 
     useEffect(() => {
+      console.log(home_post_obj)
+
       const checkImage = async () => {
         const url = home_post_obj.image;
   
@@ -44,9 +47,12 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
 
     return (
         <div className={`relative font-Josefin ${randomColor.textColor200}`}>
+
+          <PrecacheImages array_of_images={home_post_obj.mdx.images.map(val => val.full_url)}/>
+
             <div className="relative rounded-2xl overflow-hidden w-80 h-128">
                 {hasImage && (<Image
-                    src={home_post_obj.image}
+                    src={home_post_obj.image.full_url}
                     alt="Description of image"
                     fill
                     className="object-cover cursor-pointer"

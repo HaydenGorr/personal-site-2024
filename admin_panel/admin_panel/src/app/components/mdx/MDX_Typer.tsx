@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { get_all_images } from '../../../../api/image';
 import { Upload, X } from 'lucide-react';

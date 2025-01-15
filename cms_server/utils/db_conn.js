@@ -2,23 +2,25 @@
 import mongoose from 'mongoose';
 import { MONGODB_BASE } from './path_consts.js';
 import Response from './response_obj.js'
+import images_schema from '../mongo_schemas/images_schema.js';
+import mdx_schema from '../mongo_schemas/mdx_schema.js';
 
-const DB_ARTICLES = process.env.DB_ARTICLES_NAME;
-const DB_CHIPS = process.env.DB_CHIPS_NAME;
+const DB_ARTICLES = process.env.DB_PRIME_NAME;
+const DB_CHIPS = process.env.DB_PRIME_NAME;
 
 if (!process.env.MONGO_PATH) {
   throw new Error('Please define the MONGO_PATH environment variable.');
 }
 
-if (!process.env.DB_ARTICLES_NAME) {
+if (!process.env.DB_PRIME_NAME) {
   throw new Error('Please define the DB_ARTICLES_NAME environment variable.');
 }
 
-if (!process.env.DB_CHIPS_NAME) {
+if (!process.env.DB_PRIME_NAME) {
   throw new Error('Please define the DB_CHIPS_NAME environment variable.');
 }
 
-if (!process.env.DB_USERS_NAME) {
+if (!process.env.DB_PRIME_NAME) {
   throw new Error('Please define the DB_USERS_NAME environment variable.');
 }
 
@@ -45,6 +47,8 @@ export default async function dbConnect(dbName) {
 
   try {
     const conn = await mongoose.createConnection(MONGODB_BASE, opts);
+
+
     connections[dbName] = conn;
     // console.log("returning connection")
     return conn

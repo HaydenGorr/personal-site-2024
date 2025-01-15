@@ -1,15 +1,17 @@
-import { api_return_schema, image, file_on_drive } from "../../interfaces/interfaces.js";
+import { api_return_schema, image, db_obj } from "../../interfaces/interfaces.js";
+import { db_image } from "../../interfaces/image_interfaces.js";
 import images_schema from "../../mongo_schemas/images_schema.js";
 import dbConnect from '../db_conn.js';
+import { FilterQuery } from "mongoose";
 
-export async function get_all_images(category?: string): Promise<api_return_schema<image[]>> {
+export async function get_all_images(category?: string): Promise<api_return_schema<db_image[]>> {
 
-    const connection = await dbConnect(process.env.DB_IMAGES_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
     try {
 
         const query = category ? { category: category } : {};
-        const image_search_result: image[] = await images_schema(connection)
+        const image_search_result: db_image[] = await images_schema(connection)
             .find(query)
             .sort({ upload_date: -1 });
 
@@ -19,9 +21,33 @@ export async function get_all_images(category?: string): Promise<api_return_sche
     }
 }
 
-export async function add_image(file: image): Promise<api_return_schema<image|null>>{
+export async function get_selected_images(filter: Partial<db_image>[]): Promise<api_return_schema<db_image[]>> {
 
-    const connection = await dbConnect(process.env.DB_IMAGES_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
+
+    try {
+
+        let mongoQuery: Record<string, any>
+
+        if (Array.isArray(filter)) {
+          // If filter is an array, use it as an OR condition
+          mongoQuery = { $or: filter }
+        } else {
+          // Otherwise, just use the single filter object
+          mongoQuery = filter
+        }
+
+        const entries: db_image[] = await images_schema(connection).find(mongoQuery);
+
+        return {data: entries, error: { has_error: false, error_message:""}}
+    } catch (error) {
+        return {data: [], error: { has_error: true, error_message:`${error}`}}
+    }
+}
+
+export async function add_image(file: image): Promise<api_return_schema<db_obj<image>|null>>{
+
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
   
     try {
         const images_model = images_schema(connection);
@@ -47,10 +73,10 @@ export async function add_image(file: image): Promise<api_return_schema<image|nu
 
 }
 
-export async function delete_image(inImage: image) : Promise<api_return_schema<Boolean>> {
+export async function delete_image(inImage: db_obj<image>) : Promise<api_return_schema<Boolean>> {
     try {
         console.log("deleting image")
-        const connection = await dbConnect(process.env.DB_IMAGES_NAME)
+        const connection = await dbConnect(process.env.DB_PRIME_NAME)
         const Image = await images_schema(connection);
         const result = await Image.findByIdAndDelete(inImage._id);
         

@@ -10,7 +10,7 @@ interface props {
     if (!isOpen) return null;
   
     return (
-      <div className="fixed inset-0 bg-black/70 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div className=" bg-neutral-900 p-6 rounded-lg shadow-lg max-w-sm">
           <p className="mb-4">{`${message} `}<span className="text-neutral-300 font-semibold bg-neutral-800 px-2 py-1 rounded-lg">{`${styled_item}`}</span></p>
           <div className="flex justify-between">

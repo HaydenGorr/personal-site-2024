@@ -1,13 +1,14 @@
 import { stringify } from "querystring";
-import { api_return_schema, category, chip } from "./api_interfaces"
+import { api_return_schema } from "./interfaces/misc_interfaces";
+import { db_chip } from "./interfaces/chip_interfaces";
 
-export async function get_all_chips(on_pass: (a: api_return_schema<chip[]>) => void, on_fail: (a: api_return_schema<chip[]>) => void) {
+export async function get_all_chips(on_pass: (a: api_return_schema<db_chip[]>) => void, on_fail: (a: api_return_schema<db_chip[]>) => void) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/get_all_chips`, {
             method: 'GET',
         });
 
-        const json_result: api_return_schema<chip[]> = await response.json();
+        const json_result: api_return_schema<db_chip[]> = await response.json();
         
         if(response.ok) {
             on_pass(json_result)
@@ -20,7 +21,7 @@ export async function get_all_chips(on_pass: (a: api_return_schema<chip[]>) => v
 }
 
 export async function delete_chip(
-    chip: chip,
+    chip: db_chip,
     on_pass:()=>void,
     on_fail:(e: string)=>void) {
     
@@ -55,7 +56,7 @@ export async function delete_chip(
 
 
 export async function submit_chip(
-    chip: chip,
+    chip: db_chip,
     on_pass:()=>void,
     on_fail:(e: string)=>void) {
 

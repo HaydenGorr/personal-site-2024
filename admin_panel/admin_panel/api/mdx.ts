@@ -1,8 +1,10 @@
-import { api_return_schema, mdx } from "./api_interfaces";
+import { api_return_schema } from "./interfaces/misc_interfaces";
+import { db_mdx } from "./interfaces/mdx_interfaces";
 
 export async function upload_mdx(
     mdx_string: string,
-    on_pass:(e: mdx)=>void,
+    title: string,
+    on_pass:(e: db_mdx)=>void,
     on_fail:(e: string)=>void) {
 
     try {
@@ -12,10 +14,10 @@ export async function upload_mdx(
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ mdx_string: mdx_string }),
+            body: JSON.stringify({ mdx_string: mdx_string, title: title }),
         });
 
-        const json_result: api_return_schema<mdx> = await response.json();
+        const json_result: api_return_schema<db_mdx> = await response.json();
 
         if(response.ok) {
             on_pass(json_result.data)
@@ -30,9 +32,8 @@ export async function upload_mdx(
 }
 
 export async function update_mdx(
-    mdx_string: string,
-    filename: string,
-    on_pass:(e: mdx)=>void,
+    _id: string, mdx_string: string, title: string,
+    on_pass:(e: db_mdx)=>void,
     on_fail:(e: string)=>void) {
 
     try {
@@ -42,10 +43,10 @@ export async function update_mdx(
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ mdx_string: mdx_string, filename: filename }),
+            body: JSON.stringify({ mdx_string: mdx_string, title: title, _id: _id }),
         });
 
-        const json_result: api_return_schema<mdx> = await response.json();
+        const json_result: api_return_schema<db_mdx> = await response.json();
 
         if(response.ok) {
             on_pass(json_result.data)
@@ -59,14 +60,14 @@ export async function update_mdx(
     }
 }
 
-export async function get_all_mdx(on_pass: (a: mdx[]) => void, on_fail: (a: string) => void) {
+export async function get_all_mdx(on_pass: (a: db_mdx[]) => void, on_fail: (a: string) => void) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_images`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_mdx`, {
             method: 'GET',
             credentials: 'include'
         });
 
-        const json_result: api_return_schema<mdx[]> = await response.json();
+        const json_result: api_return_schema<db_mdx[]> = await response.json();
         
         if(response.ok) {
             on_pass(json_result.data)
@@ -78,21 +79,28 @@ export async function get_all_mdx(on_pass: (a: mdx[]) => void, on_fail: (a: stri
     }
 }
 
-export async function get_mdx(file_name:string, on_pass: (a: mdx) => void, on_fail: (a: string) => void) {
+export async function select_mdx(on_pass: (a: db_mdx[]) => void, on_fail: (a: string) => void, filter:Partial<db_mdx>, ) {
     try {
-        const formData = new FormData()
-        formData.append('file_name', file_name)
+        // var path_construction = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/select_images`
+        const params = new URLSearchParams(filter as Record<string, string>).toString();
+        const path_construction = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/select_mdx?${params}`;
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_image`, {
+        if (!filter) {
+            on_fail("No filter recieved")
+            return
+        }
+
+        console.log("ukra", filter)
+
+        const response = await fetch(path_construction, {
             method: 'GET',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: formData,
         });
 
-        const json_result: api_return_schema<mdx> = await response.json();
+        const json_result: api_return_schema<db_mdx[]> = await response.json();
         
         if(response.ok) {
             on_pass(json_result.data)
@@ -101,5 +109,34 @@ export async function get_mdx(file_name:string, on_pass: (a: mdx) => void, on_fa
 
     } catch (error) {
         on_fail ("could not establish connection to CMS")
+    }
+}
+
+export async function delete_mdx(
+    on_pass:()=>void,
+    on_fail:(e: string)=>void,
+    mdx_id: string) {
+
+    try {
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/delete_mdx`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: mdx_id }),
+        });
+
+        const json_result: api_return_schema<Boolean> = await response.json();
+        
+        if(response.ok) {
+            if (json_result.error.has_error) on_fail(json_result.error.error_message)
+            else on_pass()
+        }
+        else on_fail(json_result.error.error_message)
+
+    } catch (error) {
+        on_fail("Could not connect to CMS")
     }
 }

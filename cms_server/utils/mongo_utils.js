@@ -15,7 +15,7 @@
 // async function get_unique_chips(){
 
 //   console.log("inside get_unique_chips")
-//   const connection = await dbConnect(process.env.DB_CHIPS_NAME)
+//   const connection = await dbConnect(process.env.DB_PRIME_NAME)
 //   console.log("got response")
 //   try {
 //       const chips = await Chip(connection).find();
@@ -27,7 +27,7 @@
 // }
 
 // async function get_all_ready_articles(){
-//   const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+//   const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
 //   try {
 //     const articles = await Article(connection).find({ ready: true }).sort({ publishDate: -1 });
@@ -38,7 +38,7 @@
 // }
 
 // async function get_all_ready_portfolio_articles(){
-//   const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+//   const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
 //   try {
 //     const articles = await Article(connection).find({ ready: true, portfolioReady: true });
@@ -68,7 +68,7 @@
 
 //   console.log("updating now")
 
-//   dbConnect(process.env.DB_ARTICLES_NAME)
+//   dbConnect(process.env.DB_PRIME_NAME)
 //   .then(async (conn) => {
 //       const filter = { source: article_dir_name };  // Criteria to find the document
 
@@ -128,7 +128,7 @@
 //       await update_article(article_dir_name, result, article_meta)
 //     }else {
 //       // Create a whole new article record
-//       dbConnect(process.env.DB_ARTICLES_NAME)
+//       dbConnect(process.env.DB_PRIME_NAME)
 //       .then((conn) => {
           
 //           // Create a new document
@@ -167,7 +167,7 @@
 
 // async function add_view(articleId) {
 //     try {
-//       const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+//       const connection = await dbConnect(process.env.DB_PRIME_NAME)
       
 //       const updatedArticle = await Article(connection).findByIdAndUpdate(
 //         articleId,

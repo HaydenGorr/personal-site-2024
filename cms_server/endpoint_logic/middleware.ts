@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 const allowedOrigins = [
     'http://localhost:3000',
     'https://www.haydengorringe.com',
-    'http://localhost:3004',
+    `${process.env.ADMIN_ROUTE!}`,
     'https://admin.haydengorringe.com',
     'http://admin_panel:3004'];
 

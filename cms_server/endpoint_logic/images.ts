@@ -1,7 +1,7 @@
 import { app } from "../express.js";
 import { SaveFileToRandomDir } from "../utils/save_image_to_drive.js";
-import { add_image, delete_image } from "../utils/mongo_utils/images.js";
-import { api_return_schema, image, file_on_drive } from "../interfaces/interfaces.js";
+import { add_image, delete_image, get_selected_images } from "../utils/mongo_utils/images.js";
+import { api_return_schema, image, file_on_drive, db_obj } from "../interfaces/interfaces.js";
 import { get_all_images } from "../utils/mongo_utils/images.js";
 import { Response, Request } from "express";
 import { upload } from "../express.js";
@@ -11,6 +11,27 @@ app.get('/secure/get_all_images', async (req: Request, res: Response)  => {
   const category: string | null = req.query.category as string ?? null;
 
   const mongo_api_response: api_return_schema<image[]> = await get_all_images(category ?? undefined);
+
+  if (mongo_api_response.error.has_error) { 
+    res.status(500).json(mongo_api_response)
+    return
+  }
+
+  res.status(200).json(mongo_api_response);
+  return
+})
+
+
+app.get('/secure/select_images', async (req: Request, res: Response)  => {
+
+  const filter = req.query;
+
+  if (!filter) {
+    res.status(500).json("not passed a partial db_image object")
+    return
+  }
+
+  const mongo_api_response: api_return_schema<image[]> = await get_selected_images(filter);
 
   if (mongo_api_response.error.has_error) { 
     res.status(500).json(mongo_api_response)

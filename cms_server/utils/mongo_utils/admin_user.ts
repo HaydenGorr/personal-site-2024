@@ -5,7 +5,7 @@ import { MongoServerError } from 'mongodb';
 
 export async function add_user(username:string, password:string): Promise<api_return_schema<string|null>> {
 
-    const connection = await dbConnect(process.env.DB_USERS_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
   
     try {
         const UserModel = user_schema(connection);
@@ -30,7 +30,7 @@ export async function add_user(username:string, password:string): Promise<api_re
 }
 
 export async function get_user_by_username(username: string): Promise<api_return_schema<user|null>> {
-    const connection = await dbConnect(process.env.DB_USERS_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
     try {
         const user: user|null = await user_schema(connection).findOne({username: username});
