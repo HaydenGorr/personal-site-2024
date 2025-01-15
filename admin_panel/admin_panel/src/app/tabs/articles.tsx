@@ -74,6 +74,9 @@ return (
             edit_state={edit_states.edit_existing} 
             given_article={ {...articles[edit_article], mdx:articles[edit_article].mdx?._id || "", image: articles[edit_article].image?._id || ""} as article_WID }
             on_close_click={()=>{set_edit_article(-1)}}/>}
+        { create_new_article && <ArticleInProgress 
+            edit_state={edit_states.create_new} 
+            on_close_click={()=>{set_create_new_article(false)}}/>}
         {/* { create_new_article && <ArticleInProgress newArticle={true} on_close_click={()=>{set_create_new_article(false)}}/>} */}
 
         {/** Create new article button */}
