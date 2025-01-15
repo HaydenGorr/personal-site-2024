@@ -1,10 +1,7 @@
 'use client'
-import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
-import { get_all_images } from '../../../../api/image';
-import { Upload, X } from 'lucide-react';
-import { Url } from 'next/dist/shared/lib/router/router';
-import { upload_mdx } from '../../../../api/mdx';
-import { api_return_schema, mdx, image_type_enum, image } from '../../../../api/api_interfaces';
+import React, { useState, useEffect } from 'react';
+import { image_type_enum } from '../../../../api/interfaces/enums';
+
 import {
     MDXEditor,
     imagePlugin,
@@ -21,8 +18,8 @@ import {
     tablePlugin,
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
-import MDXImageDropdown from './MDX_image_dropdown';
 import ImageDropdown from '../image_dropdown';
+import { db_image } from '../../../../api/interfaces/image_interfaces';
 
 interface props {
     className?: string;
@@ -32,7 +29,7 @@ interface props {
     refresh: Boolean
 }
 
-export default function MDX_Typer({ className, mdx_text, set_text, append_text, refresh }:props) {
+export default function MDX_Typer({ className, mdx_text="", set_text, append_text, refresh }:props) {
 const [editorKey, setEditorKey] = useState<number>(0);
 const [error_message, set_error_message] = useState<string>("");
 
@@ -97,8 +94,8 @@ return (
         <ImageDropdown 
             className='mt-4'
             image_type={image_type_enum.in_article}
-            on_select={(selected_image_url: string)=>{
-                add_image_to_text(selected_image_url)
+            on_select={(selected_image: db_image)=>{
+                add_image_to_text(selected_image.full_url)
                 // set_MDXText((prev) => `${prev}\n<img src="${selected_image_url}" />`);
                 refresh_MDX()
             }}/>

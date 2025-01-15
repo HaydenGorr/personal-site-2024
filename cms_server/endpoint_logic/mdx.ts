@@ -1,13 +1,14 @@
 import { app } from "../express.js";
 import { Response, Request } from "express";
-import { api_return_schema, mdx, file_on_drive, image, db_obj } from "../interfaces/interfaces.js";
+import { api_return_schema } from "../interfaces/misc_interfaces.js";
+import { db_mdx } from "../interfaces/mdx_interfaces.js";
+import { file_on_drive } from "../interfaces/misc_interfaces.js";
 import { db_image } from "../interfaces/image_interfaces.js";
 import { SaveStringToRandomDir, OverwriteFile } from "../utils/save_image_to_drive.js";
 import { add_mdx, get_all_mdx, update_mdx } from "../utils/mongo_utils/mdx.js";
 import { find_image_links_in_mdx } from "../utils/find_image_links_in_mdx.js";
 import { get_selected_images } from "../utils/mongo_utils/images.js";
 import { get_selected_mdx, delete_mdx } from "../utils/mongo_utils/mdx.js";
-import { db_mdx } from "../interfaces/mdx_interfaces.js";
 
 app.post('/secure/upload_mdx', async (req: Request, res: Response) => {
 
@@ -40,7 +41,7 @@ app.post('/secure/upload_mdx', async (req: Request, res: Response) => {
         }
 
         // Save the mdx entry to the database
-        const response: api_return_schema<mdx|null> = await add_mdx(save_file_api.data as file_on_drive, title, snippet, image_entries.data)
+        const response: api_return_schema<string> = await add_mdx(save_file_api.data as file_on_drive, title, snippet, image_entries.data)
 
         if (response.error.has_error){
             res.status(500).json({data:"", error:{has_error: true, error_message: response.error.error_message}})
@@ -94,7 +95,7 @@ app.post('/secure/update_mdx', async (req: Request, res: Response) => {
         /**
          * Update the mdx record in the DB
          */
-        const response: api_return_schema<mdx|null> = await update_mdx(_id, save_file_api.data as file_on_drive, title, snippet, image_entries.data)
+        const response: api_return_schema<db_mdx|null> = await update_mdx(_id, save_file_api.data as file_on_drive, title, snippet, image_entries.data)
 
         if (response.error.has_error){
             console.log("error")
@@ -113,7 +114,7 @@ app.post('/secure/update_mdx', async (req: Request, res: Response) => {
 })
 
 app.get('/secure/get_all_mdx', async (req: Request, res: Response)  => {
-    const mongo_api_response: api_return_schema<mdx[]> = await get_all_mdx();
+    const mongo_api_response: api_return_schema<db_mdx[]> = await get_all_mdx();
   
     if (mongo_api_response.error.has_error) { 
       res.status(500).json(mongo_api_response)

@@ -1,13 +1,14 @@
-import { category, api_return_schema } from "../../interfaces/interfaces.js";
+import { db_category } from "../../interfaces/category_interfaces.js";
+import { api_return_schema } from "../../interfaces/misc_interfaces.js";
 import category_schema from "../../mongo_schemas/category_schema.js";
 import dbConnect from '../db_conn.js';
 
-export async function get_all_categories(): Promise<api_return_schema<category[]>> {
+export async function get_all_categories(): Promise<api_return_schema<db_category[]>> {
 
     const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
     try {
-        const category_search_result: category[] = await category_schema(connection).find().sort({ submit_date: -1 });
+        const category_search_result: db_category[] = await category_schema(connection).find().sort({ submit_date: -1 });
         return {data: category_search_result, error: { has_error: false, error_message:""}}
     } catch (error) {
         return {data: [], error: { has_error: true, error_message:`${error}`}}
@@ -41,7 +42,7 @@ export async function AddCategory(category_name: string): Promise<api_return_sch
 
 }
 
-export async function DeleteCategory(inCategory: category) : Promise<api_return_schema<Boolean>> {
+export async function DeleteCategory(inCategory: db_category) : Promise<api_return_schema<Boolean>> {
     try {
         console.log("deleting category")
         const connection = await dbConnect(process.env.DB_PRIME_NAME)

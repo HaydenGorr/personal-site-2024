@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useState, useRef } from "react";
-import { article, category, image, chip, api_return_schema, image_type_enum, db_obj } from "../../../api/api_interfaces";
+import { useEffect, useState } from "react";
+import { db_image } from "../../../api/interfaces/image_interfaces";
+import { image_type_enum } from "../../../api/interfaces/enums";
 import { get_all_images } from "../../../api/image";
 import Image from "next/image";
 import path from "path";
@@ -13,14 +14,14 @@ const enum tabs{
 
 interface props {
     className?: string;
-    on_select: (a:db_obj<image>)=>void;
+    on_select: (a:db_image)=>void;
     image_type: image_type_enum;
     selected?: string;
 }
 
 export default function ImageDropdown({ className, on_select, image_type, selected }: props) {
 
-const [all_images, set_all_images] = useState<db_obj<image>[]>([]);
+const [all_images, set_all_images] = useState<db_image[]>([]);
 const [loading, set_loading] = useState<Boolean>(false);
 const [error_message, set_error_message] = useState<string|null>(null);
 const [open, set_open] = useState<Boolean>(false);
@@ -29,7 +30,7 @@ useEffect(()=>{
     const fetch_images = async () => {
         set_loading(true)
         get_all_images(
-            (res: db_obj<image>[])=>{
+            (res: db_image[])=>{
                 set_error_message(null)
                 set_all_images(res)
                 set_loading(false)

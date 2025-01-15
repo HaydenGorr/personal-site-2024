@@ -1,14 +1,14 @@
-import { api_return_schema, mdx, file_on_drive, db_obj } from "../../interfaces/interfaces.js";
+import { api_return_schema } from "../../interfaces/misc_interfaces.js";
+import { db_mdx } from "../../interfaces/mdx_interfaces.js";
+import { file_on_drive } from "../../interfaces/misc_interfaces.js";
 import { db_image } from "../../interfaces/image_interfaces.js";
 import mdx_schema from "../../mongo_schemas/mdx_schema.js";
 import images_schema from "../../mongo_schemas/images_schema.js";
 import dbConnect from '../db_conn.js';
-import { image } from "../../interfaces/interfaces.js";
 import { assert } from "console";
-import { db_mdx } from "../../interfaces/mdx_interfaces.js";
 import { Types } from "mongoose";
 
-export async function add_mdx(inFile: file_on_drive, title: string, snippet: string, image_database_entries: db_image[]): Promise<api_return_schema<db_obj<mdx>|null>>{
+export async function add_mdx(inFile: file_on_drive, title: string, snippet: string, image_database_entries: db_image[]): Promise<api_return_schema<string>>{
 
     const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
@@ -17,7 +17,7 @@ export async function add_mdx(inFile: file_on_drive, title: string, snippet: str
 
         const existingImage = await mdx_model.findOne({ file_name: inFile.file_name });
         if (existingImage) {
-            return { data: null, error: { has_error: true, error_message: "image with this name already exists. Serious issue. Look into this asap" } };
+            return { data: "", error: { has_error: true, error_message: "image with this name already exists. Serious issue. Look into this asap" } };
         }
 
         const new_mdx = new mdx_model({
@@ -32,9 +32,9 @@ export async function add_mdx(inFile: file_on_drive, title: string, snippet: str
 
         const saved = await new_mdx.save();
 
-        return {data: saved.toObject(), error:{has_error: false, error_message: ""}};
+        return {data: `${saved}`, error:{has_error: false, error_message: ""}};
     } catch (error) {
-        return {data: null, error:{has_error: true, error_message: `${error}. Serious issue. Look into this asap`}};
+        return {data: "", error:{has_error: true, error_message: `${error}. Serious issue. Look into this asap`}};
     }
 
 }
@@ -76,7 +76,7 @@ export async function update_mdx(
     title: string,
     snippet: string,
     image_database_entries: db_image[]
-  ): Promise<api_return_schema<mdx | null>> {
+  ): Promise<api_return_schema<db_mdx | null>> {
     const connection = await dbConnect(process.env.DB_PRIME_NAME);
     images_schema(connection);
   
@@ -92,8 +92,8 @@ export async function update_mdx(
           version_history: new Date(),
           edit_date: new Date(),
         },
-        { new: true } // or { returnDocument: 'after' }
-      );
+        { new: true }
+      ) as db_mdx;
   
       assert(entries, 'No entries found');
   

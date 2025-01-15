@@ -1,4 +1,5 @@
-import { chip, api_return_schema } from "../../interfaces/interfaces.js";
+import { api_return_schema } from "../../interfaces/misc_interfaces.js";
+import { chip, db_chip} from "../../interfaces/chip_interfaces.js";
 import Chip_Schema from "../../mongo_schemas/chip_schema.js"
 import dbConnect from '../db_conn.js';
 
@@ -42,7 +43,7 @@ export async function AddChip(inChip: chip): Promise<api_return_schema<Boolean>>
 
 }
 
-export async function DeleteChip(inChip: chip) : Promise<api_return_schema<Boolean>> {
+export async function DeleteChip(inChip: db_chip) : Promise<api_return_schema<Boolean>> {
     try {
         console.log("deleting chip")
         const connection = await dbConnect(process.env.DB_PRIME_NAME)
@@ -76,13 +77,13 @@ export async function DeleteChip(inChip: chip) : Promise<api_return_schema<Boole
     }
 }
 
-export async function get_unique_chips(): Promise<api_return_schema<chip[]>>{
+export async function get_unique_chips(): Promise<api_return_schema<db_chip[]>>{
 
     console.log("inside get_unique_chips")
     const connection = await dbConnect(process.env.DB_PRIME_NAME)
     console.log("got response")
     try {
-        const chips:chip[] = await Chip_Schema(connection).find().sort({ submit_date: -1 });
+        const chips:db_chip[] = await Chip_Schema(connection).find().sort({ submit_date: -1 });
 
         return {data: chips, error: { has_error: false, error_message:""}}
 

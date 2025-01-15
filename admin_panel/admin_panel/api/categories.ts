@@ -1,14 +1,14 @@
-import { stringify } from "querystring";
-import { api_return_schema, category } from "./api_interfaces"
+import { api_return_schema } from "./interfaces/misc_interfaces";
+import { category, db_category } from "./interfaces/category_interfaces";
 
-export async function get_all_categories(on_pass: (a: api_return_schema<category[]>) => void, on_fail: (a: api_return_schema<category[]>) => void) {
+export async function get_all_categories(on_pass: (a: api_return_schema<db_category[]>) => void, on_fail: (a: api_return_schema<db_category[]>) => void) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_categories`, {
             method: 'GET',
             credentials: 'include'
         });
 
-        const json_result: api_return_schema<category[]> = await response.json();
+        const json_result: api_return_schema<db_category[]> = await response.json();
         
         if(response.ok) {
             if (json_result.error.has_error) on_fail({data: [], error: json_result.error })
@@ -22,7 +22,7 @@ export async function get_all_categories(on_pass: (a: api_return_schema<category
 }
 
 export async function delete_category(
-    inCategory: category,
+    inCategory: db_category,
     on_pass:()=>void,
     on_fail:(e: string)=>void) {
     

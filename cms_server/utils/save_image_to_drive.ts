@@ -2,7 +2,7 @@ import { images_dir, mdx_dir } from './path_consts.js';
 import { randomBytes } from 'crypto';
 import { mkdir, writeFile, access } from 'fs/promises';
 import path from 'path';
-import { api_return_schema, file_on_drive } from '../interfaces/interfaces.js';
+import { file_on_drive, api_return_schema } from '../interfaces/misc_interfaces.js';
 
 interface SaveFileOptions {
     allowedTypes?: string[];

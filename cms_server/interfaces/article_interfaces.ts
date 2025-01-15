@@ -10,7 +10,7 @@ import { Types } from "mongoose";
  * will instead by fully populated mdx and image objects from the DB
  */
 export interface article_WID {
-    _id: string;
+    _id: string | Types.ObjectId;
     title: string;
     description: string;
     type: string;
@@ -21,8 +21,8 @@ export interface article_WID {
     publishDate: Date;
     ready: boolean;
     portfolioReady: boolean;
-    image: string;
-    mdx: string;
+    image: string | Types.ObjectId;
+    mdx: string | Types.ObjectId;
 }
 
 export interface db_article extends Omit<article_WID, '_id' | 'mdx' | 'image'> {

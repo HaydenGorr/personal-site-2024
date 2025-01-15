@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from "react";
 import { get_all_chips } from "../../../api/chips";
-import { api_return_schema, category, chip } from "../../../api/api_interfaces";
+import { api_return_schema } from "../../../api/interfaces/misc_interfaces";
+import { db_chip } from "../../../api/interfaces/chip_interfaces";
 import YesNoPopup from "../components/yesno_popup";
 import { delete_chip } from "../../../api/chips";
 import ChipInProgress from "./components/chips/chip_in_progress";
@@ -13,10 +14,10 @@ interface props {
 
 export default function Chips({ className }: props) {
 
-    const [item_to_delete, set_item_to_delete] = useState<chip|null>(null);
+    const [item_to_delete, set_item_to_delete] = useState<db_chip|null>(null);
 
     const [loading, set_loading] = useState<Boolean>(true);
-    const [chips, set_chips] = useState<chip[]>([]);
+    const [chips, set_chips] = useState<db_chip[]>([]);
     const [fetch_error, set_fetch_error] = useState<Boolean>(false);
     const [fetch_error_msg, set_fetch_error_msg] = useState<string>("");
     const [error_message, set_error_message] = useState<string>("");
@@ -25,12 +26,12 @@ export default function Chips({ className }: props) {
         set_loading(true)
 
         await get_all_chips(
-            (res: api_return_schema<chip[]>) => {
-                set_chips(res.data as chip[])
+            (res: api_return_schema<db_chip[]>) => {
+                set_chips(res.data as db_chip[])
                 set_fetch_error(false)
                 set_fetch_error_msg("")
             },
-            (res: api_return_schema<chip[]>) => {
+            (res: api_return_schema<db_chip[]>) => {
                 set_chips([])
                 set_fetch_error(res.error.has_error)
                 set_fetch_error_msg(res.error.error_message)
@@ -40,7 +41,7 @@ export default function Chips({ className }: props) {
         set_loading(false)
     }
 
-    const go_delete_chip = async (chosen_chip: chip) => {
+    const go_delete_chip = async (chosen_chip: db_chip) => {
 
         if (!chosen_chip._id) {console.log("cannot delete. No ID"); return;}
 
@@ -77,7 +78,7 @@ return (
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
 
-            {chips.map((cat_iter: chip) => {
+            {chips.map((cat_iter: db_chip) => {
                 return(
                     <div key={cat_iter._id} className="flex space-x-4 bg-neutral-800 px-2 py-1 rounded-lg items-center w-full justify-between">
 						<div>

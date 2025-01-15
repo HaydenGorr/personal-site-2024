@@ -1,6 +1,9 @@
 import { stringify } from "querystring";
-import { api_return_schema, article, article_local, db_article } from "./api_interfaces"
+// import { api_return_schema, article, article_local, db_article } from "./api_interfaces"
 import { article_WID } from "./interfaces/article_interfaces";
+import { db_article } from "./interfaces/article_interfaces";
+import { api_return_schema } from "./interfaces/misc_interfaces";
+
 
 export async function get_all_articles(on_pass: (a: db_article[]) => void, on_fail: (a: string) => void) {
     try {
@@ -52,7 +55,7 @@ export async function submit_article_changes(edited_article: article_WID, on_pas
 }
 
 
-export async function submit_new_article(new_article: article_local, on_pass: (db_article: db_article) => void, on_fail: (a: string) => void) {
+export async function submit_new_article(new_article: article_WID, on_pass: (db_article: db_article) => void, on_fail: (a: string) => void) {
 
     try {
 

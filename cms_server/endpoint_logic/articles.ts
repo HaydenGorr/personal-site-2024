@@ -1,11 +1,11 @@
 import { app, upload } from "../express.js";
-import { api_return_schema, article, mdx } from "../interfaces/interfaces.js"
 import { Request, Response } from 'express';
-import { get_all_ready_articles, create_article, get_all_articles, add_article, delete_article } from "../utils/mongo_utils/article.js";
+import { get_all_ready_articles, create_article, get_all_articles, delete_article } from "../utils/mongo_utils/article.js";
 import { update_article, get_article, create_new_article } from "../utils/mongo_utils/article.js";
 import { get_selected_mdx } from "../utils/mongo_utils/mdx.js";
-import { assert } from "console";
-import { article_WID } from "../interfaces/interfaces.js";
+import { article_WID } from "../interfaces/article_interfaces.js";
+import { db_article } from "../interfaces/article_interfaces.js";
+import { api_return_schema } from "../interfaces/misc_interfaces.js";
 import { db_mdx } from "../interfaces/mdx_interfaces.js";
 
 app.get('/get_all_ready_articles', async (req: Request, res: Response) => {
@@ -27,7 +27,12 @@ app.get('/get_article', async (req: Request, res: Response) => {
 
 	const { article_id } = req.query;
 
-	const response: api_return_schema<article|null> = await get_article(article_id!.toString())
+	if (!article_id){
+		res.status(500).json({data:null, error:{hasError: true, error_message: "Did not provide an article id"}})
+		return
+	}
+
+	const response: api_return_schema<db_article|null> = await get_article(article_id.toString())
 
 	if (response.error.has_error) {
 		res.status(500).json(response)
@@ -52,7 +57,7 @@ app.get('/secure/create_article', async (req: Request, res: Response) => {
 app.get('/secure/get_all_articles', async (req: Request, res: Response) => {
 
 	// Grab and return the articles
-	var articles: api_return_schema<article[]> = await get_all_articles()
+	var articles: api_return_schema<db_article[]> = await get_all_articles()
 
 	if (articles.error.has_error) {res.status(500).json(articles); return}
 
@@ -94,7 +99,7 @@ app.post('/secure/create_new_article', upload.fields([{ name: 'new_article', max
 			return
 		}
 
-		const updated_result:api_return_schema<article> = await create_new_article(new_article) as api_return_schema<article>
+		const updated_result:api_return_schema<db_article> = await create_new_article(new_article) as api_return_schema<db_article>
 
 		if (updated_result.error.has_error) {
 			res.status(500).json(updated_result)

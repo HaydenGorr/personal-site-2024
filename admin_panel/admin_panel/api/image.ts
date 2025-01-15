@@ -1,6 +1,7 @@
-import { api_return_schema, db_obj, file_on_drive, image, image_type_enum } from "./api_interfaces";
-import path from "path";
+import { api_return_schema } from "./interfaces/misc_interfaces";
+import { file_on_drive } from "./interfaces/misc_interfaces";
 import { db_image } from "./interfaces/image_interfaces";
+import { image_type_enum } from "./interfaces/enums";
 
 export async function upload_image(
     image:File,
@@ -42,7 +43,7 @@ export async function upload_image(
     }
 }
 
-export async function get_all_images(on_pass: (a: db_obj<image>[]) => void, on_fail: (a: string) => void, category?: image_type_enum) {
+export async function get_all_images(on_pass: (a: db_image[]) => void, on_fail: (a: string) => void, category?: image_type_enum) {
     try {
 
         var path_construction = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_images`
@@ -54,7 +55,7 @@ export async function get_all_images(on_pass: (a: db_obj<image>[]) => void, on_f
             credentials: 'include',
         });
 
-        const json_result: api_return_schema<db_obj<image>[]> = await response.json();
+        const json_result: api_return_schema<db_image[]> = await response.json();
         
         if(response.ok) {
             on_pass(json_result.data)
@@ -88,7 +89,7 @@ export async function select_images(on_pass: (a: db_image[]) => void, on_fail: (
             },
         });
 
-        const json_result: api_return_schema<db_image> = await response.json();
+        const json_result: api_return_schema<db_image[]> = await response.json();
 
         console.log(json_result)
         

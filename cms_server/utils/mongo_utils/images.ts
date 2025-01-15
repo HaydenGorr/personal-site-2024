@@ -1,5 +1,5 @@
-import { api_return_schema, image, db_obj } from "../../interfaces/interfaces.js";
-import { db_image } from "../../interfaces/image_interfaces.js";
+import { api_return_schema } from "../../interfaces/misc_interfaces.js";
+import { db_image, image } from "../../interfaces/image_interfaces.js";
 import images_schema from "../../mongo_schemas/images_schema.js";
 import dbConnect from '../db_conn.js';
 import { FilterQuery } from "mongoose";
@@ -45,7 +45,7 @@ export async function get_selected_images(filter: Partial<db_image>[]): Promise<
     }
 }
 
-export async function add_image(file: image): Promise<api_return_schema<db_obj<image>|null>>{
+export async function add_image(file: image): Promise<api_return_schema<db_image|null>>{
 
     const connection = await dbConnect(process.env.DB_PRIME_NAME)
   
@@ -73,7 +73,7 @@ export async function add_image(file: image): Promise<api_return_schema<db_obj<i
 
 }
 
-export async function delete_image(inImage: db_obj<image>) : Promise<api_return_schema<Boolean>> {
+export async function delete_image(inImage: db_image) : Promise<api_return_schema<Boolean>> {
     try {
         console.log("deleting image")
         const connection = await dbConnect(process.env.DB_PRIME_NAME)

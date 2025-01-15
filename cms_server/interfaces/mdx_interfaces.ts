@@ -1,5 +1,4 @@
 import { file_on_drive } from "./misc_interfaces.js";
-import { image_type_enum } from "./enums.js";
 import { db_image } from "./image_interfaces.js";
 import { Types } from "mongoose";
 

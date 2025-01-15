@@ -134,7 +134,6 @@ export async function getStaticProps(context) {
     const article_info = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ACCESS_CMS}/get_article?article_id=${id}`);
     const article_res = await article_info.json()
 	const article_info_JSON = article_res.data
-	console.log("exaasds", article_info_JSON.mdx._id)
 
 	// Get the MDX
 	const mdx_info = await fetch(article_info_JSON.mdx.full_url);

@@ -1,4 +1,5 @@
-import { AI_type_enum, api_return_schema, chip } from "../interfaces/interfaces.js";
+import { api_return_schema } from "../interfaces/misc_interfaces.js";
+import { chip } from "../interfaces/chip_interfaces.js";
 import system_prompts from './system_prompts.json' assert { type: 'json' };
 
 export const get_chat_bot_system_prompt = ( articles_for_consumption: string ):api_return_schema<string> => {

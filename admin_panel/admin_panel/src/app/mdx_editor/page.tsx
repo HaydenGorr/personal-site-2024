@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState, useRef } from "react";
 import { image_type_enum, edit_states } from "../../../api/interfaces/enums";
-import { mdx_WID } from "../../../api/interfaces/mdx_interfaces";
 import '@mdxeditor/editor/style.css'
 import dynamic from 'next/dynamic'
 import { type MDXEditorMethods } from "@mdxeditor/editor";
@@ -12,23 +11,7 @@ import { db_mdx } from "../../../api/interfaces/mdx_interfaces";
 
 const Editor = dynamic(() => import('../tabs/components/mdx/InitialisedMDXEditor'), { ssr: false })
 
-interface props {
-    className: string;
-    props: any;
-}
-
-const empty_mdx: mdx_WID = {
-    title: "",
-    full_url: "",
-    images: [],
-    snippet: "",
-    edit_date: "",
-    version_history: [],
-    file_name: "",
-    upload_date: "",
-}
-
-export default function MDX_In_Progress({ props, className="" }: props) {
+export default function MDX_In_Progress() {
     // Get props from search params
     const searchParams = useSearchParams();
 
@@ -194,7 +177,7 @@ export default function MDX_In_Progress({ props, className="" }: props) {
     }
 
 return (
-    <div className={`${className} px-4 h-screen w-screen py-8 flex flex-col items-center`} >
+    <div className={`px-4 h-screen w-screen py-8 flex flex-col items-center`} >
 
         {/* The temporary messages */}
         <div className="fixed z-50 bottom-4 right-4 space-y-4">

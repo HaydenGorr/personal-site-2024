@@ -1,9 +1,9 @@
-import { article, api_return_schema, image, error, mdx, db_obj } from "../../interfaces/interfaces.js";
+import { api_return_schema } from "../../interfaces/misc_interfaces.js";
 import article_schema from "../../mongo_schemas/article_schema.js";
 import images_schema from "../../mongo_schemas/images_schema.js";
 import mdx_schema from "../../mongo_schemas/mdx_schema.js";
 import dbConnect from '../db_conn.js';
-import { article_WID } from "../../interfaces/interfaces.js";
+import { article_WID } from "../../interfaces/article_interfaces.js";
 import mongoose from 'mongoose';
 import { db_article } from "../../interfaces/article_interfaces.js";
 
@@ -39,11 +39,11 @@ export async function get_article(id:string): Promise<api_return_schema<db_artic
 
         return {data: existingArticle, error: {has_error:false, error_message:""}}
     } catch (error) {
-        return {data: null, error: {has_error:false, error_message:'Internal server error'}}
+        return {data: null, error: {has_error:true, error_message:'Internal server error'}}
     }
 }
 
-export async function get_all_articles(): Promise<api_return_schema<db_obj<article>[]>>{
+export async function get_all_articles(): Promise<api_return_schema<db_article[]>>{
   try {
       const connection = await dbConnect(process.env.DB_PRIME_NAME)
       mdx_schema(connection);
@@ -65,7 +65,7 @@ export async function get_all_articles(): Promise<api_return_schema<db_obj<artic
   }
 }
 
-export async function get_all_ready_articles(): Promise<api_return_schema<article[]>>{
+export async function get_all_ready_articles(): Promise<api_return_schema<db_article[]>>{
   try {
     const connection = await dbConnect(process.env.DB_PRIME_NAME)
     mdx_schema(connection) // Register mdx_schema so it can be used in the query below
@@ -86,7 +86,7 @@ export async function get_all_ready_articles(): Promise<api_return_schema<articl
 }
 }
 
-export async function add_article(): Promise<api_return_schema<article|null>>{
+export async function add_article(): Promise<api_return_schema<db_article|null>>{
 
     console.log("creating chip")
 
@@ -133,7 +133,7 @@ export async function delete_article(articleId: number): Promise<api_return_sche
     }
   }
 
-export const update_article = async(updated_article: article_WID): Promise<api_return_schema<article|null>> => {
+export const update_article = async(updated_article: article_WID): Promise<api_return_schema<db_article|null>> => {
     const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
     try {
@@ -141,8 +141,8 @@ export const update_article = async(updated_article: article_WID): Promise<api_r
         const ObjectId = mongoose.Types.ObjectId;
         const updatePayload: article_WID = {
           ...updated_article,
-          mdx: updated_article.mdx instanceof ObjectId ? updated_article.mdx : new ObjectId(updated_article.mdx),
-          image: updated_article.image instanceof ObjectId ? updated_article.image : new ObjectId(updated_article.image),
+          mdx: (updated_article.mdx as any) instanceof ObjectId ? updated_article.mdx : new ObjectId(updated_article.mdx),
+          image: (updated_article.image as any) instanceof ObjectId ? updated_article.image : new ObjectId(updated_article.image),
         };
 
         const art = await articleModel.findByIdAndUpdate(

@@ -2,7 +2,8 @@ import { app, protectedRouter } from "../express.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import { get_user_by_username } from '../utils/mongo_utils/admin_user.js';
-import { api_return_schema, user, userId_JWTPayload } from "../interfaces/interfaces.js"
+import { api_return_schema, userId_JWTPayload } from "../interfaces/misc_interfaces.js";
+import { dbuser } from "../interfaces/user_interfaces.js";
 import { Request, Response } from 'express';
 import { add_user } from "../utils/mongo_utils/admin_user.js";
 import { create_jwt_token } from "../utils/create_jwt_token.js";
@@ -15,7 +16,7 @@ app.post('/login', async (req: Request, res: Response) => {
 		return
 	}
 
-	const mongo_response: api_return_schema<user|null> = await get_user_by_username(username)
+	const mongo_response: api_return_schema<dbuser|null> = await get_user_by_username(username)
 	
 	if (mongo_response.error.has_error) {
 		res.status(500).json(mongo_response);

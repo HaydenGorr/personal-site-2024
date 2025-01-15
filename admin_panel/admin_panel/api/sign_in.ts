@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import { api_return_schema } from './api_interfaces';
+import { api_return_schema } from './interfaces/misc_interfaces';
 
 export const send_login_request = async (username: string, password: string, on_pass:()=>void, on_fail:(error:string)=>void) =>{
     console.log("nod", process.env.NEXT_PUBLIC_USER_ACCESS_CMS)

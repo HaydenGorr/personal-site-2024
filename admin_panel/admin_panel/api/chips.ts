@@ -1,6 +1,6 @@
 import { stringify } from "querystring";
 import { api_return_schema } from "./interfaces/misc_interfaces";
-import { db_chip } from "./interfaces/chip_interfaces";
+import { chip, db_chip } from "./interfaces/chip_interfaces";
 
 export async function get_all_chips(on_pass: (a: api_return_schema<db_chip[]>) => void, on_fail: (a: api_return_schema<db_chip[]>) => void) {
     try {
@@ -56,7 +56,7 @@ export async function delete_chip(
 
 
 export async function submit_chip(
-    chip: db_chip,
+    chip: chip,
     on_pass:()=>void,
     on_fail:(e: string)=>void) {
 

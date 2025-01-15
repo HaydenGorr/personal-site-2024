@@ -1,7 +1,9 @@
 import { app } from "../express.js";
 import { SaveFileToRandomDir } from "../utils/save_image_to_drive.js";
 import { add_image, delete_image, get_selected_images } from "../utils/mongo_utils/images.js";
-import { api_return_schema, image, file_on_drive, db_obj } from "../interfaces/interfaces.js";
+import { api_return_schema } from "../interfaces/misc_interfaces.js";
+import { db_image, image } from "../interfaces/image_interfaces.js";
+import { file_on_drive } from "../interfaces/misc_interfaces.js";
 import { get_all_images } from "../utils/mongo_utils/images.js";
 import { Response, Request } from "express";
 import { upload } from "../express.js";
@@ -10,7 +12,7 @@ app.get('/secure/get_all_images', async (req: Request, res: Response)  => {
 
   const category: string | null = req.query.category as string ?? null;
 
-  const mongo_api_response: api_return_schema<image[]> = await get_all_images(category ?? undefined);
+  const mongo_api_response: api_return_schema<db_image[]> = await get_all_images(category ?? undefined);
 
   if (mongo_api_response.error.has_error) { 
     res.status(500).json(mongo_api_response)
@@ -24,14 +26,18 @@ app.get('/secure/get_all_images', async (req: Request, res: Response)  => {
 
 app.get('/secure/select_images', async (req: Request, res: Response)  => {
 
-  const filter = req.query;
+  const filter_raw: Partial<db_image>[] | Partial<db_image> = req.query;
+  var filter: Partial<db_image>[] = [];
+
+  if (!Array.isArray(filter_raw)) filter.push(filter_raw)
+  else filter = filter_raw
 
   if (!filter) {
     res.status(500).json("not passed a partial db_image object")
     return
   }
 
-  const mongo_api_response: api_return_schema<image[]> = await get_selected_images(filter);
+  const mongo_api_response: api_return_schema<db_image[]> = await get_selected_images(filter);
 
   if (mongo_api_response.error.has_error) { 
     res.status(500).json(mongo_api_response)
@@ -45,7 +51,7 @@ app.get('/secure/select_images', async (req: Request, res: Response)  => {
   
 app.post('/secure/delete_image', async (req: Request, res: Response) => {
   
-  const given_image: image = req.body.image_stringified as image;
+  const given_image: db_image = req.body.image_stringified as db_image;
 
   // Perform operations like DeleteCategory(category)
   const result: api_return_schema<Boolean> = await delete_image(given_image);
@@ -85,7 +91,7 @@ app.post('/secure/upload_image', upload.single('image'), async (req: Request, re
     // Props
     const image_conversion: image = {...save_file_api.data as file_on_drive, category: category}
 
-    const response: api_return_schema<image|null> = await add_image(image_conversion)
+    const response: api_return_schema<db_image|null> = await add_image(image_conversion)
 
     if (response.error.has_error){
       res.status(500).json({data:"", error:{has_error: true, error_message: response.error.error_message + "The item was written to drive, but not to database"}})
