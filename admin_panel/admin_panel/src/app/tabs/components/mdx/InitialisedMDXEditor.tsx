@@ -105,8 +105,8 @@ export default function InitializedMDXEditor({
                   {' '}
                   <ConditionalContents
                     options={[
-                      { when: (editor) => editor?.editorType === 'codeblock', contents: () => <ChangeCodeMirrorLanguage /> },
-                      { when: (editor) => editor?.editorType === 'sandpack', contents: () => <ShowSandpackInfo /> },
+                      { when: (editor: any) => editor?.editorType === 'codeblock', contents: () => <ChangeCodeMirrorLanguage /> },
+                      { when: (editor: any) => editor?.editorType === 'sandpack', contents: () => <ShowSandpackInfo /> },
                       { fallback: () => ( <> 
                         <InsertCodeBlock />
                         <InsertSandpack />
