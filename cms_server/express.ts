@@ -29,4 +29,4 @@ app.use('/secure', protectedRouter);
 app.use(`/CMS/articles/`, express.static(path.join(DATA_DIR, 'CMS', 'articles')));
 app.use('/TAG_SVGS/', express.static(path.join(DATA_DIR, 'TAG_SVGS')));
 app.use('/images/', express.static(images_dir, {maxAge: '1d'}));
-app.use('/mdx/', express.static(mdx_dir));
+app.use('/mdx/', express.static(mdx_dir, {maxAge: '1d'}));
