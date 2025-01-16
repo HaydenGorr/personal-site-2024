@@ -21,7 +21,7 @@ const enum tabs{
 export default function Login() {
 const router = useRouter();
 
-const [selected_tab, set_selected_tab] = useState<tabs>(tabs.categories);
+const [selected_tab, set_selected_tab] = useState<tabs>(tabs.articles);
 
 return (
 	<div className="p-4 w-full flex flex-col items-center relative max-w-[95ch]">
@@ -31,7 +31,7 @@ return (
 			await log_out(()=>{router.push('/login')},
 			()=>{}); }}>logs out</button>
 
-		<h1 className="font-black text-4xl">Lorelai</h1>
+		<h1 className="font-black text-4xl">Admin</h1>
 
 		<div className="mt-8 flex justify-between w-full overflow-x-scroll space-x-4 scrollbar-none">
 			
@@ -39,9 +39,9 @@ return (
 			className={` px-4 py-2 rounded-lg ${ selected_tab == tabs.articles ? "bg-blue-500" : "bg-gray-800"}`}
 			onClick={()=>{set_selected_tab(tabs.articles)}}>Articles</button>
 
-			{/* <button 
+			<button 
 			className={` px-4 py-2 rounded-lg ${ selected_tab == tabs.mdx ? "bg-blue-500" : "bg-gray-800"}`}
-			onClick={()=>{set_selected_tab(tabs.mdx)}}>MDX</button> */}
+			onClick={()=>{set_selected_tab(tabs.mdx)}}>MDX</button>
 
 			<button className={` px-4 py-2 rounded-lg ${ selected_tab == tabs.images ? "bg-blue-500" : "bg-gray-800"}`}
 			onClick={()=>{set_selected_tab(tabs.images)}}>Images</button>

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from "react";
-import { article, category, chip, api_return_schema } from "../../../api/api_interfaces";
+import { db_category } from "../../../api/interfaces/category_interfaces";
+import { api_return_schema } from "../../../api/interfaces/misc_interfaces";
 import { get_all_categories } from "../../../api/categories";
 
 const enum tabs{
@@ -19,19 +20,19 @@ export default function CategoryDropdown({ className, on_select, display_value }
 
 const [error_message, set_error_message] = useState<string|null>(null);
 const [open, set_open] = useState<Boolean>(false);
-const [selectable_values, set_selectable_values] = useState<category[]>([]);
+const [selectable_values, set_selectable_values] = useState<db_category[]>([]);
 const [loading, set_loading] = useState<Boolean>(false);
 
 useEffect(()=>{
     const fetch_categories = async () => {
         set_loading(true)
         get_all_categories(
-            (res: api_return_schema<category[]>)=>{
+            (res: api_return_schema<db_category[]>)=>{
                 set_error_message(null)
                 set_selectable_values(res.data)
                 set_loading(false)
             },
-            (res: api_return_schema<category[]>)=>{
+            (res: api_return_schema<db_category[]>)=>{
                 set_selectable_values([])
                 set_error_message(res.error.error_message)
                 set_loading(false)

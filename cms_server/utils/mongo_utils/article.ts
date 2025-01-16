@@ -1,6 +1,11 @@
-import { article, api_return_schema, image, error } from "../../interfaces/interfaces.js";
+import { api_return_schema } from "../../interfaces/misc_interfaces.js";
 import article_schema from "../../mongo_schemas/article_schema.js";
+import images_schema from "../../mongo_schemas/images_schema.js";
+import mdx_schema from "../../mongo_schemas/mdx_schema.js";
 import dbConnect from '../db_conn.js';
+import { article_WID } from "../../interfaces/article_interfaces.js";
+import mongoose from 'mongoose';
+import { db_article } from "../../interfaces/article_interfaces.js";
 
 function generateRandomString(length: number) {
     let result = '';
@@ -12,28 +17,47 @@ function generateRandomString(length: number) {
     return result;
 }
 
-export async function get_article(id:string): Promise<api_return_schema<article|null>> {
+export async function get_article(id:string): Promise<api_return_schema<db_article|null>> {
 
-    const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
     try {
       const article_model = article_schema(connection);
 
-      const existingArticle = await article_model.findOne({ _id: id }) as article;
+      const existingArticle = await article_model.findOne({ _id: id })
+      .populate({
+        path: 'mdx', // First populate the 'mdx' field
+        populate: { path: 'images', model: 'images' }, // Then populate 'images' inside 'mdx'
+      })
+      .populate('image') as any;
+
+      
+
       if (!existingArticle) {
           return { data: null, error: { has_error: true, error_message: `An article with the id ${id} doesn't exist` } };
       }
 
         return {data: existingArticle, error: {has_error:false, error_message:""}}
     } catch (error) {
-        return {data: null, error: {has_error:false, error_message:'Internal server error'}}
+        return {data: null, error: {has_error:true, error_message:'Internal server error'}}
     }
 }
 
-export async function get_all_articles(): Promise<api_return_schema<article[]>>{
+export async function get_all_articles(): Promise<api_return_schema<db_article[]>>{
   try {
-      const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
-      const articles: any[] = await article_schema(connection).find().sort({ publishDate: -1 });
+      const connection = await dbConnect(process.env.DB_PRIME_NAME)
+      mdx_schema(connection);
+      images_schema(connection);
+
+      const articles: any[] = await article_schema(connection)
+      .find()
+      .populate({
+        path: 'mdx', // First populate the 'mdx' field
+        populate: { path: 'images', model: 'images' }, // Then populate 'images' inside 'mdx'
+      })
+      .populate('image')
+      .sort({ publishDate: -1 });
+    
       return {data: articles, error:{has_error: false, error_message: ""}}
   } catch (error) {
       console.error('Error:', error);
@@ -41,10 +65,20 @@ export async function get_all_articles(): Promise<api_return_schema<article[]>>{
   }
 }
 
-export async function get_all_ready_articles(): Promise<api_return_schema<article[]>>{
+export async function get_all_ready_articles(): Promise<api_return_schema<db_article[]>>{
   try {
-    const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
-    const articles: any[] = await article_schema(connection).find({ ready: true }).sort({ publishDate: -1 });
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
+    mdx_schema(connection) // Register mdx_schema so it can be used in the query below
+    images_schema(connection) // Register images_schema so it can be used in the query below
+    
+    const articles: any[] = await article_schema(connection)
+    .find({ ready: true })
+    .sort({ publishDate: -1 })
+    .populate({
+      path: 'mdx', // First populate the 'mdx' field
+      populate: { path: 'images', model: 'images' }, // Then populate 'images' inside 'mdx'
+    })
+    .populate('image');
     return {data: articles, error:{has_error: false, error_message: ""}}
 } catch (error) {
     console.error('Error:', error);
@@ -52,11 +86,11 @@ export async function get_all_ready_articles(): Promise<api_return_schema<articl
 }
 }
 
-export async function add_article(): Promise<api_return_schema<article|null>>{
+export async function add_article(): Promise<api_return_schema<db_article|null>>{
 
     console.log("creating chip")
 
-    const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
   
     try {
         const ArticleModel = article_schema(connection);
@@ -84,7 +118,7 @@ export async function add_article(): Promise<api_return_schema<article|null>>{
 
 export async function delete_article(articleId: number): Promise<api_return_schema<Boolean>> {
     try {
-      const connection = await dbConnect(process.env.DB_ARTICLES_NAME);
+      const connection = await dbConnect(process.env.DB_PRIME_NAME);
       console.log("AH!")
       const Article = await article_schema(connection); // If your model needs a connection to initialize
       console.log("\ndeleting")
@@ -99,15 +133,21 @@ export async function delete_article(articleId: number): Promise<api_return_sche
     }
   }
 
-export const update_article = async(updated_article: article): Promise<api_return_schema<article|null>> => {
-    const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+export const update_article = async(updated_article: article_WID): Promise<api_return_schema<db_article|null>> => {
+    const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
     try {
         const articleModel = await article_schema(connection)
+        const ObjectId = mongoose.Types.ObjectId;
+        const updatePayload: article_WID = {
+          ...updated_article,
+          mdx: (updated_article.mdx as any) instanceof ObjectId ? updated_article.mdx : new ObjectId(updated_article.mdx),
+          image: (updated_article.image as any) instanceof ObjectId ? updated_article.image : new ObjectId(updated_article.image),
+        };
 
         const art = await articleModel.findByIdAndUpdate(
           updated_article._id,
-          { $set: updated_article },
+          { $set: updatePayload },
           { new: true, runValidators: true }
         );
 
@@ -127,17 +167,21 @@ export const update_article = async(updated_article: article): Promise<api_retur
     }
 }
 
-export const create_new_article = async(new_article: article): Promise<api_return_schema<any>> => {
-  const connection = await dbConnect(process.env.DB_ARTICLES_NAME)
+export const create_new_article = async(new_article: article_WID): Promise<api_return_schema<any>> => {
+  const connection = await dbConnect(process.env.DB_PRIME_NAME)
 
   try {
       const articleModel = await article_schema(connection)
-      
-      const art = new articleModel(new_article);
+
+      const { _id: _, ...rest } = new_article;
+
+
+      // Link the mdx_entry to the article
+      const art = new articleModel( rest );
 
       if (!art) throw Error()
 
-        const ret_obj = await art.save();
+      const ret_obj = await art.save();
 
       return {data:ret_obj, error:{has_error: false, error_message:""}};
   }
@@ -182,7 +226,7 @@ export async function create_article(article: any){
   //   await update_article(article_dir_name, result, article_meta)
   // }else {
   //   // Create a whole new article record
-  //   dbConnect(process.env.DB_ARTICLES_NAME)
+  //   dbConnect(process.env.DB_PRIME_NAME)
   //   .then((conn) => {
         
   //       // Create a new document

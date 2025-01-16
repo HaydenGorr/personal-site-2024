@@ -1,14 +1,19 @@
 'use client'
 import { useEffect, useState, useRef } from "react";
-import { article, image_type_enum } from "../../../../../api/api_interfaces";
+import { image_type_enum, edit_states} from "../../../../../api/interfaces/enums";
+import { db_article } from "../../../../../api/interfaces/article_interfaces";
+
+import { article_WID } from "../../../../../api/interfaces/article_interfaces";
+import { db_mdx } from "../../../../../api/interfaces/mdx_interfaces";
+
 import CategoryDropdown from "@/app/components/category_dropdown";
 import ChipDropdown from "@/app/components/chips_dropdown";
-import ImageUpload from "@/app/components/image_upload";
-import MDXUpload from "@/app/components/mdx/mdx_upload";
 import ImageDropdown from "@/app/components/image_dropdown";
+import MDXDropdown from "@/app/components/mdx_dropdown";
 import { submit_article_changes, submit_new_article } from "../../../../../api/articles";
-import '@mdxeditor/editor/style.css'
-import MDX_Editor from "@/app/components/mdx/MDX_Typer";
+import { select_images } from "../../../../../api/image";
+import { select_mdx } from "../../../../../api/mdx";
+import { db_image } from "../../../../../api/interfaces/image_interfaces";
 
 const enum tabs{
 	categories,
@@ -19,45 +24,88 @@ const enum tabs{
 interface props {
     className?: string;
     on_close_click: ()=>void;
-    newArticle: Boolean;
-    given_article?: article;
+    given_article?: article_WID;
+    edit_state: edit_states;
 }
 
-const empty_article: article = {
+const empty_article: article_WID = {
+    _id: "",
     title: "",
     description: "",
-    article: "",
+    mdx: "", // mdx db id
     infoText: "",
     chips: [],
     category: "",
-    source: "",
     views: 0,
     publishDate: new Date(),
     ready: false,
     portfolioReady: false,
-    image: ""
+    image: "", // image db id
+    type: "misc."
 }
 
-export default function ArticleInProgress({ className, on_close_click, newArticle, given_article=empty_article }: props) {
-
-const [image_url, set_image_url] = useState<string|null>(given_article.image ? given_article.image : null);
-const [mdx_url, set_mdx_url] = useState<string|null>(given_article.article ? given_article.article : null);
-
+export default function ArticleInProgress({ className, on_close_click, edit_state, given_article=empty_article }: props) {
 const [submit_success_message, set_submit_success_message] = useState<string|null>(null);
 const [error_msg, set_error_msg] = useState<string|null>(null);
-const [article_under_edit, set_article_under_edit] = useState<article>(given_article);
-const [is_new_article, set_is_new_article] = useState<Boolean>(newArticle);
+const [article_under_edit, set_article_under_edit] = useState<article_WID>(given_article);
+const [is_new_article, set_is_new_article] = useState<edit_states>(edit_state);
+const [image_preview, set_image_preview] = useState<db_image | null>(null);
+const [mdx_preview, set_mdx_preview] = useState<db_mdx | null>(null);
 
-const handleArticleChange = (field: keyof article, value: any) => {
+/**
+ * Make changes to the article_under_edit object
+ */
+const handleArticleChange = (field: keyof article_WID, value: any) => {
 
     // If the article is changing then the previous submit success message doesn't apply.
     set_submit_success_message(null)
 
-    set_article_under_edit({
-        ...article_under_edit,
-        [field]: value
+    set_article_under_edit((aue: article_WID) => {
+
+        const news = {...aue,
+            [field]: value}
+
+        console.log(news)
+
+        return news
     });
 };
+
+useEffect(()=>{
+
+    if (given_article === empty_article) return 
+
+    /**
+     * Since we only have an article_WID, we only have the image and mdx IDs,
+     * not their content. So here we take those IDs and grab the content
+     * to display it in the ui
+     */
+    select_images(
+        (img: db_image[])=>{
+            if (img.length == 0){
+                set_error_msg(`could not find image with id ${given_article.image}`)
+            }
+            set_error_msg("")
+            set_image_preview(img[0])
+        },
+        (error: string)=>{
+            set_error_msg(error)
+        },
+        {_id:given_article.image})
+
+        select_mdx(
+        (mdx: db_mdx[])=>{
+            if (mdx.length == 0){
+                set_error_msg(`could not find image with id ${given_article.image}`)
+            }
+            set_error_msg("")
+            set_mdx_preview(mdx[0])
+        },
+        (error: string)=>{
+            set_error_msg(error)
+        },
+        {_id:given_article.mdx})
+}, [given_article])
 
 const getInput = (label: string, value:string)=> {
     return (
@@ -70,7 +118,7 @@ const getInput = (label: string, value:string)=> {
                         className="text-black px-1 rounded-lg w-full py-2"
                         placeholder="Enter title"
                         value={value ?? ""}
-                        onChange={(e) => handleArticleChange(label as keyof article, e.target.value)}
+                        onChange={(e) => handleArticleChange(label as keyof article_WID, e.target.value)}
                     />
                 
                 </label>
@@ -101,11 +149,11 @@ const isArticleReady = (): boolean => {
     if (article_under_edit.title.length == 0) return false
     if (!article_under_edit.category) return false
     if (article_under_edit.chips.length == 0) return false
-    if (image_url === null) return false
+    if (article_under_edit.image == "") return false
     if (article_under_edit.description.length == 0) return false
-    if (article_under_edit.article && article_under_edit.article.length == 0) return false
-    if (article_under_edit.image && article_under_edit.image.length == 0) return false
-    if (!is_new_article && !article_under_edit._id) return false
+    if (!article_under_edit.mdx || article_under_edit.mdx.length == 0) return false
+    if (!article_under_edit.image || article_under_edit.image.length == 0) return false
+    if (is_new_article == edit_states.edit_existing && !article_under_edit._id) return false
 
     return true
 }
@@ -113,9 +161,7 @@ const isArticleReady = (): boolean => {
 const submit_changes = () => {
     if (!isArticleReady()) return
 
-    console.log("asd", is_new_article)
-
-    if (!is_new_article) {
+    if (edit_state == edit_states.edit_existing) {
         submit_article_changes(
             article_under_edit,
             ()=>{ set_error_msg(null); set_submit_success_message("Sucessfully submitted!") },
@@ -125,10 +171,10 @@ const submit_changes = () => {
     else{
         submit_new_article(
             article_under_edit,
-            (db_article: article)=>{ 
+            (db_article: db_article)=>{ 
                 set_error_msg(null); set_submit_success_message("Sucessfully submitted!")
-                set_is_new_article(false)
-                article_under_edit._id = db_article._id;
+                set_is_new_article(edit_states.edit_existing)
+                set_article_under_edit({...db_article, mdx: db_article.mdx._id, image: db_article.image._id} as article_WID)
             },
             (a: string)=>{ set_error_msg(a); set_submit_success_message(null) }
         )
@@ -151,8 +197,8 @@ return (
             </div>
 
             <div className="flex space-x-2">
-                <div className={`${mdx_url != null ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>mdx</div>
-                <div className={`${image_url != null ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>image</div>
+                <div className={`${article_under_edit.mdx != "" ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>mdx</div>
+                <div className={`${article_under_edit.image != "" ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>image</div>
                 <div className={`${article_under_edit.ready? 'bg-green-400' : 'bg-yellow-400'} w-fit px-4 py-2 rounded-full font-bold`}>published</div>
                 <div className={`${article_under_edit.description.length > 0 ? 'bg-green-400' : 'bg-red-400'} w-fit px-4 py-2 rounded-full font-bold`}>description</div>
                 <div className={`${article_under_edit.infoText.length > 0 ? 'bg-green-400' : 'bg-yellow-400'} w-fit px-4 py-2 rounded-full font-bold`}>info</div>
@@ -176,40 +222,60 @@ return (
             {getInput("infoText", article_under_edit.infoText)}
 
             <CategoryDropdown
-                display_value={article_under_edit.category} on_select={ (in_string: string) => { handleArticleChange("category" as keyof article, in_string) } }/>
+                display_value={article_under_edit.category} on_select={ (in_string: string) => { handleArticleChange("category" as keyof article_WID, in_string) } }/>
 
             <ChipDropdown
                 display_values={article_under_edit.chips}
                 on_select={ (in_string: string) => { 
                     if(article_under_edit.chips.includes(in_string)) return
-                    handleArticleChange("chips" as keyof article, [...article_under_edit.chips, in_string])
+                    handleArticleChange("chips" as keyof article_WID, [...article_under_edit.chips, in_string])
                 }}
                 on_remove_chip={ (in_string: string) => {
-                    handleArticleChange("chips" as keyof article, article_under_edit.chips.filter((val)=>val!=in_string))
+                    handleArticleChange("chips" as keyof article_WID, article_under_edit.chips.filter((val)=>val!=in_string))
                 }}/>
 
-            <div className="border-red-500 border-2 rounded-lg p-2">  
-                <ImageUpload
-                    category={image_type_enum.container}
-                    image_url={image_url}
-                    onImageUpload={(inurl: string|null)=>{
-                        handleArticleChange('image', inurl)
-                        set_image_url(inurl as string)
-                        }}/>
+            <div className="flex w-full space-x-4">
+                <div className="border-neutral-500 h-fit border-2 rounded-lg p-2 w-full">
+                    <div className="flex justify-center relative">
+                        {image_preview && <img src={image_preview.full_url} className="max-h-32 w-auto"></img>}
+                        {!image_preview && <div className="h-12 w-full items-center justify-center flex opacity-40 border-dashed border-2">{"no container image chosen"}</div>}
+                        {article_under_edit.image && <div 
+                            className="bg-red-500 hover:bg-red-800 rounded-full absolute top-0 right-0 h-6 w-6 text-center" 
+                            onClick={()=>{set_image_preview(null); handleArticleChange('image', '')}}>{"x"}</div>}
+                    </div>
+                    <ImageDropdown className="mt-4" selected={image_preview?._id} image_type={image_type_enum.container} on_select={(image: db_image) => {
+                        // Set the preview so that we can see which image we've selected in the UI
+                        set_image_preview(image);
+                        // Add the ID to the object
+                        handleArticleChange('image', image._id)
+                    }} />
+                </div>
+                <div className="border-neutral-500 h-fit border-2 rounded-lg p-2 w-full relative">
+                    {mdx_preview && <div className="max-h-32 w-auto">
+                        <div className="font-extrabold">{mdx_preview.title}</div>
+                        <div className="w-auto text-sm opacity-60 pr-6 line-clamp-3">{mdx_preview.snippet}</div>
+                        <div className="w-auto text-xs opacity-30 pr-6 line-clamp-3 mt-1">{mdx_preview.upload_date}</div>
+                        <div className="h-10 flex space-x-1 mt-2">
+                                {mdx_preview.images.map((val)=>{
+                                    return(
+                                        <img key={val._id} className="rounded-lg" src={val.full_url}/>
+                                    )
+                                })}
+                            </div>
+                        </div>}
+                    {!mdx_preview && <div className="h-12 w-full items-center justify-center flex opacity-40 border-dashed border-2">{"no mdx chosen"}</div>}
+                    {article_under_edit.mdx && <div 
+                            className="bg-red-500 hover:bg-red-800 rounded-full absolute top-0 right-0 h-6 w-6 text-center" 
+                            onClick={()=>{set_mdx_preview(null); handleArticleChange('mdx', '')}}>{"x"}</div>}
 
-                <ImageDropdown className="mt-4" image_type={image_type_enum.container} on_select={(path_string: string) => {
-                    set_image_url(path_string);
-                    handleArticleChange('image', path_string)
-                }} />
+                    <MDXDropdown className="mt-4" selected={mdx_preview?._id} on_select={(mdx: db_mdx) => {
+                        set_mdx_preview(mdx);
+                        handleArticleChange('mdx', mdx._id)
+                    }} />
+                </div>
             </div>
 
 
-            <MDXUpload
-                mdx_url={mdx_url}
-                onMDXUpload={(inurl: string|null)=>{
-                    handleArticleChange('article', inurl)
-                    set_mdx_url(inurl as string)
-            }}/>
             
         </div>
 

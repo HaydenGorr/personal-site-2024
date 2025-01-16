@@ -1,30 +1,33 @@
 import { stringify } from "querystring";
-import { api_return_schema, article } from "./api_interfaces"
+// import { api_return_schema, article, article_local, db_article } from "./api_interfaces"
+import { article_WID } from "./interfaces/article_interfaces";
+import { db_article } from "./interfaces/article_interfaces";
+import { api_return_schema } from "./interfaces/misc_interfaces";
 
-export async function get_all_articles(on_pass: (a: api_return_schema<article[]>) => void, on_fail: (a: api_return_schema<article[]>) => void) {
+
+export async function get_all_articles(on_pass: (a: db_article[]) => void, on_fail: (a: string) => void) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_articles`, {
             method: 'GET',
             credentials: 'include'
         });
 
-        const json_result: api_return_schema<article[]> = await response.json();
+        const json_result: api_return_schema<db_article[]> = await response.json();
         
-        if(response.ok) {
-            if (json_result.error.has_error) on_fail({data: [], error: json_result.error })
-            else on_pass(json_result)
+        if(response.ok || !json_result.error.has_error) {
+            on_pass(json_result.data)
         }
-        else on_fail({data: [], error: { has_error: true, error_message: json_result.error.error_message } })
+        else on_fail(json_result.error.error_message)
 
     } catch (error) {
-        on_fail ({data: [], error: { has_error: true, error_message: "could not establish connection to CMS" } })
+        on_fail ("could not establish connection to CMS")
     }
 }
 
-export async function submit_article_changes(edited_article: article, on_pass: () => void, on_fail: (a: string) => void) {
+export async function submit_article_changes(edited_article: article_WID, on_pass: () => void, on_fail: (a: string) => void) {
 
-    if (!("_id" in edited_article)) {
-        on_fail("Aborted. Missing category ID.")
+    if (edited_article._id.length == 0 || edited_article.mdx.length == 0 || edited_article.image.length == 0) {
+        on_fail("Aborted. Missing either _id, mdx, or image props")
         return
     }
 
@@ -52,10 +55,9 @@ export async function submit_article_changes(edited_article: article, on_pass: (
 }
 
 
-export async function submit_new_article(new_article: article, on_pass: (db_article: article) => void, on_fail: (a: string) => void) {
+export async function submit_new_article(new_article: article_WID, on_pass: (db_article: db_article) => void, on_fail: (a: string) => void) {
 
     try {
-
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/create_new_article`, {
             method: 'POST',
             credentials: 'include',
@@ -65,7 +67,7 @@ export async function submit_new_article(new_article: article, on_pass: (db_arti
             body: JSON.stringify({ new_article: new_article }),
         });
 
-        const json_result: api_return_schema<article> = await response.json();
+        const json_result: api_return_schema<db_article> = await response.json();
         
         if(response.ok) {
             on_pass(json_result.data)
@@ -77,7 +79,7 @@ export async function submit_new_article(new_article: article, on_pass: (db_arti
     }
 }
 
-export async function delete_article(article_id: number, on_pass: () => void, on_fail: (a: string) => void) {
+export async function delete_article(article_id: number|string, on_pass: () => void, on_fail: (a: string) => void) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/delete_article`, {
             method: 'POST',

@@ -13,10 +13,10 @@ export default function Login() {
   const [error_message, set_error_message] = useState('');
 
   const handleUsernameChange = (event: any) => {
-      setUsername(event.target.value);
-  };
+    setUsername(event.target.value);
+};
 
-  const handlePasswordChange = (event: any) => {
+const handlePasswordChange = (event: any) => {
     setPassword(event.target.value);
 };
 
@@ -24,18 +24,40 @@ const handleMasterKeyChange = (event: any) => {
     setmKey(event.target.value);
 };
 
-  const on_login = () => {
-    router.push('/admin');
-  }
+const handleSignUpClick = () => {
+    if (Uusername == "" || Upassword == "" || mKey == "") {
+        set_error_message("To sign up, please fill username, password and master key")
+        return;
+    }
 
-  const on_fail_to_login = (e: string) => {
-    console.log("failed", e)
-    set_error_message(e)
-  }
+    send_sign_up_request(
+        Uusername,
+        Upassword,
+        mKey,
+        ()=>{
+            router.push('/admin');
+        },
+        (e)=>{
+            set_error_message(e)
+        })
+}
 
-  const on_signup = () => {
-    router.push('/admin');
-  }
+const handleSignInClick = () => {
+    if (Uusername == "" || Upassword == "") {
+        set_error_message("To sign up, please fill username,and password")
+        return
+    }
+    send_login_request(
+        Uusername,
+        Upassword,
+        ()=>{
+            router.push('/admin');
+        },
+        (e)=>{
+            set_error_message(e)
+        }
+    )
+}
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -88,7 +110,7 @@ const handleMasterKeyChange = (event: any) => {
                             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-3"
                             onClick={() => {
                                 set_error_message("");
-                                send_login_request(Uusername, Upassword, on_login, on_fail_to_login)
+                                handleSignInClick();
                             }}
                         >
                             Login
@@ -97,7 +119,10 @@ const handleMasterKeyChange = (event: any) => {
                         <button
                             type="button"
                             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-3"
-                            onClick={() => {send_sign_up_request(Uusername, Upassword, mKey, on_signup, on_fail_to_login)}}
+                            onClick={() => {
+                                set_error_message("");
+                                handleSignUpClick()
+                            }}
                         >
                             sign up
                         </button>

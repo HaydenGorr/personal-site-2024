@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react";
-import { category } from "../../../../../api/api_interfaces";
+import { category } from "../../../../../api/interfaces/category_interfaces";
 import YesNoPopup from "@/app/components/yesno_popup";
 
 const enum tabs{

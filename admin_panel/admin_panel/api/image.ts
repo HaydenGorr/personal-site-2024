@@ -1,5 +1,7 @@
-import { api_return_schema, file_on_drive, image, image_type_enum } from "./api_interfaces";
-import path from "path";
+import { api_return_schema } from "./interfaces/misc_interfaces";
+import { file_on_drive } from "./interfaces/misc_interfaces";
+import { db_image } from "./interfaces/image_interfaces";
+import { image_type_enum } from "./interfaces/enums";
 
 export async function upload_image(
     image:File,
@@ -41,7 +43,7 @@ export async function upload_image(
     }
 }
 
-export async function get_all_images(on_pass: (a: image[]) => void, on_fail: (a: string) => void, category?: image_type_enum) {
+export async function get_all_images(on_pass: (a: db_image[]) => void, on_fail: (a: string) => void, category?: image_type_enum) {
     try {
 
         var path_construction = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/get_all_images`
@@ -53,7 +55,43 @@ export async function get_all_images(on_pass: (a: image[]) => void, on_fail: (a:
             credentials: 'include',
         });
 
-        const json_result: api_return_schema<image[]> = await response.json();
+        const json_result: api_return_schema<db_image[]> = await response.json();
+        
+        if(response.ok) {
+            on_pass(json_result.data)
+        }
+        else on_fail(json_result.error.error_message)
+
+    } catch (error) {
+        on_fail ("could not establish connection to CMS")
+    }
+}
+
+export async function select_images(on_pass: (a: db_image[]) => void, on_fail: (a: string) => void, filter: Partial<db_image>) {
+    try {
+
+        // var path_construction = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/select_images`
+        const params = new URLSearchParams(filter as Record<string, string>).toString();
+        const path_construction = `${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/select_images?${params}`;
+
+        if (!filter) {
+            on_fail("No filter recieved")
+            return
+        }
+
+        console.log("ukra", filter)
+
+        const response = await fetch(path_construction, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const json_result: api_return_schema<db_image[]> = await response.json();
+
+        console.log(json_result)
         
         if(response.ok) {
             on_pass(json_result.data)
@@ -66,7 +104,7 @@ export async function get_all_images(on_pass: (a: image[]) => void, on_fail: (a:
 }
 
 export async function delete_image(
-    inImage: image,
+    inImage: db_image,
     on_pass:()=>void,
     on_fail:(e: string)=>void) {
     

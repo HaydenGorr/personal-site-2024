@@ -1,5 +1,6 @@
-import { api_return_schema, jwt_api } from "../api/api_interfaces";
 import Cookies from "js-cookie";
+import { api_return_schema } from "../api/interfaces/misc_interfaces";
+import { jwt_api } from "../api/interfaces/misc_interfaces";
 
 export const are_we_logged_in = async (if_logged_in: () => void = () => {}, if_not_logged_in: (error:string) => void = () => {}) =>{
 

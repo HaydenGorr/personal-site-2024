@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react";
-import { chip } from "../../../../../api/api_interfaces";
+import { chip } from "../../../../../api/interfaces/chip_interfaces";
 import YesNoPopup from "@/app/components/yesno_popup";
 import { submit_chip } from "../../../../../api/chips";
 

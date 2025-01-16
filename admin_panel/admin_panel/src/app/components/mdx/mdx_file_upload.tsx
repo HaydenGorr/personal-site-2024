@@ -1,6 +1,6 @@
 import React, { useRef, ChangeEvent, useState } from 'react';
 import { Upload } from 'lucide-react';
-import { api_return_schema } from '../../../../api/api_interfaces';
+import { api_return_schema } from '../../../../api/interfaces/misc_interfaces';
 
 const acceptedTypes = ['text/mdx', 'text/markdown', 'text/plain'];
 

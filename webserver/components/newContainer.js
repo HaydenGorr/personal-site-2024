@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useRouter } from 'next/router'
 import { getDaysAgo } from '../utils/date_utils'
 import { useState, useEffect } from "react";
+import PrecacheImages from "./pre_cache_images";
 
 export default function NewContainer({ home_post_obj, colour="bg-transparent", selectedKeywords}) {
     const router = useRouter();
@@ -19,6 +20,8 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
     }
 
     useEffect(() => {
+      console.log(home_post_obj)
+
       const checkImage = async () => {
         const url = home_post_obj.image;
   
@@ -39,23 +42,26 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
 
       setRandomColor(colourClasses[determined_index])
 
+      console.log("home_post_obj", home_post_obj)
+
     }, []);
 
 
     return (
         <div className={`relative font-Josefin ${randomColor.textColor200}`}>
+
+          <PrecacheImages array_of_images={home_post_obj.mdx.images.map(val => val.full_url)}/>
+
             <div className="relative rounded-2xl overflow-hidden w-80 h-128">
-                {hasImage && (<Image
-                    src={home_post_obj.image}
-                    alt="Description of image"
-                    fill
-                    className="object-cover cursor-pointer"
-                    onClick={() => { go_to_article(home_post_obj.article) }}
-                />)}
-                {/** Gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-95 ${randomColor.fromColor700}`} />
-                <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-30 from-black`} />
-                <div className={`absolute inset-0 ${randomColor.bgRadialGradient} opacity-75`}/>
+              <img
+                src={home_post_obj.image.full_url}
+                className="w-full h-full object-cover cursor-pointer"
+                alt="Descriptive alt text"
+              />
+              {/** Gradient */}
+              <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-95 ${randomColor.fromColor700}`} />
+              <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-30 from-black`} />
+              <div className={`absolute inset-0 ${randomColor.bgRadialGradient} opacity-75`}/>
             </div>
 
             <div className="absolute inset-0 flex-col flex space-y-4 justify-center my-8 px-4">

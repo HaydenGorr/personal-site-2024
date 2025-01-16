@@ -19,6 +19,9 @@ export async function getStaticProps() {
 
     const home_posts_JSON = await home_posts_response.json();
 
+	console.log("home_posts_JSON", home_posts_JSON)
+
+
     if (home_posts_JSON.error.has_error){
       	throw new Error(home_posts_JSON.error.error_message);
     }
@@ -207,7 +210,7 @@ export default function Home({home_posts, unique_chips, organised_content, setBa
 				{filterPosts.length > 0 && <div className={`flex w-full justify-center ${sort_by == "category" ? '' : 'hidden'}`}>
 					<div className="w-full">
 						{Object.entries(categorised_content).map(([key, value]) => (
-							<div className='mt-8'>
+							<div className='mt-8' key={value._id}>
 								<div className='w-full flex justify-center px-4'>
 									<h3 className='w-full text-center max-w-prose text-lg font-semibold'>{`${key || "uncategoriesd"} [${value.length}]`}</h3>
 								</div>

@@ -19,7 +19,7 @@ WORKDIR /app/admin_panel
 
 # Install main dependencies
 COPY package*.json ./
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # Copy all source files
 COPY . .
@@ -27,7 +27,7 @@ COPY . .
 # Move to admin panel directory, install deps and build
 WORKDIR /app/admin_panel/admin_panel
 COPY ./admin_panel/package*.json ./
-RUN npm ci
+RUN npm install --legacy-peer-deps
 RUN npm run build
 
 EXPOSE ${PORT}

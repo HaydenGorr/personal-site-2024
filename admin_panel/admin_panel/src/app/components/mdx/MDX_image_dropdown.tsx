@@ -1,6 +1,8 @@
 'use client'
 import { useEffect, useState, useRef } from "react";
-import { article, category, image, chip, api_return_schema, image_type_enum } from "../../../../api/api_interfaces";
+import { db_image } from "../../../../api/interfaces/image_interfaces";
+import { image_type_enum } from "../../../../api/interfaces/enums";
+
 import { get_all_images } from "../../../../api/image";
 import Image from "next/image";
 import path from "path";
@@ -19,7 +21,7 @@ interface props {
 
 export default function MDXImageDropdown({ className, on_select, image_type }: props) {
 
-const [all_images, set_all_images] = useState<image[]>([]);
+const [all_images, set_all_images] = useState<db_image[]>([]);
 const [loading, set_loading] = useState<Boolean>(false);
 const [error_message, set_error_message] = useState<string|null>(null);
 const [open, set_open] = useState<Boolean>(false);
@@ -28,7 +30,7 @@ useEffect(()=>{
     const fetch_images = async () => {
         set_loading(true)
         get_all_images(
-            (res: image[])=>{
+            (res: db_image[])=>{
                 set_error_message(null)
                 set_all_images(res)
                 set_loading(false)

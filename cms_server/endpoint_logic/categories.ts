@@ -1,12 +1,13 @@
 import { app } from "../express.js";
-import { api_return_schema, category } from "../interfaces/interfaces.js";
+import { api_return_schema } from "../interfaces/misc_interfaces.js";
+import { db_category, category } from "../interfaces/category_interfaces.js";
 import { get_all_categories, DeleteCategory, AddCategory } from "../utils/mongo_utils/category.js";
 import { Response, Request } from "express";
 
 
 app.get('/secure/get_all_categories', async (req: Request, res: Response)  => {
 
-    const mongo_api_response: api_return_schema<category[]> = await get_all_categories();
+    const mongo_api_response: api_return_schema<db_category[]> = await get_all_categories();
   
     if (mongo_api_response.error.has_error) { 
       res.status(500).json(mongo_api_response)
@@ -18,7 +19,7 @@ app.get('/secure/get_all_categories', async (req: Request, res: Response)  => {
   
   app.post('/secure/delete_category', async (req: Request, res: Response) => {
   
-    const given_category: category = req.body.category_stringified as category;
+    const given_category: db_category = req.body.category_stringified as db_category;
   
     // Perform operations like DeleteCategory(category)
     const result: api_return_schema<Boolean> = await DeleteCategory(given_category);

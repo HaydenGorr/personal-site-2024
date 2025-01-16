@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from "react";
 import { get_all_categories, delete_category, submit_category } from "../../../api/categories";
-import { api_return_schema, category } from "../../../api/api_interfaces";
+import { api_return_schema } from "../../../api/interfaces/misc_interfaces";
+import { category, db_category } from "../../../api/interfaces/category_interfaces";
 import CategoryInProgress from "./components/categories/category_inprogress";
 import YesNoPopup from "../components/yesno_popup";
 
@@ -17,10 +18,10 @@ interface props {
 
 export default function Categories({ className }: props) {
 
-    const [item_to_delete, set_item_to_delete] = useState<category|null>(null);
+    const [item_to_delete, set_item_to_delete] = useState<db_category|null>(null);
 
     const [loading, set_loading] = useState<Boolean>(true);
-    const [categories, set_categories] = useState<category[]>([]);
+    const [categories, set_categories] = useState<db_category[]>([]);
     const [fetch_error, set_fetch_error] = useState<Boolean>(false);
     const [fetch_error_msg, set_fetch_error_msg] = useState<string>("");
     const [error_message, set_error_message] = useState<string>("");
@@ -30,12 +31,12 @@ export default function Categories({ className }: props) {
         set_loading(true)
 
         await get_all_categories(
-            (res: api_return_schema<category[]>) => {
-                set_categories(res.data as category[])
+            (res: api_return_schema<db_category[]>) => {
+                set_categories(res.data as db_category[])
                 set_fetch_error(false)
                 set_fetch_error_msg("")
             },
-            (res: api_return_schema<category[]>) => {
+            (res: api_return_schema<db_category[]>) => {
                 set_categories([])
                 set_fetch_error(res.error.has_error)
                 set_fetch_error_msg(res.error.error_message)
@@ -72,7 +73,7 @@ export default function Categories({ className }: props) {
         )
     }
 
-    const go_delete_category = async (chosen_category: category) => {
+    const go_delete_category = async (chosen_category: db_category) => {
 
         if (!chosen_category._id) {console.log("cannot delete. No ID"); return;}
 

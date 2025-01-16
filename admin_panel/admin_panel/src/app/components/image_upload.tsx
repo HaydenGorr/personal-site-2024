@@ -1,8 +1,7 @@
 import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
-import { Url } from 'next/dist/shared/lib/router/router';
 import { upload_image } from '../../../api/image';
-import { image_type_enum } from '../../../api/api_interfaces';
+import { image_type_enum } from '../../../api/interfaces/enums';
 
 interface props {
     className?: string;
