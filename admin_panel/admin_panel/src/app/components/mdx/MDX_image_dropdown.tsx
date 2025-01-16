@@ -57,7 +57,7 @@ const get_dropdown_contents = () => {
                     return(
                         <div key={index} className={`${index%2==0 ? 'bg-neutral-600': 'bg-neutral-500'} p-2 hover:bg-neutral-700 cursor-pointer flex justify-center items-center`}
                         onClick={()=>{on_select(val.full_url); set_open(false)}}>
-                            <Image
+                            <img
                                 className={"h-fit w-auto rounded-lg"}
                                 width={150} height={150}
                                 alt=""
