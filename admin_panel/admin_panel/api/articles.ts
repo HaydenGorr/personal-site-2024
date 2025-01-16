@@ -58,7 +58,6 @@ export async function submit_article_changes(edited_article: article_WID, on_pas
 export async function submit_new_article(new_article: article_WID, on_pass: (db_article: db_article) => void, on_fail: (a: string) => void) {
 
     try {
-
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_ACCESS_CMS}/secure/create_new_article`, {
             method: 'POST',
             credentials: 'include',

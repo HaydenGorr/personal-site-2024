@@ -52,6 +52,9 @@ const [is_new_article, set_is_new_article] = useState<edit_states>(edit_state);
 const [image_preview, set_image_preview] = useState<db_image | null>(null);
 const [mdx_preview, set_mdx_preview] = useState<db_mdx | null>(null);
 
+/**
+ * Make changes to the article_under_edit object
+ */
 const handleArticleChange = (field: keyof article_WID, value: any) => {
 
     // If the article is changing then the previous submit success message doesn't apply.
@@ -69,6 +72,14 @@ const handleArticleChange = (field: keyof article_WID, value: any) => {
 };
 
 useEffect(()=>{
+
+    if (given_article === empty_article) return 
+
+    /**
+     * Since we only have an article_WID, we only have the image and mdx IDs,
+     * not their content. So here we take those IDs and grab the content
+     * to display it in the ui
+     */
     select_images(
         (img: db_image[])=>{
             if (img.length == 0){

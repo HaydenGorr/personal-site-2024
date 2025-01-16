@@ -173,12 +173,15 @@ export const create_new_article = async(new_article: article_WID): Promise<api_r
   try {
       const articleModel = await article_schema(connection)
 
+      const { _id: _, ...rest } = new_article;
+
+
       // Link the mdx_entry to the article
-      const art = new articleModel( new_article );
+      const art = new articleModel( rest );
 
       if (!art) throw Error()
 
-        const ret_obj = await art.save();
+      const ret_obj = await art.save();
 
       return {data:ret_obj, error:{has_error: false, error_message:""}};
   }

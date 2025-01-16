@@ -34,9 +34,11 @@ export default function MDX_In_Progress() {
 
     const editorRef = useRef<MDXEditorMethods | null>(null)
 
-    // If we've got a url, we're editing an existing file
-    // So we fetch it here
+    /**
+     * If we've got a url, we're editing an existing file, so we fetch it here
+     */
     useEffect(()=>{
+        console.log("old")
         const fetch_mdx = async () => {
 
             select_mdx(
@@ -59,7 +61,8 @@ export default function MDX_In_Progress() {
         
         set_loading(true)
 
-        if (url) {
+        if (url != "") {
+            console.log("dfdddd")
             fetch_mdx()
         }
         else {
@@ -82,6 +85,7 @@ export default function MDX_In_Progress() {
         }
 
     }, [mdx_text, title])
+
 
     const go_back = () => {
         router.push('/admin')
@@ -123,12 +127,19 @@ export default function MDX_In_Progress() {
                 mdx_text,
                 title,
                 (newMDX: db_mdx)=>{
-                    set_error_message("")
-                    set_url(newMDX.full_url)
-                    set__id(newMDX._id)
-                    set_title_backup(newMDX.title)
-                    set_title(newMDX.title)
-                    set_edit_state(edit_states.edit_existing)
+                    go_back();
+
+                    const newkey = 5; 
+                    set_show_message((prev) => {
+                      return { ...prev, [newkey]: "Sucessfully Uploaded" };
+                    });
+                    
+                    setTimeout(() => {
+                        set_show_message((prev) => {
+                          const { [newkey]: _, ...rest } = prev;
+                          return rest;
+                        });
+                    }, 3000);
                 },
                 (error_message: string)=>{
                     set_error_message(error_message)
@@ -146,6 +157,17 @@ export default function MDX_In_Progress() {
                     set_url(newMDX.full_url)
                     set__id(newMDX._id)
                     set_edit_state(edit_states.edit_existing)
+                    const newkey = 5; 
+                    set_show_message((prev) => {
+                      return { ...prev, [newkey]: "Sucessfully Updated" };
+                    });
+                    
+                    setTimeout(() => {
+                        set_show_message((prev) => {
+                          const { [newkey]: _, ...rest } = prev;
+                          return rest;
+                        });
+                    }, 3000);
                 },
                 (error_message: string)=>{
                     set_error_message(error_message)

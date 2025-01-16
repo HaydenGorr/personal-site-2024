@@ -77,7 +77,6 @@ return (
         { create_new_article && <ArticleInProgress 
             edit_state={edit_states.create_new} 
             on_close_click={()=>{set_create_new_article(false)}}/>}
-        {/* { create_new_article && <ArticleInProgress newArticle={true} on_close_click={()=>{set_create_new_article(false)}}/>} */}
 
         {/** Create new article button */}
         {!(create_new_article || edit_article != -1) && <div className={"w-full flex justify-center"}>

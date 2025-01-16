@@ -62,7 +62,7 @@ const get_dropdown_contents = () => {
                             <div className="h-10 flex space-x-1 mt-2">
                                 {val.images.map((val)=>{
                                     return(
-                                        <img className="rounded-lg" src={val.full_url}/>
+                                        <img key={val._id} className="rounded-lg" src={val.full_url}/>
                                     )
                                 })}
                             </div>

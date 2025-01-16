@@ -7,6 +7,7 @@ import { article_WID } from "../interfaces/article_interfaces.js";
 import { db_article } from "../interfaces/article_interfaces.js";
 import { api_return_schema } from "../interfaces/misc_interfaces.js";
 import { db_mdx } from "../interfaces/mdx_interfaces.js";
+import { error } from "console";
 
 app.get('/get_all_ready_articles', async (req: Request, res: Response) => {
 
@@ -89,7 +90,6 @@ app.post('/secure/create_new_article', upload.fields([{ name: 'new_article', max
 	const new_article: article_WID = req.body.new_article as article_WID;
 
 	try {
-		if (!("full_url" in new_article)) return
 
 		// Make sure the mdx file exists
 		const mdx_entry: api_return_schema<db_mdx[]> = await get_selected_mdx({_id: new_article.mdx})

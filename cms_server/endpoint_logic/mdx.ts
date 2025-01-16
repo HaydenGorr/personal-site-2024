@@ -17,7 +17,15 @@ app.post('/secure/upload_mdx', async (req: Request, res: Response) => {
         const { mdx_string, title} = req.body;
 
         const image_urls: {}[] = find_image_links_in_mdx(mdx_string).map((val, index) => {return {full_url: val}})
-        const image_entries: api_return_schema<db_image[]> = await get_selected_images(image_urls)
+
+        console.log("image_urls", image_urls)
+
+        if (image_urls.length > 0){
+            var image_entries: api_return_schema<db_image[]> = await get_selected_images(image_urls)
+        }
+        else {
+            var image_entries: api_return_schema<db_image[]> = {data:[], error:{has_error: false, error_message:""}}
+        }
 
         console.log("image_entries", image_entries)
 
