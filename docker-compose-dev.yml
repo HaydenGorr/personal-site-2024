@@ -86,6 +86,7 @@ services:
       - DB_CHIPS_NAME=chips
       - DB_USERS_NAME=users
       - DB_CATEGORIES_NAME=categories
+      - DB_PRIME_NAME=prime
       - DB_IMAGES_NAME=images
       - DB_MDX_NAME=mdx
       - MONGO_USER=${MONGO_USER}
