@@ -47,8 +47,8 @@ useEffect(()=>{
 const get_dropdown_contents = () => {
     if (!loading) {
         return(
-            <div className="overflow-y-scroll mt-2 space-y-2 min-h-80 max-h-full scrollbar-none">
-                {all_mdx.map((val, index)=> {
+            <div className={`overflow-y-scroll mt-2 space-y-2 scrollbar-none ${className}`}>
+                {all_mdx.reverse().map((val, index)=> {
                     return(
                         <div 
                         key={val._id}
@@ -82,7 +82,7 @@ const get_dropdown_contents = () => {
 }
 
 return (
-	<div className={`${className}`}>
+	<div className={``}>
         <span className="text-gray-400 text-xs">{"Select an MDX from the dropdown"}</span>
         {error_message && <p>{error_message}</p>}
         <div className={`bg-neutral-800 px-4 py-2 cursor-pointer flex space-x-4 rounded-lg justify-center w-full`}

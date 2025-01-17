@@ -17,19 +17,6 @@ interface props {
     display_values: string[];
 }
 
-// const empty_article: article = {
-//     title: "",
-//     desc: "",
-//     infoText: "",
-//     chips: [],
-//     category: "",
-//     source: "",
-//     views: 0,
-//     publishDate: new Date(),
-//     ready: false,
-//     portfolioReady: false,
-// }
-
 export default function CategoryDropdown({ className, on_select, on_remove_chip, display_values }: props) {
 
 const [error_message, set_error_message] = useState<string|null>(null);

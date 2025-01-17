@@ -8,7 +8,7 @@ export default function PrecacheImages({ array_of_images = [] }) {
     }
 
     useEffect(()=>{
-        console.log("array_of_images", array_of_images)
+        // console.log("array_of_images", array_of_images)
     })
   
     return (

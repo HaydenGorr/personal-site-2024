@@ -268,7 +268,7 @@ return (
                             className="bg-red-500 hover:bg-red-800 rounded-full absolute top-0 right-0 h-6 w-6 text-center" 
                             onClick={()=>{set_mdx_preview(null); handleArticleChange('mdx', '')}}>{"x"}</div>}
 
-                    <MDXDropdown className="mt-4" selected={mdx_preview?._id} on_select={(mdx: db_mdx) => {
+                    <MDXDropdown className="max-h-[30rem]" selected={mdx_preview?._id} on_select={(mdx: db_mdx) => {
                         set_mdx_preview(mdx);
                         handleArticleChange('mdx', mdx._id)
                     }} />

@@ -85,11 +85,11 @@ return (
         </div>}
 
 
-        {!(create_new_article || edit_article != -1) && !loading && !fetch_error && <div className="w-full grid grid-cols-2 space-x-2">
+        {!(create_new_article || edit_article != -1) && !loading && !fetch_error && <div className="w-full grid grid-cols-2">
 
             {articles.map((art_iter, index) => {
                 return(
-                    <div key={art_iter._id} className="flex flex-col">
+                    <div key={art_iter._id} className="flex flex-col p-2">
                         <ArticleContainer art={art_iter}/>
                         <div className="bg-neutral-700 flex space-x-4 pl-4 rounded-b-lg py-2">
                             <button className="bg-purple-300 hover:bg-purple-400 rounded-lg px-2 text-neutral-900" onClick={()=>{set_edit_article(index)}}>edit</button>

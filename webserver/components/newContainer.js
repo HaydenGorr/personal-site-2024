@@ -1,14 +1,16 @@
 import Image from "next/image";
 import { useRouter } from 'next/router'
 import { getDaysAgo } from '../utils/date_utils'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PrecacheImages from "./pre_cache_images";
 
-export default function NewContainer({ home_post_obj, colour="bg-transparent", selectedKeywords}) {
+export default function NewContainer({ home_post_obj, preload=true, colour="bg-transparent", selectedKeywords}) {
     const router = useRouter();
 
     const [hasImage, setHasImage] = useState(false);
     const [randomColor, setRandomColor] = useState('');
+    const [isInView, setIsInView] = useState(false);
+    const containerRef = useRef(null);
 
     const go_to_article = (id) => {
       // console.log("dualsense", url)
@@ -19,38 +21,74 @@ export default function NewContainer({ home_post_obj, colour="bg-transparent", s
       }
     }
 
-    useEffect(() => {
-      console.log(home_post_obj)
+  /**
+   * Detect if the component is in view
+   * So we can preload the images inside the article
+   */
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1,
+    };
 
-      const checkImage = async () => {
-        const url = home_post_obj.image;
-  
-        try {
-          const response = await fetch(url);
-          setHasImage(response.status === 200);
-        } catch (error) {
-          setHasImage(true); // If the request errors then assume the image is there just in case it is
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          console.log("in view ", home_post_obj.title)
+        } else {
+          // setIsInView(false);
+          // console.log("asdasdas ", home_post_obj.title)
         }
-      };
-  
-      checkImage();
-    }, [home_post_obj, selectedKeywords]);
+      });
+    };
 
-    useEffect(() => {
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-      const determined_index = parseInt(new Date(home_post_obj.publishDate).getMilliseconds()) % colourClasses.length
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
 
-      setRandomColor(colourClasses[determined_index])
+    // Cleanup the observer on unmount
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+      observer.disconnect();
+    };
+  }, []);
 
-      console.log("home_post_obj", home_post_obj)
+  useEffect(() => {
 
-    }, []);
+    const checkImage = async () => {
+      const url = home_post_obj.image;
+
+      try {
+        const response = await fetch(url);
+        setHasImage(response.status === 200);
+      } catch (error) {
+        setHasImage(true); // If the request errors then assume the image is there just in case it is
+      }
+    };
+
+    checkImage();
+  }, [home_post_obj, selectedKeywords]);
+
+  useEffect(() => {
+
+    const determined_index = parseInt(new Date(home_post_obj.publishDate).getMilliseconds()) % colourClasses.length
+
+    setRandomColor(colourClasses[determined_index])
+
+  }, []);
 
 
     return (
-        <div className={`relative font-Josefin ${randomColor.textColor200}`}>
+        <div ref={containerRef} className={`relative font-Josefin ${randomColor.textColor200}`}>
 
-          <PrecacheImages array_of_images={home_post_obj.mdx.images.map(val => val.full_url)}/>
+          {preload && isInView && <PrecacheImages array_of_images={[home_post_obj.mdx.images[0].full_url]}/>}
 
             <div className="relative rounded-2xl overflow-hidden w-80 h-128">
               <img

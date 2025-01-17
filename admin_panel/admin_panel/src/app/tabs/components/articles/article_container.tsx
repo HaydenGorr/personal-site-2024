@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db_article } from "../../../../../api/interfaces/article_interfaces";
 import { db_image } from "../../../../../api/interfaces/image_interfaces";
 
@@ -15,6 +15,13 @@ interface props {
 }
 
 export default function ArticleContainer({ art, className }: props) {
+	const [has_images, set_has_images] = useState<boolean>(false)
+
+	useEffect(()=>{
+		if (art?.mdx?.images) {
+			set_has_images(true);
+		}
+	}, [art])
 	
 return (
 	<div className="flex w-full">
@@ -29,7 +36,7 @@ return (
 				{/** Separator */}
 				<div className="w-[3px] rounded-full bg-white h-full opacity-10"></div>
 				{/** article images */}
-				{art.mdx.images.map((val: db_image) =>{
+				{has_images && art.mdx.images.map((val: db_image) =>{
 					return(
 						<img key={val._id} className={"h-14 w-auto rounded-lg"} src={val.full_url}></img>
 					)
